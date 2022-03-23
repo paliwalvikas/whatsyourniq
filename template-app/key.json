@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "spatial-flag-343006",
+  "private_key_id": "1103434c2bc7a64436fd34e0a8b1f0dc344011d1",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCyZuEte/Qj1guR\nEFCCPyvj1WRTi/op2UJta+Qkj/8aIYjZxJPQL47gmh9vspKlBnjdbAyiFP4u5Fgo\nnE2RoMoTjwTa3gAt0v7qCdRg7uBXE9MYrIU9Fw8fQAG8c41XZBYZspwx08/ktMzI\nUiEa1dx/pLopdCLAAHQCryT5+wqSSqkfnyyjyH6e2tMp2APQdCL48xCLIMdvV8hz\nQemZGlZReAD9ExwBYwBeLMme4/mQDNIf5cwP6rtcXITcQAVacAzMGrnJGwFkbEwV\nmipRC+15kESYTgccMBro1SOVpkSXdsHvbU8usSoLh7XS7Q98Ss0Z1etMsB16UfjO\nDOw3OqDhAgMBAAECggEACPE5NkNxUF6JQ+MydeTeuVPX7IwmpPRb7QosbFy/Z7ro\nlinRUu0fV0jCbKHh0d3KLyccVv+AYi9V7+stxC/wERzpHGNmVOWvm2GUwKsYmaTH\nvwPexdojCuj1bVHJcuj0ZqNaSvEYCZm6bgwX1rWDkO5b2noUx9T9+6h1zQX1WLHJ\nz0UZuWdKXYLNaBcvA/3AslotxIG/zrqlKwnzzL+zS+a2tEtmfWFNk0rKYGZt2hg8\n7lonMUdpGxMiIrA7Dm3/qNsEfBZqvyM6c2+8D29ZHpbv9bNJ475DI9DTUQk6ndxw\nFjnjMZp1z6cyFtA1RbV3GSBXTvPU7j+4i9SZ2Vl+VQKBgQDtexQXAQIZiUBFgUu1\nevJwkHWERhfQMSOguVV8yc3QZuPG+trOXLCOeCoWyJDDQGPNkc5zQi1WWfxfDRdD\nXDnp9NnN6K057uwqyikLDXoyaYF5aXqXNZV0IQDHdT6rgRrrkH637IBSb3CxcHBn\nYEUizSocJhluo/prGe5LUqmalwKBgQDAUGLLkCYIcOyyrvhi+Mm6gTQ021JZ8WhM\nYMMifONQaNMllyLPucEZZszf8Z2dmwLybeZJVwFlwDHDUdG62ZSAmhqNprC74dM8\nSNsRdQXhkKNJEW1Nh/w6m5FoX1RgWOgdjA4ynNmvJ71q8JuqiCGoOirhDUAcomPN\n8+7N8LJnRwKBgGTtsxsXvZm2wE8J5XBKwXDfpGJEG+jKiZbMTa3MYqFYqSOvB4E+\n2XajUVf/g67H1eLPPgu0K2qQsfZ/rMxfDOoGuu6NHdoKVerVol3lK3Lzbih4kLZk\n+pCxWhBrHuhq5VMKRSDL7bmbTSzMWalFu/xPb78o3hQsssgD7Ees6RIfAoGAKte9\nqqvKTUca9BOWsjXKewodn0jc57yoB5vm3OAFo/w2TcGFt9Eh+46zRZCGFH5cAbYJ\n/3yqiwhuDZ1Eo+Ok+aFbGQNxi+mbLWrtos33KXEXb0e6mfMZddUCZ8YU/gHQdASn\nhQ78T9ECmbhQdYUuOlP7CXfyOG7U3STipm5g0DECgYEAjQU4gevBv6KuC73Qlrz0\n77sCiaME75bH4wbSkj1FI8/GlonLtf9xoOt1jLM7Ya2ef4GiSDcGG56O+fg/u0wm\nB6W7zXI/KKAEjT9Y3xKCIMYtL12/dNk5nSvdE8X/vublfsTM5O/XN4GbG9aD/oW+\nEVEIsTwjz4R0GK7Rwa9qsLo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "test-google-lens@spatial-flag-343006.iam.gserviceaccount.com",
+  "client_id": "107143149760946487640",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test-google-lens%40spatial-flag-343006.iam.gserviceaccount.com"
+}
