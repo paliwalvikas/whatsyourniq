@@ -1,0 +1,23 @@
+current directory: /data/home/ubuntu/Desktop/ftprojectsearchengine-133842-ruby/template-app/vendor/bundle/ruby/2.6.0/gems/rbtree-0.4.5
+/usr/local/rbenv/versions/2.6.5/bin/ruby -I /usr/local/rbenv/versions/2.6.5/lib/ruby/2.6.0 -r ./siteconf20220323-3557-1l5qc7a.rb extconf.rb
+checking for rb_exec_recursive() in ruby.h... yes
+checking for rb_exec_recursive_paired() in ruby.h... yes
+checking for rb_proc_lambda_p() in ruby.h... yes
+checking for rb_ary_resize() in ruby.h... yes
+checking for rb_obj_hide() in ruby.h... yes
+checking for rb_safe_level() in ruby.h... yes
+checking for rb_cData() in ruby.h... yes
+creating Makefile
+
+current directory: /data/home/ubuntu/Desktop/ftprojectsearchengine-133842-ruby/template-app/vendor/bundle/ruby/2.6.0/gems/rbtree-0.4.5
+make "DESTDIR=" clean
+
+current directory: /data/home/ubuntu/Desktop/ftprojectsearchengine-133842-ruby/template-app/vendor/bundle/ruby/2.6.0/gems/rbtree-0.4.5
+make "DESTDIR="
+compiling dict.c
+compiling rbtree.c
+linking shared-object rbtree.so
+
+current directory: /data/home/ubuntu/Desktop/ftprojectsearchengine-133842-ruby/template-app/vendor/bundle/ruby/2.6.0/gems/rbtree-0.4.5
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 rbtree.so ./.gem.20220323-3557-6tfhij
