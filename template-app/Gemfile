@@ -64,3 +64,5 @@ gem "yabeda-http_requests" #External request monitoring
 gem "yabeda-puma-plugin"
 gem 'yabeda-sidekiq'
 gem 'bx_block_cors'
+gem 'devise'
+gem 'inherited_resources', github: 'activeadmin/inherited_resources'

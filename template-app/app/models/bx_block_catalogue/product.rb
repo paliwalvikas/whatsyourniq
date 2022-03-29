@@ -12,7 +12,6 @@ module BxBlockCatalogue
     
       unless self.product_point.present?
         ing = self.ingredient
-
         neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ["product_id"])
 
         neg_clumns.each do |clm|
@@ -60,7 +59,7 @@ module BxBlockCatalogue
 
     
     def check_value(val,ele,value)
-      if self.product_type == 0 || self.product_type == 2
+      if self.product_type == "cheese_and_oil" || self.product_type == "solid"
         case val
         when 'negative_value'
           BxBlockCheeseAndOil::NegativeIngredient.all.each do |ni|
@@ -78,7 +77,7 @@ module BxBlockCatalogue
             return micro_point if micro_point.present? 
           end   
         end 
-      else self.product_type == 1
+      else self.product_type == "beverage"
         case val
           when 'negative_value'
           BxBlockBeverage::BeverageNegativeIngredient.all.each do |ni|
