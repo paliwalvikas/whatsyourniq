@@ -6,9 +6,12 @@ module BxBlockCatalogue
     before_action :validate_json_web_token, except: [:create, :index]
 
     def index
-      product = BxBlockCatalogue::Product.where("lower(product_name) = ?", params[:product_name].downcase).first
-      product.calculation
-      render json: ProductSerializer.new(product)
+      if product = BxBlockCatalogue::Product.where("lower(product_name) = ?", params[:product_name].downcase).first
+        product.calculation
+        render json: ProductSerializer.new(product)
+      else 
+        render json: { errors: 'No product found' }
+      end     
     end
 
     private 
