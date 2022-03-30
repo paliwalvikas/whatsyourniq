@@ -3,7 +3,7 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient do
 
     form do |f|
     f.inputs do
-      f.input :product_id 
+      f.input :product_id
       f.input :energy
       f.input :saturate
       f.input :total_sugar
@@ -33,6 +33,9 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient do
       f.input :selenium
       f.input :chloride
       f.input :chromium
+      f.input :fibre
+      f.input :sodium
+
 
 
 
@@ -73,6 +76,8 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient do
     column :selenium
     column :chloride
     column :chromium
+    column :sodium
+    column :fibre
     actions
   end
 
@@ -107,6 +112,8 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient do
       row :selenium
       row :chloride
       row :chromium
+      row :sodium
+      row :fibre
     end
   end
 end
