@@ -10,7 +10,7 @@ module BxBlockCatalogue
         product.calculation
         render json: ProductSerializer.new(product)
       else 
-        render json: { errors: 'No product found' }
+        render json: { errors: 'Product not found' }
       end     
     end
 
