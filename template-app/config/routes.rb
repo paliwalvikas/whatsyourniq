@@ -6,6 +6,6 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :bx_block_catalogue do
-    resources :products, only: %i[index]
+    resources :products, only: %i[index update]
   end 
 end
