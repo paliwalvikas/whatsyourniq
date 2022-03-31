@@ -1,7 +1,8 @@
 ActiveAdmin.register BxBlockCatalogue::Ingredient do
-  permit_params :id, :product_id, :energy,:saturate,:total_sugar,:sodium,:ratio_fatty_acid_lipids,:fibre,:fruit_veg,:protein,:vit_a,:vit_c,:vit_d,:vit_b6,:vit_b12,:vit_b9,:vit_b2,:vit_b3,:vit_b1,:vit_b5,:vit_b7,:calcium,:iron,:magnesium,:zinc,:iodine,:potassium,:phosphorus,:manganese,:copper,:selenium,:chloride,:chromium
+  permit_params :id, :product_id, :energy, :saturate, :total_sugar, :sodium, :ratio_fatty_acid_lipids, :fibre, :fruit_veg,
+                :protein, :vit_a, :vit_c, :vit_d, :vit_b6, :vit_b12, :vit_b9, :vit_b2, :vit_b3, :vit_b1, :vit_b5, :vit_b7, :calcium, :iron, :magnesium, :zinc, :iodine, :potassium, :phosphorus, :manganese, :copper, :selenium, :chloride, :chromium
 
-    form do |f|
+  form do |f|
     f.inputs do
       f.input :product_id
       f.input :energy
@@ -35,17 +36,11 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient do
       f.input :chromium
       f.input :fibre
       f.input :sodium
-
-
-
-
-      
     end
     f.actions
-
   end
 
-  index  title: 'ingredient' do
+  index title: 'ingredient' do
     id_column
     column :energy
     column :saturate
@@ -78,6 +73,7 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient do
     column :chromium
     column :sodium
     column :fibre
+    column :product
     actions
   end
 
