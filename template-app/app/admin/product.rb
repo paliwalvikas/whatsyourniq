@@ -1,6 +1,7 @@
 ActiveAdmin.register BxBlockCatalogue::Product do
   permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount
-  active_admin_import 
+
+  
 
   form do |f|
     f.inputs do
@@ -27,7 +28,9 @@ ActiveAdmin.register BxBlockCatalogue::Product do
     column :weight
     column :price_mrp
     column :price_post_discount
-    actions
+    actions do |resource|
+      link_to "calculate_rating", "#", onclick: "calculateRating(#{resource.id});"
+    end
   end
 
   show do
