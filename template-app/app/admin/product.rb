@@ -1,6 +1,7 @@
-ActiveAdmin.register BxBlockCatalogue::Product, as: "product" do
-  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name,
-                :price_post_discount
+# frozen_string_literal: true
+
+ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
+  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount, :price_mrp
 
   form do |f|
     f.inputs do
