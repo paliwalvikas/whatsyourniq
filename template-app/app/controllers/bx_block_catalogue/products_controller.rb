@@ -3,7 +3,7 @@ require 'json'
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
-    skip_before_action :validate_json_web_token, only: [:update]
+    skip_before_action :validate_json_web_token, only: [:update, :index]
 
     # def index
     #   if product = BxBlockCatalogue::Product.where("lower(product_name) = ?", params[:product_name].downcase).first
@@ -22,10 +22,6 @@ module BxBlockCatalogue
         render json: { error: 'Something went wrong!' }
       end
     end
-
-    # def search_product
-    #   @product = BxBlockCatalogue::Product.where('product_name ILIKE :search', search: "%#{search_params[:query]}%")
-    # end   
 
     private 
     def product_param
