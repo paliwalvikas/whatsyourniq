@@ -3,8 +3,10 @@ module BxBlockCatalogue
     self.table_name = :products
     enum product_type: [:cheese_and_oil, :beverage, :solid]
     validates :product_name, uniqueness: true
-    has_one :ingredient, class_name: 'BxBlockCatalogue::Ingredient'
+    has_one :ingredient, class_name: 'BxBlockCatalogue::Ingredient', dependent: :destroy
     has_one_attached :image
+
+    accepts_nested_attributes_for :ingredient, allow_destroy: true
 
     def calculation
       np = []
