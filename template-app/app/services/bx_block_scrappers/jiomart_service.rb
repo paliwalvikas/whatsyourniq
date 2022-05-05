@@ -26,9 +26,9 @@ module BxBlockScrappers
         csv_headers = ["Images"]
         (1..10).each do |page|
           if is_valid_url? base_url
-            html = HTTParty.get(base_url + "#{page}",headers: headers)
-            File.open('try.html', 'w') { |file| file.write(html) }
-            parsed_page = Nokogiri::HTML(html)
+            doc = HTTParty.get(base_url + "#{page}",headers: headers)
+            File.open('try.html', 'w') { |file| file.write(doc.body) }
+            parsed_page = Nokogiri::HTML(doc.body)
             products = parsed_page.css('a.prod-name')
             CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |writer|
               products.each do |product|
@@ -49,9 +49,9 @@ module BxBlockScrappers
 
      def get_detail url
         if is_valid_url? url
-          html = HTTParty.get(url,headers: headers)
-          File.open('try.html', 'w') { |file| file.write(html) }
-          parsed_page = Nokogiri::HTML(html)
+          doc = HTTParty.get(url,headers: headers)
+          File.open('try.html', 'w') { |file| file.write(doc.body) }
+          parsed_page = Nokogiri::HTML(doc.body)
           h = Hash.new{[]}
           h[:images] = parsed_page.css("img.largeimage").map{|a| a.attributes['data-src'].value}.compact.map{|a| append_url + a}
           h
@@ -68,3 +68,5 @@ module BxBlockScrappers
       end
   end
 end
+
+
