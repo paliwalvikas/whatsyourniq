@@ -22,7 +22,6 @@ module BxBlockScrappers
     end
 
       def scrap_data
-        byebug
         file = "#{Rails.root}/public/thegreensnackco.csv"
         csv_headers = ["Images"]
         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |writer|
