@@ -38,7 +38,7 @@ module BxBlockScrappers
 
     def get_detail sku
       html = HTTParty.get("#{append_url}pd/#{sku}",headers: headers)
-      parsed_page = Nokogiri::HTML(html)
+      parsed_page = Nokogiri::HTML(html.body)
       parsed_page.css("img._3oKVV").map{|a| a.attributes['src'].value}.compact rescue []
     end
     
