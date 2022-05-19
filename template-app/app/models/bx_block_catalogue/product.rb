@@ -5,6 +5,7 @@ module BxBlockCatalogue
     validates :product_name, uniqueness: true
     has_one :ingredient, class_name: 'BxBlockCatalogue::Ingredient', dependent: :destroy
     has_one_attached :image
+    belongs_to :category, class_name: 'BxBlockCategories::Category', dependent: :destroy, foreign_key: 'category_id'
 
     accepts_nested_attributes_for :ingredient, allow_destroy: true
 
@@ -118,6 +119,7 @@ module BxBlockCatalogue
       end
     end
 
+  
     # def fetch_image_data
     # byebug
     #   image_file = "https://rukminim1.flixcart.com/image/280/280/kobspe80/cookie-biscuit/d/d/p/kaju-kukkies-dukes-original-imag2thhbvzyfrpm.jpeg"

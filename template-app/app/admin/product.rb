@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
-  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount, :price_mrp
-  active_admin_import
+  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount, :price_mrp, :category_id
+    active_admin_import
 
   form do |f|
     f.inputs do
@@ -14,6 +14,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       f.input :price_post_discount
       f.input :product_point
       f.input :product_rating
+      f.input :category_id, as: :select, collection: BxBlockCategories::Category.all.pluck(:category_type, :id)
     end
     f.actions
   end
@@ -28,6 +29,9 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     column :weight
     column :price_mrp
     column :price_post_discount
+    column :category_id do |obj|
+      obj&.category&.category_type
+    end  
     actions do |resource|
       link_to 'calculate_rating', '#', onclick: "calculateRating(#{resource.id});"
     end
@@ -43,6 +47,9 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       row :weight
       row :price_mrp
       row :price_post_discount
+      row :category_id do |obj|
+        obj&.category&.category_type
+    end  
     end
   end
 
