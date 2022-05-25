@@ -23,7 +23,8 @@ module BxBlockScrappers
 
     def scrap_data
       if is_valid_url? base_url
-        file = "/home/rails/Documents/scrapping 2/scrapping/basket.csv"
+        # file = "/home/rails/Documents/scrapping 2/scrapping/basket.csv"
+        file = "#{Rails.root}/public/basket.csv"
         csv_headers = [ ,"Nutritional Information", "Ingredient List"]
         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
           # images = []
