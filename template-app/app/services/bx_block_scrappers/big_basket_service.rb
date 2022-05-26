@@ -23,19 +23,17 @@ module BxBlockScrappers
 
     def scrap_data
       if is_valid_url? base_url
-        # file = "/home/rails/Documents/scrapping 2/scrapping/basket.csv"
         file = "#{Rails.root}/public/basket.csv"
-        csv_headers = [ ,"Nutritional Information", "Ingredient List"]
+        csv_headers = [ "Image", "Brand", "Weight", "Product Name", "Price", "Price Post Discount", "Product Description","Nutritional Information", "Ingredient List"]
         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
-          # images = []
           (2..100).each do |page|
             resp = HTTParty.get(base_url + "&page=#{page}",headers: headers)
             skus = resp["tab_info"]["product_map"]["all"]["prods"].each do |a|
               values = get_detail(a['sku'])
-              csv << [values[0]-["https://www.bbassets.com/monsters-inc/static/be1f00c92cf43c5b36397fe28c88a793.svg"],a['p_brand'], a['w'], a['pc_n'], a['mrp'], values[1].strip()]
+              values[1] = values[1] == nil ? "nil" : values[1]
+              csv << [values[0]-["https://www.bbassets.com/monsters-inc/static/be1f00c92cf43c5b36397fe28c88a793.svg"],a['p_brand'], a['w'], a['pc_n'], a['mrp'], a['sp'], a['p_desc'],values[1].strip()]
             end
           end
-          # images.flatten.compact rescue []
         end
       else
         return false
