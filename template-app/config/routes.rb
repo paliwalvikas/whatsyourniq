@@ -8,4 +8,14 @@ Rails.application.routes.draw do
   namespace :bx_block_catalogue do
     resources :products, only: %i[index update]
   end 
+
+  namespace :account_block do 
+    resources :accounts , only: [:create]
+     get'search', to: 'accounts#search'
+  end
+  
+  namespace :bx_block_login do 
+    resources :logins, only: [:create]
+   
+  end
 end
