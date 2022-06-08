@@ -2,9 +2,10 @@ module BxBlockScrappers
   class BigBasketService
     attr_accessor :headers, :base_url, :append_url
 
-    require 'rubocop'
     require 'google/cloud/vision'
     require 'google/cloud/vision/v1/image_annotator'
+
+    ENV["GOOGLE_APPLICATION_CREDENTIALS"] = '/home/rails/my_project/ftprojectsearchengine-133842-ruby/template-app/lib/key.json'
 
     def initialize
       @append_url = 'https://www.bigbasket.com/'
