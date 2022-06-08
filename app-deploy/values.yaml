@@ -20,6 +20,9 @@ appExtConfig:
   # resource limits set below so that needs to be taken into consideration.
   RAILS_MAX_THREADS: "10"
 
+  GOOGLE_APPLICATION_CREDENTIALS: "./../template-app/lib/key.json"
+
+
 image:
   repository:  gitlab.builder.ai:5000/template-app
   pullPolicy: IfNotPresent
