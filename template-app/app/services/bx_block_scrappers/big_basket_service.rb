@@ -2,7 +2,6 @@ module BxBlockScrappers
   class BigBasketService
     attr_accessor :headers, :base_url, :append_url
 
-    require 'rubocop'
     require 'google/cloud/vision'
     require 'google/cloud/vision/v1/image_annotator'
 
