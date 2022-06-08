@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "magnetic-flare-347707",
+  "private_key_id": "ff0bc95550eaa70d9f18f106393544f64dbbbd68",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbnd33e6fnHWej\nlZNZnLqrTIZfA+r80JXHfinuW5ptnPt5YSeOUbtR+vQ3yBLf5t+ojF7bwUqYE6p3\nls0sLnHOQ321MakUX32f1T/uDJzdC02169JtE+TvPq7T8pkjolI83OdDtQ7gSPqO\nGJnFZo+LBC/TrvY69V4OnPa3iRT+kCOZcl9bxXM0ijEcPe4RNiQMl5MzZynK5MYC\nE/p88pMY/oqywv+hVaDyvHHIomvLD9863nZO5b/egsv0ql8V0t78wet0hTNOnlLC\nwBjC+YlLXIYySVY21LR/tlgB0xUkQtqEdjPQgMrhHs3Q3bl0K1dmtlDHKYtNyiBK\nDzRFV4XVAgMBAAECgf8MApYg8qI8AV+pkoR8YhXTSFwQ1iYDrWSDhGLGpjvLwsn9\n2VJQdifIU/EHG+nsVLPmg8asPeXWazznTVfrEp8mqIo3Xn/gnVhBZWgZnJb3f6bA\nTCU10eCzNLpa3OmDCV119p6vFTe7DEKngrDmGrW+5Hu5F9hfYQvDwNG9N8HuKdnF\n+28YSnJ1Mg5IaRD86HMRdKhEia+QNd/m3BTSFvAxDdj+pNymLhpWUmL++qvi2aMK\n/u4//MQ5OBLw5SEkt4+Pno7UIU6/6eSDBf5Skzxq+B2pckAnIeIewOUqKGDVfUFN\nvWeTzdnIPUjYnE041NojCBC9TcyDcH3txg3amUECgYEA//ZlfkgzlJz89K2RGkrv\ng0sx7iwMw5SoY3sFWQTIvdPQqhSSNR98BwnXCCrOKEdaWkeCst069+zMOipjkfVe\nC8HfrYUoUektoY6aUP3dJ0ehSAYNu1KhGHX5QarsxJToVMFOpz2o3e/GunhWguZj\nL5nIAHbQvY5WHT5ljJGJPMkCgYEA26YbX6rjYzBfRfhvlaIsWAxGF8ztiO79hQvq\nXivlGUVRuyd8jko5kHNqdhcjfNWZq3oTGmDhVl+xISZFg0fVqZMEo3URPwX3O7Wu\n07q2vZJDxOsYojigqbTzqh8TPm00UrD2BsXiYjjW2uy7Xi/rXzzGC1vhPs1hoOI8\nQMxw4q0CgYEAz8tkUcSjuz5HTQurBMFY+CmPe19fbVe97CTvDnmHzjOq7qiMmXvZ\n4IzoeMTnYGOswiXTwQlA2gzvLzlCZDfiBYF66Q900CqQ1NtEBARUCZNpJ2NiunQ2\nO/lqRRlR5bVNd6EHDVZNRP9nQfJ3qQUH+JjLeTT7+ScYWd1R63ArDaECgYEAxjSv\ncPXhOUmWP6q+7pUoVM/GlIWdN7sJ1Px6oj4T/2jZJvyr3i7GoT41LJkWsfiCMgX3\npQ8VaH7zdQl3Is841EvRnLrwNCHrBtudBnzvmEObmd/YG9Lj0CB03Ogr0mJzG8eK\nS3RYI/BMmcOUFJtDV26c+/UOXkCxP5/HZWXW3AUCgYAyEHOSy4QWJreLxcZKineH\nuMa8n9wlp2LbZ9z8Yy/na162tlcNCRE+uKKGOZ7gVz258fA+s1msy3dz/6ZjzQwd\nRup5hqmz+Zt/lIrYboswLgMuA3mLjIKvm5ROCnXlJubOL0tXjUuMVWU9qEFYwW8x\n8ckobDSwE1Se2rbkssAKUg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "superfoodsvalley@magnetic-flare-347707.iam.gserviceaccount.com",
+  "client_id": "111611107478856015584",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/superfoodsvalley%40magnetic-flare-347707.iam.gserviceaccount.com"
+}
