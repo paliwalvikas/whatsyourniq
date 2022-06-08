@@ -2,6 +2,7 @@ module BxBlockScrappers
   class BigBasketService
     attr_accessor :headers, :base_url, :append_url
 
+    require 'rubocop'
     require 'google/cloud/vision'
     require 'google/cloud/vision/v1/image_annotator'
 
@@ -26,16 +27,16 @@ module BxBlockScrappers
 
     def scrap_data
       if valid_url? base_url
-        file = "#{Rails.root}/public/basket.csv"
+        file = "#{Rails.root}/public/basket.csv" # , 'Nutritional Information'  ,, values[0][1]
         csv_headers = ['Image', 'Brand', 'Weight', 'Product Name', 'Price', 'Price Post Discount',
-                       'Product Description', 'Nutritional Information', 'Ingredient List', 'Nutritional Table for per 100gm/100ml/any other', 'Energy', 'Fibers', 'Proteins', 'Vitamin A', 'Vitamin C', 'Vitamin D', 'Vitamin B6', 'Vitamin B12', 'Folate', 'Calcium', 'Iron', 'Iodine', 'Calories', 'Total Fat', 'Saturated Fat', 'Monounsaturated Fat', 'Ployunsaturated Fat', 'Trans Fatty Acid', 'Cholesterol', 'Sodium', 'Sugar', 'Magnesium', 'Zinc', 'Lodine', 'Phosphorus', 'Potassium', 'Riboflavin', 'Carbohydrate', 'Fat', 'Total Sugars']
+                       'Product Description', 'Ingredient List', 'Nutritional Table for per 100gm/100ml/any other', 'Energy', 'Fibers', 'Proteins', 'Vitamin A', 'Vitamin C', 'Vitamin D', 'Vitamin B6', 'Vitamin B12', 'Folate', 'Calcium', 'Iron', 'Iodine', 'Calories', 'Total Fat', 'Saturated Fat', 'Monounsaturated Fat', 'Ployunsaturated Fat', 'Trans Fatty Acid', 'Cholesterol', 'Sodium', 'Sugar', 'Magnesium', 'Zinc', 'Lodine', 'Phosphorus', 'Potassium', 'Riboflavin', 'Carbohydrate', 'Fat', 'Total Sugars']
         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
-          (2..4).each do |page|
+          (2..100).each do |page|
             resp = HTTParty.get(base_url + "&page=#{page}", headers: headers)
             resp['tab_info']['product_map']['all']['prods'].each do |a|
               values = get_detail(a['sku'])
               values_filter(values) if values[0][1].present?
-              csv << [values[0][0], a['p_brand'], a['w'], a['pc_n'], a['mrp'], a['sp'], a['p_desc'], values[0][1],
+              csv << [values[0][0], a['p_brand'], a['w'], a['pc_n'], a['mrp'], a['sp'], a['p_desc'],
                       values[0][2], @per, @energy, @fiber, @Proteins, @vitA, @vitC, @vitD, @vitB6, @vitB12, @folate, @calcium, @iron, @iodine, @calories, @total_fat, @saturated, @monounsaturated, @ployunsaturated, @trans_fa, @cholesterol, @sodium, @sugar, @magnesium, @zinc, @lodine, @phosphorus, @potassium, @riboflavin, @carbohydrate, @fat, @total_sugars]
             end
           end
@@ -76,21 +77,21 @@ module BxBlockScrappers
         @energy = val if p.include?('ENERGIES')
         @fiber = val if p.include?('FIBERS')
         @proteins = val if p.include?('PROTEINS')
-        @vitA = val if p.include?('VITAMIN AS') || p.include?('VITAMIN-AS')
-        @vitC = val if p.include?('VITAMIN CS') || p.include?('VITAMIN-CS')
-        @vitD = val if p.include?('VITAMIN DS') || p.include?('VITAMIN-DS')
-        @vitB6 = val if p.include?('VITAMIN B6S') || p.include?('VITAMIN-B6S')
-        @vitB12 = val if p.include?('VITAMIN B12S') || p.include?('VITAMIN-B12S')
+        @vitA = val if (p.include?('VITAMINS') && p.include?('AS')) || p.include?('VITAMIN-AS')
+        @vitC = val if (p.include?('VITAMINS') && p.include?('CS')) || p.include?('VITAMIN-CS')
+        @vitD = val if (p.include?('VITAMINS') && p.include?('DS')) || p.include?('VITAMIN-DS')
+        @vitB6 = val if (p.include?('VITAMINS') && p.include?('B6S')) || p.include?('VITAMIN-B6S')
+        @vitB12 = val if (p.include?('VITAMINS') && p.include?('B12S'))|| p.include?('VITAMIN-B12S')
         @folate = val if p.include?('FOLATES')
         @calcium = val if p.include?('CALCIA')
         @iron = val if p.include?('IRONS')
         @iodine = val if p.include?('IODINES')
         @calories = val if p.include?('CALORIES')
-        @total_fat = val if p.include?('TOTAL FATS')
+        @total_fat = val if p.include?('TOTALS') && p.include?('FATS')
         @saturated = val if p.include?('SATURATEDS')
-        @monounsaturated = val if p.include?('MONOUNSATURATED FATS')
-        @ployunsaturated = val if p.include?('PLOYUNSATURATED FATS')
-        @trans_fa = val if p.include?('TRANSHES')
+        @monounsaturated = val if p.include?('MONOUNSATURATEDS')
+        @ployunsaturated = val if p.include?('PLOYUNSATURATEDS')
+        @trans_fa = val if p.include?('TRANSHES') && p.include?('FATTIES')
         @sodium = val if p.include?('SODIA')
         @sugar = val if p.include?('SUGARS')
         @magnesium = val if p.include?('MAGNESIA')
@@ -101,7 +102,7 @@ module BxBlockScrappers
         @riboflavin = val if p.include?('RIBOFLAVINS')
         @carbohydrate = val if p.include?('CARBOHYDRATES')
         @fat = val if p.include?('FATS')
-        @total_sugars = val if p.include?('TOTAL SUGARS')
+        @total_sugars = val if p.include?('TOTALS') && p.include?('SUGARS')
         @cholesterol = val if p.include?('CHOLESTEROLS')
       end
     end
@@ -142,26 +143,32 @@ module BxBlockScrappers
         end
       end
       nutrition = nut.present? ? nutritional_values(nut) : filter_ingradiant(parsed_page)
-      src = src.present? ? src : image-[image[0]]
+      src = src.present? ? src : image - [image[0]]
       [src.uniq, nutrition, ingredient]
     end
 
     def nutritional_values(nutrition)
-      keys =  ['Per', 'Energy', 'Fiber', 'Protein', 'Vitamin A', 'Vitamin C', 'Vitamin D', 'Vitamin B6', 'Vitamin B12',
-               'Folate', 'Calcium', 'Iron', 'Iodine', 'Calories', 'Total Fat', 'Saturated', 'Monounsaturated Fat', 'Ployunsaturated Fat', 'Trans Fatty Acid', 'Cholesterol', 'Sodium', 'Sugar', 'Magnesium', 'Zinc', 'Lodine', 'Phosphorus', 'Potassium', 'Riboflavin', 'Carbohydrate', 'Fat', 'Total Sugars', 'Vitamin-A', 'Vitamin-C', 'Vitamin-D', 'Vitamin-B6', 'Vitamin-B12']
-      keys << keys.map(&:upcase)
-      keys = keys.flatten
+      keys = ['Per', 'Energy', 'Fiber', 'Protein', 'Vitamin A', 'Vitamin C', 'Vitamin D', 'Vitamin B6', 'Vitamin B12',
+              'Folate', 'Calcium', 'Iron', 'Iodine', 'Calories', 'Total Fat', 'Saturated', 'Monounsaturated', 'Ployunsaturated', 'Trans', 'Fatty', 'Acid', 'Cholesterol', 'Sodium', 'Sugar', 'Magnesium', 'Zinc', 'Lodine', 'Phosphorus', 'Potassium', 'Riboflavin', 'Carbohydrate', 'Fat', 'Total Sugars', 'Vitamin-A', 'Vitamin-C', 'Vitamin-D', 'Vitamin-B6', 'Vitamin-B12']
       col = []
       (0..nutrition.length - 1).each do |c|
-        d = nutrition[c].split
+        d = nutrition[c].split.flatten.map { |i| i.capitalize }
         (0..keys.length - 1).each do |a|
-          next unless d.index(keys[a]).present?
-
-          ing = d.slice(d.index(keys[a]))
-          val = d.slice(d.index(keys[a]) + 1)
-          val1 = d.slice(d.index(keys[a]) + 2)
-          val2 = d.slice(d.index(keys[a]) + 2)
-
+          next unless d.index(keys[a]).present? || (keys[a].include?("Vitamin") && d.index("Vitamin").present? )
+          if keys[a].include?("Vitamin")
+            aa = keys[a].split
+            next unless d.include?(aa[1]) 
+            ing = d.slice(d.index(aa[0]))
+            ind = aa[1] == "A" ? d.index(aa[0])+1 :  d.index(aa[1])
+            val = d.slice(ind)
+            val1 = d.slice(ind + 2)
+            val2 = d.slice(ind + 3)
+          else
+            ing = d.slice(d.index(keys[a]))
+            val = d.slice(d.index(keys[a]) + 1)
+            val1 = d.slice(d.index(keys[a]) + 2)
+            val2 = d.slice(d.index(keys[a]) + 3)
+          end
           col << [ing, val, val1, val2]
         end
         puts '----------------------Next_Value-------------------------'
@@ -176,10 +183,10 @@ end
 # xxx.slice! "Nutritional Information:"
 # xxx
 # puts @per, @energy, @fiber, @proteins, @vitA, @vitC, @vitD, @vitB6, @vitB12, @folate, @calcium, @iron, @iodine, @calories, @total_fat, @saturated, @monounsaturated, @ployunsaturated, @trans_fa, @sodium, @sugar, @magnesium, @zinc, @lodine, @phosphorus, @potassium, @riboflavin, @carbohydrate, @fat, @total_sugars
-      # parsed_page.css('div._3ezVU').map { |i| @ingredient = i.children.text if i.children.text.include? 'Ingredients' }
-      # if @ingredient.present?
-      #   @ingredient.slice! 'Ingredients'
-      #   @ingredient = @ingredient.strip
-      # end
-    # i = filter_ingradiant(parsed_page)
-    # parsed_page.css("img._3oKVV").map{|a| a.attributes['src'].value}.compact, i
+# parsed_page.css('div._3ezVU').map { |i| @ingredient = i.children.text if i.children.text.include? 'Ingredients' }
+# if @ingredient.present?
+#   @ingredient.slice! 'Ingredients'
+#   @ingredient = @ingredient.strip
+# end
+# i = filter_ingradiant(parsed_page)
+# parsed_page.css("img._3oKVV").map{|a| a.attributes['src'].value}.compact, i
