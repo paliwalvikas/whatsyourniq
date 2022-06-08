@@ -5,8 +5,8 @@ module BxBlockScrappers
     require 'google/cloud/vision'
     require 'google/cloud/vision/v1/image_annotator'  
     require 'csv'
-
-    # ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
+    
+    ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
 
     def initialize
       @append_url = 'https://www.bigbasket.com/'
