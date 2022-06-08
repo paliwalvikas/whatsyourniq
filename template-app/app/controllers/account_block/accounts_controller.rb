@@ -5,6 +5,7 @@ module AccountBlock
     before_action :validate_json_web_token, only: [:search]
 
     def create
+        byebug
       case params[:data][:type] #### rescue invalid API format
       when 'sms_account'
         validate_json_web_token
@@ -50,8 +51,7 @@ module AccountBlock
         @account = EmailAccount.new(jsonapi_deserialize(params))
         @account.platform = request.headers['platform'].downcase if request.headers.include?('platform')
         if @account.save
-
-          EmailAccount.create_stripe_customers(@account)
+          # EmailAccount.create_stripe_customers(@account)
           EmailValidationMailer
           .with(account: @account, host: request.base_url)
           .activation_email.deliver
@@ -67,10 +67,9 @@ module AccountBlock
       @account = SocialAccount.new(jsonapi_deserialize(params))
       @account.password = @account.email
         if @account.save
-          byebug
           render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id)}).serializable_hash, status: :created
         else
-          render json: {errors: format_activerecord_errors(@account.errors)},
+          render json: {errors: (@account.errors)},
           status: :unprocessable_entity
         end
 
