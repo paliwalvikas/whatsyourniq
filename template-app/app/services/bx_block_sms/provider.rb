@@ -9,11 +9,11 @@ module BxBlockSms
     class << self
       def send_sms(to, text_content)
         provider_klass = case provider_name
-                         when TWILIO
+                         when "TWILIO"
                            Providers::Twilio
-                         when KARIX
+                         when "KARIX"
                            Providers::Karix
-                         when TEST
+                         when "TEST"
                            Providers::Test
                          else
                            raise unsupported_message(provider_name)
@@ -23,7 +23,8 @@ module BxBlockSms
       end
 
       def provider_name
-        Rails.configuration.x.sms.provider
+        # Rails.configuration.x.sms.provider
+        "TWILIO"
       end
 
       def unsupported_message(provider)

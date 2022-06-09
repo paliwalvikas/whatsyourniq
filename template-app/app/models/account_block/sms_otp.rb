@@ -7,7 +7,7 @@ module AccountBlock
     before_validation :parse_full_phone_number
 
     before_create :generate_pin_and_valid_date
-    after_create :send_pin_via_sms
+    # after_create :send_pin_via_sms
 
     validate :valid_phone_number
     validates :full_phone_number, presence: true
@@ -19,11 +19,11 @@ module AccountBlock
       self.valid_until = Time.current + 5.minutes
     end
 
-    def send_pin_via_sms
-      message = "Your Pin Number is #{self.pin}"
-      txt     = BxBlockSms::SendSms.new("+#{self.full_phone_number}", message)
-      txt.call
-    end
+    # def send_pin_via_sms
+    #   message = "Your Pin Number is #{self.pin}"
+    #   txt     = BxBlockSms::SendSms.new("+#{self.full_phone_number}", message)
+    #   txt.call
+    # end
 
     private
 

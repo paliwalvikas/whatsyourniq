@@ -5,31 +5,13 @@ module AccountBlock
     before_action :validate_json_web_token, only: [:search]
 
     def create
-        byebug
       case params[:data][:type] #### rescue invalid API format
       when 'sms_account'
-        validate_json_web_token
-        unless valid_token?
-          return render json: {errors: [
-            {token: 'Invalid Token'},
-          ]}, status: :bad_request
-        end
-
-        begin
-          @sms_otp = SmsOtp.find(@token[:id])
-        rescue ActiveRecord::RecordNotFound => e
-          return render json: {errors: [
-            {phone: 'Confirmed Phone Number was not found'},
-          ]}, status: :unprocessable_entity
-        end
-
-        params[:data][:attributes][:full_phone_number] =
-        @sms_otp.full_phone_number
         @account = SmsAccount.new(jsonapi_deserialize(params))
-        @account.activated = true
         if @account.save
+          @sms_otp = SmsOtp.create(full_phone_number: params[:data][:attributes][:full_phone_number])
           render json: SmsAccountSerializer.new(@account, meta: {
-            token: encode(@account.id)
+            token: encode(@sms_otp.id), pin: @sms_otp.pin
           }).serializable_hash, status: :created
         else
           render json: {errors: format_activerecord_errors(@account.errors)},
@@ -64,20 +46,24 @@ module AccountBlock
        end
 
       when 'social_account'
-      @account = SocialAccount.new(jsonapi_deserialize(params))
-      @account.password = @account.email
-        if @account.save
-          render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id)}).serializable_hash, status: :created
-        else
-          render json: {errors: (@account.errors)},
-          status: :unprocessable_entity
-        end
+        account = AccountBlock::SocialAccount.find_by_email(params[:email])
+          if account.present?
+            render json: SmsAccountSerializer.new(account)
+          end  
+        @account = SocialAccount.new(jsonapi_deserialize(params))
+        @account.password = @account.email
+          if @account.save
+            render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id)}).serializable_hash, status: :created
+          else
 
-      else
-        render json: {errors: [
-          {account: 'Invalid Account Type'},
-        ]}, status: :unprocessable_entity
-      end
+            render json: {errors: (@account.errors)},
+            status: :unprocessable_entity
+          end
+        else
+          render json: {errors: [
+            {account: 'Invalid Account Type'},
+          ]}, status: :unprocessable_entity
+        end   
     end
 
     def search
@@ -93,7 +79,20 @@ module AccountBlock
       end
     end
 
+    def show
+      account = AccountBlock::Account.find_by_id(params[:id])
+      render json: AccountSerializer.new(account)
+    end
+
     private
+
+    def format_activerecord_errors(errors)
+      result = []
+      errors.each do |attribute, error|
+        result << { attribute => error }
+      end
+      result
+    end
 
     def encode(id)
       BuilderJsonWebToken.encode id
@@ -103,4 +102,5 @@ module AccountBlock
       params.permit(:query)
     end
   end
+
 end
