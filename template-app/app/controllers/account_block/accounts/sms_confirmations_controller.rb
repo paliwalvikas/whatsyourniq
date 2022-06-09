@@ -15,7 +15,6 @@ module AccountBlock
             {phone: 'Phone Number Not Found'},
           ]}, status: :unprocessable_entity
         end
-
         if @sms_otp.valid_until < Time.current
           @sms_otp.destroy
 
@@ -30,13 +29,13 @@ module AccountBlock
           }).serializable_hash, status: :ok
         end
 
-        if @sms_otp.pin.to_s == params['pin'].to_s
+        if @sms_otp.pin.to_s == params[:data][:attributes]['pin'].to_s
           @sms_otp.activated = true
           @sms_otp.save
-
+          @account = AccountBlock::SmsAccount.where(full_phone_number: @sms_otp.full_phone_number).last
           render json: ValidateAvailableSerializer.new(@sms_otp, meta: {
             message: 'Phone Number Confirmed Successfully',
-            token: BuilderJsonWebToken.encode(@sms_otp.id),
+            token: BuilderJsonWebToken.encode(@account.id),
           }).serializable_hash, status: :ok
         else
           return render json: {errors: [
