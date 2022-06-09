@@ -79,6 +79,16 @@ module AccountBlock
       end
     end
 
+    def update
+      account = AccountBlock::Account.find_by_id(params[:id])
+      if account.present?
+        account.update(jsonapi_deserialize(params))
+        render json: AccountSerializer.new(account)
+      else
+        render json: { message: "account not updated" }
+      end
+    end
+
     def show
       account = AccountBlock::Account.find_by_id(params[:id])
       render json: AccountSerializer.new(account)
