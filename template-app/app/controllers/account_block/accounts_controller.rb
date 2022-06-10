@@ -60,11 +60,11 @@ module AccountBlock
           end
         end
       else
-          render json: {errors: [
-            {account: 'Invalid Account Type'},
-          ]}, status: :unprocessable_entity
-      end  
-    end
+       render json: {errors: [
+          {account: 'Invalid Account Type'},
+        ]}, status: :unprocessable_entity
+      end   
+    end   
 
     def search
       @accounts = Account.where(activated: true)
@@ -76,6 +76,16 @@ module AccountBlock
         }).serializable_hash, status: :ok
       else
         render json: {errors: [{message: 'Not found any user.'}]}, status: :ok
+      end
+    end
+
+    def update
+      account = AccountBlock::Account.find_by_id(params[:id])
+      if account.present?
+        account.update(jsonapi_deserialize(params))
+        render json: AccountSerializer.new(account)
+      else
+        render json: { message: "account not updated" }
       end
     end
 
