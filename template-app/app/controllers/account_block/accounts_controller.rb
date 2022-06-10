@@ -47,11 +47,10 @@ module AccountBlock
 
       when 'social_account'
         account = AccountBlock::SocialAccount.find_by_email(params[:email])
-          if account.present?
-            render json: SmsAccountSerializer.new(account)
-          end  
-        @account = SocialAccount.new(jsonapi_deserialize(params))
-        @account.password = @account.email
+        if account.present?
+          render json: SmsAccountSerializer.new(account)
+        else
+          @account = SocialAccount.new(jsonapi_deserialize(params))
           if @account.save
             render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id)}).serializable_hash, status: :created
           else
@@ -59,11 +58,12 @@ module AccountBlock
             render json: {errors: (@account.errors)},
             status: :unprocessable_entity
           end
-        else
+        end
+      else
           render json: {errors: [
             {account: 'Invalid Account Type'},
           ]}, status: :unprocessable_entity
-        end   
+      end  
     end
 
     def search

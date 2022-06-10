@@ -4,7 +4,7 @@ module AccountBlock
 
     include Wisper::Publisher
 
-    has_secure_password
+    # has_secure_password
     before_validation :parse_full_phone_number
     before_create :generate_api_key
     has_one :blacklist_user, class_name: 'AccountBlock::BlackListUser', dependent: :destroy
