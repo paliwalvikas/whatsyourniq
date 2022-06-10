@@ -60,11 +60,11 @@ module AccountBlock
           end
         end
       else
-          render json: {errors: [
-            {account: 'Invalid Account Type'},
-          ]}, status: :unprocessable_entity
-      end  
-    end
+       render json: {errors: [
+          {account: 'Invalid Account Type'},
+        ]}, status: :unprocessable_entity
+      end   
+    end   
 
     def search
       @accounts = Account.where(activated: true)
