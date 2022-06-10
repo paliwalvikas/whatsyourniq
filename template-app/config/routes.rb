@@ -14,6 +14,11 @@ Rails.application.routes.draw do
      get'search', to: 'accounts#search'
   end
 
+  namespace :account_block, default: { format: :json } do
+    resources :accounts
+    post 'resend_otp', to: '/account_block/accounts/send_otps#create'
+  end
+
   namespace :bx_block_login do 
     resources :logins, only: [:create]
   end
