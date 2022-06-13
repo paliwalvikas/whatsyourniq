@@ -18,4 +18,13 @@ Rails.application.routes.draw do
     resources :logins, only: [:create]
    
   end
+
+  namespace :bx_block_admin do
+    resources :privacy_policies do
+      collection do
+         get :privacy_policy
+      end 
+    end
+  end
+
 end
