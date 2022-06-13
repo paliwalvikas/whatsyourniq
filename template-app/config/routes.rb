@@ -10,14 +10,19 @@ Rails.application.routes.draw do
   end 
 
   namespace :account_block do 
-    resources :accounts , only: [:create]
+    resources :accounts 
      get'search', to: 'accounts#search'
   end
-  
+
+  namespace :account_block, default: { format: :json } do
+    resources :accounts
+    post 'resend_otp', to: '/account_block/accounts/send_otps#create'
+  end
+
   namespace :bx_block_login do 
     resources :logins, only: [:create]
-   
   end
+
 
   namespace :bx_block_admin do
     resources :privacy_policies do
@@ -26,5 +31,8 @@ Rails.application.routes.draw do
       end 
     end
   end
+
+  post "sms_otp", to: "account_block/accounts/send_otps#create"
+  post "/accounts/sms_confirmation", to: "account_block/accounts/sms_confirmations#create"
 
 end
