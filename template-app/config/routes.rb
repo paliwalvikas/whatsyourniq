@@ -22,6 +22,15 @@ Rails.application.routes.draw do
   namespace :bx_block_login do 
     resources :logins, only: [:create]
   end
+
+  namespace :bx_block_admin do
+    resources :privacy_policies do
+      collection do
+         get :privacy_policy
+      end 
+    end
+  end
+
   post "sms_otp", to: "account_block/accounts/send_otps#create"
   post "/accounts/sms_confirmation", to: "account_block/accounts/sms_confirmations#create"
 end
