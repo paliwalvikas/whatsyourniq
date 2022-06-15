@@ -10,6 +10,7 @@ module AccountBlock
       :phone_number,
       :email,
       :activated,
+      :flag
     ]
   end
 end

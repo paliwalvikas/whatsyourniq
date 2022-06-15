@@ -69,6 +69,7 @@ module BxBlockLogin
 
     def check_account_activated
       if @account.activated == true
+        @account.flag = true
         if @account.type == 'EmailAccount'
           user = AccountBlock::EmailAccountSerializer.new(@account)
         else 
