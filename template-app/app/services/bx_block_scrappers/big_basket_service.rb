@@ -34,7 +34,7 @@ module BxBlockScrappers
         csv_headers = ['Image', 'Brand', 'Weight', 'Product Name', 'Price', 'Price Post Discount',
                        'Product Description', 'Ingredient List', 'Nutritional Table for per 100gm/100ml/any other', 'Energy', 'Fibers', 'Proteins', 'Vitamin A', 'Vitamin C', 'Vitamin D', 'Vitamin B6', 'Vitamin B12', 'Folate', 'Calcium', 'Iron', 'Iodine', 'Calories', 'Total Fat', 'Saturated Fat', 'Monounsaturated Fat', 'Ployunsaturated Fat', 'Trans Fatty Acid', 'Cholesterol', 'Sodium', 'Sugar', 'Magnesium', 'Zinc', 'Lodine', 'Phosphorus', 'Potassium', 'Riboflavin', 'Carbohydrate', 'Fat', 'Total Sugars']
         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
-          (2..100).each do |page|
+          (2..150).each do |page|
             resp = HTTParty.get("#{@base_url}&page=#{page}", headers: headers)
             resp['tab_info']['product_map']['all']['prods'].each do |a|
               values = get_detail(a['sku'])
