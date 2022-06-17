@@ -1,6 +1,11 @@
 module BxBlockScrappers
   class AmazonService
     attr_accessor :headers, :base_url, :append_url
+    require 'csv'
+    require 'google/cloud/vision'
+    require 'google/cloud/vision/v1/image_annotator'  
+
+    ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
     
     def initialize
       @append_url = "https://www.amazon.in/"
@@ -20,18 +25,21 @@ module BxBlockScrappers
     end
 
     def scrap_data
-      if is_valid_url? base_url
-        details = []
-        html = HTTParty.get(base_url,headers: headers)
-        parsed_page = Nokogiri::HTML(html)
-        products = parsed_page.css('a.acs-product-block__product-title')
-        products.each do |product|
-          detail_url = append_url + product.attributes['href'].value rescue nil
-          if detail_url
-            details << get_detail(detail_url)
+      if is_valid_url? @base_url
+        file = "#{Rails.root}/public/amazon.csv"
+        csv_headers = ['images','Brand','Weight']
+        CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
+          html = HTTParty.get(@base_url,headers: headers)
+          parsed_page = Nokogiri::HTML(html.body)
+          products = parsed_page.css('a.acs-product-block__product-title')
+          products.each do |product|
+            detail_url = append_url + product.attributes['href'].value rescue nil
+            if detail_url
+              
+              csv << get_detail(detail_url).first #[@src, @brand, @weight]
+            end
           end
         end
-        return details
       else
         return false
       end
@@ -40,10 +48,16 @@ module BxBlockScrappers
     def get_detail url
       if is_valid_url? url
         html = HTTParty.get(url,headers: headers)
-        parsed_page = Nokogiri::HTML(html)
+        parsed_page = Nokogiri::HTML(html.body)
         h = Hash.new{[]}
+        # @src = []
+        # parsed_page.css("ul.regularAltImageViewLayout").children.map{|i| @src << eval(i.children.children[1].css("img").to_json).flatten.last if i.children.children[1].present?}
         h[:images] = parsed_page.css("img.a-dynamic-image").map{|a| a.attributes['src'].value}.compact
+        # parsed_page.css("ul.regularAltImageViewLayout")[0].children[1].children.children[1].css("img").to_json
+        # amazon_data_from_images(h[:images], parsed_page)
+        # weight_and_brand(parsed_page)
         h
+        # @src.compact
       else
         nil
       end
@@ -58,5 +72,51 @@ module BxBlockScrappers
     rescue URI::InvalidURIError
       false
     end
+
+    # def amazon_data_from_images(image, parsed_page)
+    #   nut = []
+    #   @src = []
+    #   @ingredient = ''
+    #   image.each do |img|
+    #     image_annotator = Google::Cloud::Vision::V1::ImageAnnotator::Client.new
+    #     response = image_annotator.document_text_detection image: img
+    #     response.responses.each do |res|
+    #       next unless res.text_annotations.present?
+        
+    #       des = res.text_annotations.first.description
+    #       if des.include?('NUTRITION') || des.include?('Nutrition')
+    #         nut << des
+    #         @src << img
+    #       elsif des.include?('Ingredients') || des.include?('INGREDIENTS')
+    #         @ingredient = des.squish
+    #         @src << img
+    #       end
+    #     end
+    #   end
+    #   weight_and_brand(parsed_page)
+    #   # nutrition = nut.present? ? nutritional_values(nut) : filter_ingradiant(parsed_page)
+    #   @src = @src.present? ? @src : image
+    #   # [src.uniq, nutrition, ingredient]
+    # end
+
+    def weight_and_brand parsed_page
+      a = parsed_page.css('div.a-spacing-small').map { |a| a.children.text }
+      a.map{|a| @w = a if  a.include?("Brand")}
+      @w.split("       ").each do |i|
+        @brand = i.slice!("Brand") if i.include?("Brand")
+        @weight = i if i.include?("Weight") || i.include?("Package Weight")
+      end
+      price(parsed_page)
+    end
+
+    def price parsed_page
+      price = parsed_page.css("div.offersConsistencyEnabled").map{|a| a.children.text}
+      price.map{|u| @p = u if u.include?("M.R.P.")}
+      @p.split("          ").each do |p|
+        @price = p if p.include?("M.R.P.")
+        @selling_p = p if p.include?("Deal of the Day") 
+      end
+    end
+
   end
 end

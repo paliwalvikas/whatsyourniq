@@ -5,7 +5,7 @@ module BxBlockScrappers
     require 'google/cloud/vision'
     require 'google/cloud/vision/v1/image_annotator'  
     require 'csv'
-    
+
     ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
 
     def initialize
@@ -28,13 +28,14 @@ module BxBlockScrappers
     end
 
     def scrap_data
-      if valid_url? base_url
+      if valid_url? @base_url
+
         file = "#{Rails.root}/public/basket.csv" # , 'Nutritional Information'  ,, values[0][1]
         csv_headers = ['Image', 'Brand', 'Weight', 'Product Name', 'Price', 'Price Post Discount',
                        'Product Description', 'Ingredient List', 'Nutritional Table for per 100gm/100ml/any other', 'Energy', 'Fibers', 'Proteins', 'Vitamin A', 'Vitamin C', 'Vitamin D', 'Vitamin B6', 'Vitamin B12', 'Folate', 'Calcium', 'Iron', 'Iodine', 'Calories', 'Total Fat', 'Saturated Fat', 'Monounsaturated Fat', 'Ployunsaturated Fat', 'Trans Fatty Acid', 'Cholesterol', 'Sodium', 'Sugar', 'Magnesium', 'Zinc', 'Lodine', 'Phosphorus', 'Potassium', 'Riboflavin', 'Carbohydrate', 'Fat', 'Total Sugars']
         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
           (2..100).each do |page|
-            resp = HTTParty.get(base_url + "&page=#{page}", headers: headers)
+            resp = HTTParty.get("#{@base_url}&page=#{page}", headers: headers)
             resp['tab_info']['product_map']['all']['prods'].each do |a|
               values = get_detail(a['sku'])
               values_filter(values) if values[0][1].present?
@@ -75,38 +76,42 @@ module BxBlockScrappers
       (0..values[0][1].length - 1).each do |a|
         val = values[0][1][a]
         p = val.map { |a| a.squish.pluralize(2).upcase if a.present? }
-        @per = val if p.include?('PERS')
-        @energy = val if p.include?('ENERGIES')
-        @fiber = val if p.include?('FIBERS')
-        @proteins = val if p.include?('PROTEINS')
-        @vitA = val if (p.include?('VITAMINS') && p.include?('AS')) || p.include?('VITAMIN-AS')
-        @vitC = val if (p.include?('VITAMINS') && p.include?('CS')) || p.include?('VITAMIN-CS')
-        @vitD = val if (p.include?('VITAMINS') && p.include?('DS')) || p.include?('VITAMIN-DS')
-        @vitB6 = val if (p.include?('VITAMINS') && p.include?('B6S')) || p.include?('VITAMIN-B6S')
-        @vitB12 = val if (p.include?('VITAMINS') && p.include?('B12S'))|| p.include?('VITAMIN-B12S')
-        @folate = val if p.include?('FOLATES')
-        @calcium = val if p.include?('CALCIA')
-        @iron = val if p.include?('IRONS')
-        @iodine = val if p.include?('IODINES')
-        @calories = val if p.include?('CALORIES')
-        @total_fat = val if p.include?('TOTALS') && p.include?('FATS')
-        @saturated = val if p.include?('SATURATEDS')
-        @monounsaturated = val if p.include?('MONOUNSATURATEDS')
-        @ployunsaturated = val if p.include?('PLOYUNSATURATEDS')
-        @trans_fa = val if p.include?('TRANSHES') && p.include?('FATTIES')
-        @sodium = val if p.include?('SODIA')
-        @sugar = val if p.include?('SUGARS')
-        @magnesium = val if p.include?('MAGNESIA')
-        @zinc = val if p.include?('ZINCS')
-        @lodine = val if p.include?('LODINES')
-        @phosphorus = val if p.include?('PHOSPHORUS')
-        @potassium = val if p.include?('POTASSIA')
-        @riboflavin = val if p.include?('RIBOFLAVINS')
-        @carbohydrate = val if p.include?('CARBOHYDRATES')
-        @fat = val if p.include?('FATS')
-        @total_sugars = val if p.include?('TOTALS') && p.include?('SUGARS')
-        @cholesterol = val if p.include?('CHOLESTEROLS')
+        @per = val[0]+val[1]+val[2] if p.include?('PERS') && nil_zero?(@per)
+        @energy = val if p.include?('ENERGIES') && nil_zero?(@energy)
+        @fiber = val if p.include?('FIBERS') && nil_zero?(@fiber)
+        @proteins = val if p.include?('PROTEINS') && nil_zero?(@proteins)
+        @vitA = val if (p.include?('VITAMINS') && (p.include?('AS')) || p.include?('VITAMIN-AS')) && nil_zero?(@vitA)
+        @vitC = val if (p.include?('VITAMINS') && (p.include?('CS')) || p.include?('VITAMIN-CS')) && nil_zero?(@vitC)
+        @vitD = val if (p.include?('VITAMINS') && (p.include?('DS')) || p.include?('VITAMIN-DS')) && nil_zero?(@vitD)
+        @vitB6 = val if (p.include?('VITAMINS') && (p.include?('B6S')) || p.include?('VITAMIN-B6S')) && nil_zero?(@vitB6)
+        @vitB12 = val if (p.include?('VITAMINS') && p.include?('B12S'))|| p.include?('VITAMIN-B12S') && nil_zero?(@vitB12)
+        @folate = val if p.include?('FOLATES') && nil_zero?(@folate)
+        @calcium = val if p.include?('CALCIA') && nil_zero?(@calcium)
+        @iron = val if p.include?('IRONS') && nil_zero?(@iron)
+        @iodine = val if p.include?('IODINES') && nil_zero?(@iodine)
+        @calories = val if p.include?('CALORIES') && nil_zero?(@calories)
+        @total_fat = val if p.include?('TOTALS') && p.include?('FATS') && nil_zero?(@total_fat)
+        @saturated = val if p.include?('SATURATEDS') && nil_zero?(@saturated)
+        @monounsaturated = val if p.include?('MONOUNSATURATEDS') && nil_zero?(@monounsaturated)
+        @ployunsaturated = val if p.include?('PLOYUNSATURATEDS') && nil_zero?(@ployunsaturated)
+        @trans_fa = val if p.include?('TRANSHES') && p.include?('FATTIES') && nil_zero?(@trans_fa)
+        @sodium = val if p.include?('SODIA') && nil_zero?(@sodium)
+        @sugar = val if p.include?('SUGARS') && nil_zero?(@sugar)
+        @magnesium = val if p.include?('MAGNESIA') && nil_zero?(@magnesium)
+        @zinc = val if p.include?('ZINCS') && nil_zero?(@zinc)
+        @lodine = val if p.include?('LODINES') && nil_zero?(@lodine)
+        @phosphorus = val if p.include?('PHOSPHORUS') && nil_zero?(@phosphorus)
+        @potassium = val if p.include?('POTASSIA') && nil_zero?(@potassium)
+        @riboflavin = val if p.include?('RIBOFLAVINS') && nil_zero?(@riboflavin)
+        @carbohydrate = val if p.include?('CARBOHYDRATES') && nil_zero?(@carbohydrate)
+        @fat = val if p.include?('FATS') && nil_zero?(@fat)
+        @total_sugars = val if p.include?('TOTALS') && p.include?('SUGARS') && nil_zero?(@total_sugars)
+        @cholesterol = val if p.include?('CHOLESTEROLS') && nil_zero?(@cholesterol)
       end
+    end
+
+    def nil_zero?(val)
+      val.nil? || val == 0
     end
 
     def filter_ingradiant(parsed_page)
@@ -150,8 +155,7 @@ module BxBlockScrappers
     end
 
     def nutritional_values(nutrition)
-      keys = ['Per', 'Energy', 'Fiber', 'Protein', 'Vitamin A', 'Vitamin C', 'Vitamin D', 'Vitamin B6', 'Vitamin B12',
-              'Folate', 'Calcium', 'Iron', 'Iodine', 'Calories', 'Total Fat', 'Saturated', 'Monounsaturated', 'Ployunsaturated', 'Trans', 'Fatty', 'Acid', 'Cholesterol', 'Sodium', 'Sugar', 'Magnesium', 'Zinc', 'Lodine', 'Phosphorus', 'Potassium', 'Riboflavin', 'Carbohydrate', 'Fat', 'Total Sugars', 'Vitamin-A', 'Vitamin-C', 'Vitamin-D', 'Vitamin-B6', 'Vitamin-B12']
+      keys = ['Per', 'Energy', 'Fiber', 'Protein', 'Vitamin A', 'Vitamin C', 'Vitamin D', 'Vitamin B6', 'Vitamin B12','Folate', 'Calcium', 'Iron', 'Iodine', 'Calories', 'Total Fat', 'Saturated', 'Monounsaturated', 'Ployunsaturated', 'Trans', 'Fatty', 'Acid', 'Cholesterol', 'Sodium', 'Sugar', 'Magnesium', 'Zinc', 'Lodine', 'Phosphorus', 'Potassium', 'Riboflavin', 'Carbohydrate', 'Fat', 'Total Sugars', 'Vitamin-A', 'Vitamin-C', 'Vitamin-D', 'Vitamin-B6', 'Vitamin-B12']
       col = []
       (0..nutrition.length - 1).each do |c|
         d = nutrition[c].split.flatten.map { |i| i.capitalize }
@@ -164,14 +168,14 @@ module BxBlockScrappers
             ind = aa[1] == "A" ? d.index(aa[0])+1 :  d.index(aa[1])
             val = d.slice(ind)
             val1 = d.slice(ind + 2)
-            val2 = d.slice(ind + 3)
+            # val2 = d.slice(ind + 3)
           else
             ing = d.slice(d.index(keys[a]))
             val = d.slice(d.index(keys[a]) + 1)
             val1 = d.slice(d.index(keys[a]) + 2)
-            val2 = d.slice(d.index(keys[a]) + 3)
+            # val2 = d.slice(d.index(keys[a]) + 3)
           end
-          col << [ing, val, val1, val2]
+          col << [ing, val, val1]
         end
         puts '----------------------Next_Value-------------------------'
       end
