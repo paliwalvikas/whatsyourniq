@@ -106,4 +106,3 @@ BxBlockBeverage::BeverageMicroIngredient.create(point: 1.0, vit_a: { 'value' => 
 
 AdminUser.create!(email: 'ft@example.com', password: 'password', password_confirmation: 'password') unless AdminUser.find_by(email: 'ft@example.com')
 
-BxBlockScrappers::BigBasketService.new.scrap_data
