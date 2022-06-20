@@ -21,6 +21,5 @@ module BxBlockCategories
     #          join_table: "user_categoeries"
     has_many :products, class_name: "BxBlockCatalogue::Product", dependent: :destroy
     enum category_type: [:packed_food, :raw_food, :cooked_food]
-
   end
 end
