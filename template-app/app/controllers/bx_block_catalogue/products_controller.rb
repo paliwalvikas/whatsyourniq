@@ -29,10 +29,14 @@ module BxBlockCatalogue
     end
 
     def search
-      search = "%#{params[:product_name]}"
+      search = "%#{params[:query]}%"
       product = BxBlockCatalogue::Product.where('product_name ILIKE ?', search)
+      category = BxBlockCategories::Category.where('name ILIKE ?' , search).pluck(:id).first
       if product.present?
          render json: ProductSerializer.new(product)
+      elsif category.present?
+        find = BxBlockCatalogue::Product.where(category_id: category)
+        render json: ProductSerializer.new(find)
       else
         render json: {errors:'Product Not Found'}, status: :ok
       end
