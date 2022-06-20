@@ -31,10 +31,11 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :bx_block_categories do
-    resources :categories 
-  end
-
   post "sms_otp", to: "account_block/accounts/send_otps#create"
   post "/accounts/sms_confirmation", to: "account_block/accounts/sms_confirmations#create"
+
+   namespace :bx_block_catalogue do
+    resources :products
+    get 'search' , to: 'products#search'
+  end
 end

@@ -28,6 +28,16 @@ module BxBlockCatalogue
       end
     end
 
+    def search
+      search = "%#{params[:product_name]}"
+      product = BxBlockCatalogue::Product.where('product_name ILIKE ?', search)
+      if product.present?
+         render json: ProductSerializer.new(product)
+      else
+        render json: {errors:'Product Not Found'}, status: :ok
+      end
+    end
+
     private 
     def product_param
       params.require(:data).permit(:product_name)
