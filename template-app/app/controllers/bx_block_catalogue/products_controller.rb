@@ -5,14 +5,19 @@ module BxBlockCatalogue
     include BuilderJsonWebToken::JsonWebTokenValidation
     skip_before_action :validate_json_web_token, only: [:update, :index]
 
-    # def index
-    #   if product = BxBlockCatalogue::Product.where("lower(product_name) = ?", params[:product_name].downcase).first
-    #     product.calculation
-    #     render json: ProductSerializer.new(product)
-    #   else 
-    #     render json: { errors: 'Product not found' }
-    #   end     
-    # end
+    def index
+      if product = BxBlockCatalogue::Product.find_by(product_name: params[:product_name])
+        product.calculation
+        product.product_sodium_level
+        product.vit_min_value
+        product.protein_value
+        product.dietary_fibre
+        product.calories_energy
+        render json: ProductSerializer.new(product)
+      else 
+        render json: { errors: 'Product not found' }
+      end     
+    end
 
     def update
       product = BxBlockCatalogue::Product.find_by(id: params[:id])
