@@ -1,6 +1,7 @@
 module BxBlockCategories
   class CategoriesController < ApplicationController
     before_action :load_category, only: [:show, :update, :destroy]
+    skip_before_action :validate_json_web_token, only: [:index]
 
     def create
       if params[:categories].blank? || params[:categories].size.zero?
@@ -29,7 +30,7 @@ module BxBlockCategories
     end
 
     def index
-      categories = BxBlockCategories::Category.last(3)
+      categories = BxBlockCategories::Category.all
       serializer = if categories.present?
                      CategorySerializer.new(categories)
                    else

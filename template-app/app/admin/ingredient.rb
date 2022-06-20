@@ -4,7 +4,7 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient, as: "ingredient" do
 
   form do |f|
     f.inputs do
-      f.input :product_id
+      f.input :product_id, as: :select, collection: BxBlockCatalogue::Product.all.pluck(:product_name, :id)
       f.input :energy
       f.input :saturate
       f.input :total_sugar
@@ -73,7 +73,9 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient, as: "ingredient" do
     column :chromium
     column :sodium
     column :fibre
-    column :product
+    column "product" do |object|
+      object&.product&.product_name
+    end
     actions
   end
 
