@@ -29,9 +29,8 @@ module BxBlockCategories
     end
 
     def index
-      serializer = if params[:sub_category_id].present?
-                     categories = SubCategory.find(params[:sub_category_id])
-                                      .categories
+      categories = BxBlockCategories::Category.last(3)
+      serializer = if categories.present?
                      CategorySerializer.new(categories)
                    else
                      CategorySerializer.new(Category.all, serialization_options)
