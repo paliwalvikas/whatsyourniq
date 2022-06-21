@@ -31,12 +31,9 @@ module BxBlockCatalogue
     def search
       search = "%#{params[:query]}%"
       product = BxBlockCatalogue::Product.where('product_name ILIKE ?', search)
-      category = BxBlockCategories::Category.where('name ILIKE ?' , search).pluck(:id).first
-      if product.present?
-         render json: ProductSerializer.new(product)
-      elsif category.present?
-        find = BxBlockCatalogue::Product.where(category_id: category)
-        render json: ProductSerializer.new(find)
+      if product.present? && params[:category_id].present?
+        product = product.where(category_id: params[:category_id])
+        render json: ProductSerializer.new(product)
       else
         render json: {errors:'Product Not Found'}, status: :ok
       end
@@ -44,7 +41,7 @@ module BxBlockCatalogue
 
     private 
     def product_param
-      params.require(:data).permit(:product_name)
+      params.require(:data).permit(:product_name, :category_id)
     end  
   end
 end
