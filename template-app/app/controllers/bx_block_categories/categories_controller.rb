@@ -30,7 +30,7 @@ module BxBlockCategories
     end
 
     def index
-      categories = BxBlockCategories::Category.all
+      categories = BxBlockCategories::Category.last(3)
       serializer = if categories.present?
                      CategorySerializer.new(categories)
                    else
