@@ -1,10 +1,10 @@
 ActiveAdmin.register BxBlockCatalogue::Ingredient, as: "ingredient" do
   permit_params :id, :product_id, :energy, :saturate, :total_sugar, :sodium, :ratio_fatty_acid_lipids, :fibre, :fruit_veg,
-                :protein, :vit_a, :vit_c, :vit_d, :vit_b6, :vit_b12, :vit_b9, :vit_b2, :vit_b3, :vit_b1, :vit_b5, :vit_b7, :calcium, :iron, :magnesium, :zinc, :iodine, :potassium, :phosphorus, :manganese, :copper, :selenium, :chloride, :chromium
+                :protein, :vit_a, :vit_c, :vit_d, :vit_b6, :vit_b12, :vit_b9, :vit_b2, :vit_b3, :vit_b1, :vit_b5, :vit_b7, :calcium, :iron, :magnesium, :zinc, :iodine, :potassium, :phosphorus, :manganese, :copper, :selenium, :chloride, :chromium, :trans_fat, :carbohydrat, :total_fat, :cholestrol, :data_check, :gluteen_free, :added_sugar,:artificial_preservative, :vegan_product, :egg, :fish, :organic
 
   form do |f|
     f.inputs do
-      f.input :product_id
+      f.input :product_id, as: :select, collection: BxBlockCatalogue::Product.all.pluck(:product_name, :id)
       f.input :energy
       f.input :saturate
       f.input :total_sugar
@@ -36,6 +36,18 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient, as: "ingredient" do
       f.input :chromium
       f.input :fibre
       f.input :sodium
+      f.input :trans_fat
+      f.input :carbohydrat
+      f.input :total_fat
+      f.input :cholestrol
+      f.input :data_check
+      f.input :gluteen_free
+      f.input :added_sugar
+      f.input :artificial_preservative
+      f.input :vegan_product
+      f.input :egg
+      f.input :fish
+      f.input :organic
     end
     f.actions
   end
@@ -73,7 +85,9 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient, as: "ingredient" do
     column :chromium
     column :sodium
     column :fibre
-    column :product
+    column "product" do |object|
+      object&.product&.product_name
+    end
     actions
   end
 
