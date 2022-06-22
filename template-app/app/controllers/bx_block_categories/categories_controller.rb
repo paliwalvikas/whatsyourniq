@@ -1,6 +1,7 @@
 module BxBlockCategories
   class CategoriesController < ApplicationController
     before_action :load_category, only: [:show, :update, :destroy]
+    skip_before_action :validate_json_web_token, only: [:index]
 
     def create
       if params[:categories].blank? || params[:categories].size.zero?

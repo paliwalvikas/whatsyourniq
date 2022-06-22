@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :bx_block_catalogue do
     resources :products
+    get 'search' , to: 'products#search'
   end 
 
   namespace :account_block do 
