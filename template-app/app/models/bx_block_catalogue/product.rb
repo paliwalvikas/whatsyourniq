@@ -2,7 +2,7 @@ module BxBlockCatalogue
   class Product < BxBlockCatalogue::ApplicationRecord
     self.table_name = :products
     enum product_type: [:cheese_and_oil, :beverage, :solid]
-    validates :product_name, uniqueness: true
+    #validates :product_name, uniqueness: true
     has_one :ingredient, class_name: 'BxBlockCatalogue::Ingredient', dependent: :destroy
     has_one_attached :image
     belongs_to :category, class_name: 'BxBlockCategories::Category', dependent: :destroy, foreign_key: 'category_id'
@@ -12,12 +12,15 @@ module BxBlockCatalogue
     def calculation
       np = []
       pp = []
+    
+
       unless self.product_point.present?
         ing = self.ingredient
         neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
 
         neg_clumns.each do |clm|
           ing_value = ing.send(clm)
+        
           np << check_value('negative_value', clm, ing_value) if ing_value.present?
         end  
 
@@ -71,6 +74,7 @@ module BxBlockCatalogue
         case val
         when 'negative_value'
           BxBlockCheeseAndOil::NegativeIngredient.all.each do |ni|
+         
             neg_point = coding_calculation(ni, ele, value)
             return neg_point if neg_point.present?
           end  
