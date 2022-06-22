@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
-  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount, :price_mrp, :category_id
+  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount, :price_mrp, :category_id,:description, :ingredient_list, :nutritional_information
     active_admin_import
 
   form do |f|
@@ -67,10 +67,10 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       csv.reverse_each.each do |product_data|
         product_data = product_data.to_h.reject { |k, _v| k.blank? }
         product_data = product_data.transform_keys { |k| k&.gsub(/\P{ASCII}/, '') }
-        product_params = product_data.except('id', 'product_id', 'energy', 'saturate', 'total_sugar', 'sodium','ratio_fatty_acid_lipids', 'fruit_veg', 'fibre', 'protein', 'vit_a','vit_c','vit_d','vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1','vit_b5','vit_b7','calcium','iron','magnesium','zinc','iodine','potassium','phosphorus','manganese','copper','selenium','chloride','chromium')
+        product_params = product_data.except('id', 'product_id', 'energy', 'saturate', 'total_sugar', 'sodium','ratio_fatty_acid_lipids', 'fruit_veg', 'fibre', 'protein', 'vit_a','vit_c','vit_d','vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1','vit_b5','vit_b7','calcium','iron','magnesium','zinc','iodine','potassium','phosphorus','manganese','copper','selenium','chloride','chromium','carbohydrat',"total_fat","cholestrol","data_check","gluteen_free","added_sugar","artificial_preservative","vegan_product","egg","fish","organic", 'trans_fat')
         
-        ingredient_params = product_data.except('id', 'product_name', 'product_type','weight','price_mrp','price_post_discount','brand_name')
-
+        ingredient_params = product_data.except('id', 'product_name', 'product_type','weight','price_mrp','price_post_discount','brand_name','description', 'ingredient_list', 'nutritional_information','category_id')
+        
         begin
           product = BxBlockCatalogue::Product.new(product_params)
           ingredient = product.build_ingredient(ingredient_params) 

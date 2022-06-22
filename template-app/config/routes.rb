@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :bx_block_catalogue do
-    resources :products, only: %i[index update]
+    resources :products
+    get 'search' , to: 'products#search'
   end 
 
   namespace :account_block do 
@@ -18,6 +19,10 @@ Rails.application.routes.draw do
     resources :accounts
     post 'resend_otp', to: '/account_block/accounts/send_otps#create'
   end
+
+  namespace :bx_block_categories do
+    resources :categories, only: %i[index]
+  end   
 
   namespace :bx_block_login do 
     resources :logins, only: [:create]
@@ -32,10 +37,5 @@ Rails.application.routes.draw do
   end
 
   post "sms_otp", to: "account_block/accounts/send_otps#create"
-  post "/accounts/sms_confirmation", to: "account_block/accounts/sms_confirmations#create"
-
-   namespace :bx_block_catalogue do
-    resources :products
-    get 'search' , to: 'products#search'
-  end
+  post "/accounts/sms_confirmation", to: "account_block/accounts/sms_confirmations#create" 
 end
