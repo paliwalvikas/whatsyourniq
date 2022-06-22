@@ -28,6 +28,15 @@ module BxBlockCatalogue
       end
     end
 
+    def show
+      product = BxBlockCatalogue::Product.find_by(id: params[:id])
+      if product.present?
+        render json: ProductSerializer.new(product)
+      else  
+        render json: { errors: 'Product not present' } 
+      end   
+    end   
+
     private 
     def product_param
       params.require(:data).permit(:product_name)
