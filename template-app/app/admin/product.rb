@@ -28,7 +28,9 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     column :product_point
     column :product_rating
     column :brand_name
-    column :positive_good
+    column :positive_good do |obj|
+      obj.positive_good
+    end
     column :negative_not_good
     column :weight
     column :price_mrp
@@ -49,7 +51,9 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       row :product_rating
       row :brand_name
       row :weight
-      row :positive_good
+      row :positive_good do |obj|
+        obj.positive_good
+      end
       row :negative_not_good
       row :price_mrp
       row :price_post_discount

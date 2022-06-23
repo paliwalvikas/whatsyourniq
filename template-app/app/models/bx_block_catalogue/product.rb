@@ -45,7 +45,8 @@ module BxBlockCatalogue
         else 
           'E'
         end  
-        self.update(product_rating: p_rating, product_point: p_point)  
+        self.product_rating = p_rating
+        self.product_point = p_point
       end 
       if self.product_rating.present?
         pr = if mp.to_f.between?(0,4)
@@ -55,8 +56,15 @@ module BxBlockCatalogue
         elsif mp.to_f > (8) && self.product_rating != 'A' 
           (self.product_rating == 'D' || self.product_rating == 'E') ? (self.product_rating.ord - 1).chr : (self.product_rating.ord - 2).chr
         end
-        self.update(product_rating: pr)
+        self.product_rating = pr
       end 
+      positive_good = []
+      positive_good += vit_min_value
+      positive_good += protein_value
+      positive_good += dietary_fibre
+      #positive_good += calories_energy
+      self.positive_good = positive_good.flatten.compact
+      self.save!
     end  
 
     def micro_calculation(ing)
@@ -130,52 +138,60 @@ module BxBlockCatalogue
 
     def protein_value 
       pro = self.ingredient.protein.to_f
-      self.positive_good << case food_product_type
+      value = []
+      value << case food_product_type
       when 'solid'
          (pro < 5.4) ? "low in protein" : ((pro >= 5.4 && pro < 10.8) ? "source in protein" : "high in protein")
           
       when 'beverage'   
         (pro < 2.7) ? "low in protein" : ((pro >= 2.7 && pro < 5.4) ? "source in protein" : "high in protein")           
       end  
+      value
     end  
 
     def vit_min_value
       ing = self.ingredient
       mp = micro_calculation(ing).sum
       if mp.present?
-       self.positive_good << case food_product_type
+        vt_mn = []
+        vt_mn << case food_product_type
         when 'solid'
             (mp < 0.6) ? "low in vit_min" : ((mp >= 0.6 && mp < 1.0) ? "source in vit_min" : "high in vit_min")
 
         when 'beverage'
             (mp < 0.6) ? "low in vit_min" : ((mp >= 0.6 && mp < 1.0) ? "source in vit_min" : "high in vit_min")
         end 
+        vt_mn
       end                                     
     end   
 
     def dietary_fibre
       pro = self.ingredient.fibre.to_f
-      self.positive_good << case food_product_type
+      fb = []
+      fb << case food_product_type
       when 'solid'
         (pro < 3.0) ? "low in fibre" : ((pro >= 3.0 && pro < 6.0) ? "source in fibre" : "high in fibre" )
       when 'beverage'  
         (pro < 1.5) ? "low in fibre" : ((pro >= 1.5 && pro < 3.0) ? "source in fibre" : "high in fibre" )
-      end        
+      end 
+      fb
     end 
 
-    def calories_energy
-      pro = self.ingredient.energy.to_f
-      self.negative_not_good << case food_product_type
-      when 'solid'
-        "low energy" if pro <= 40  
-      when 'beverage'   
-        if pro <= 4
-          "free energy"
-        elsif pro <= 20
-          "low energy"
-        end
-      end  
-    end   
+    # def calories_energy
+    #   pro = self.ingredient.energy.to_f
+    #   enr = []
+    #   enr << case food_product_type
+    #   when 'solid'
+    #     "low energy" if pro <= 40  
+    #   when 'beverage'   
+    #     if pro <= 4
+    #       "free energy"
+    #     elsif pro <= 20
+    #       "low energy"
+    #     end
+    #   end
+    #   enr
+    # end   
 
     # def trans_fat
     #   energy = self.ingredient.energy.to_f
@@ -230,32 +246,43 @@ module BxBlockCatalogue
     #   end            
     # end  
 
-    def product_sodium_level
-      energy = self.ingredient.energy.to_f
-      sodium = self.ingredient.sodium.to_f
-      case food_product_type
-      when 'solid'
-        if sodium < 0.5
-          self.positive_good << "sodium free"
-        elsif sodium >= 0.5 && sodium < 5.0
-          self.positive_good << "low sodium"
-        elsif
-          if energy.between?(0, 80)  && sodium > 90 || energy.between?(80, 160) && sodium > 180 || energy.between?(160, 240) && sodium > 270 || energy.between?(240, 320) && sodium > 360 || energy.between?(320, 400) && sodium > 450 ||  energy.between?(400, 480) && sodium > 540 || energy.between?(480, 560) && sodium > 630 || energy.between?(560, 640) && sodium > 720 || energy.between?(640, 720) && sodium > 810 || energy.between?(720, 800) && sodium > 900
-            self.negative_not_good << "High sodium"
-          end   
-        end 
-      when 'beverage'   
-        if sodium < 0.5
-           self.positive_good << "sodium free"
-        elsif sodium >= 0.5 && sodium < 2.5
-          self.positive_good << "low sodium"
-        elsif 
-          if energy > 0 && sodium > 90 || energy.between?(0, 7) && sodium > 180 || energy.between?(7, 14) && sodium > 270 || energy.between?(14, 22) && sodium > 360 || energy.between?(22, 29) && sodium > 450 || energy.between?(29, 36) && sodium > 540 || energy.between?(36, 43) && sodium > 630 || energy.between?(43, 50) && sodium > 720 || energy.between?(50, 57) && sodium > 810 || energy.between?(57, 64) && sodium > 900 
-            self.negative_not_good << "High sodium"
-          end
-        end
-      end  
-    end   
+    # def product_sodium_level
+    #   energy = self.ingredient.energy.to_f
+    #   sodium = self.ingredient.sodium.to_f
+    #   case food_product_type
+    #   when 'solid'
+    #     if sodium < 0.5
+    #       self.positive_good << "sodium free"
+    #     elsif sodium >= 0.5 && sodium < 5.0
+    #       self.positive_good << "low sodium"
+    #     elsif
+    #       if energy.between?(0, 80)  && sodium > 90 || energy.between?(80, 160) && sodium > 180 || energy.between?(160, 240) && sodium > 270 || energy.between?(240, 320) && sodium > 360 || energy.between?(320, 400) && sodium > 450 ||  energy.between?(400, 480) && sodium > 540 || energy.between?(480, 560) && sodium > 630 || energy.between?(560, 640) && sodium > 720 || energy.between?(640, 720) && sodium > 810 || energy.between?(720, 800) && sodium > 900
+    #         arr = []
+    #         arr << "High sodium"
+    #         self.update(negative_not_good: arr)
+    #       end   
+    #     end 
+    #   when 'beverage'   
+    #     if sodium < 0.5
+    #        self.positive_good << "sodium free"
+    #     elsif sodium >= 0.5 && sodium < 2.5
+    #       self.positive_good << "low sodium"
+    #     elsif 
+    #       arr = [180 ]
+    #       high_sodium = [(0,7),(7, 14),(14, 22),(22, 29),(29, 36),(43, 50),(57, 64)].each_with_index do |r, i|
+    #         hs = check_high_sodium(r, arr[i])
+    #         return hs if hs
+    #       end
+
+    #       # if energy > 0 && sodium > 90 || energy.between?(0, 7) && sodium > 180 || energy.between?(7, 14) && sodium > 270 || energy.between?(14, 22) && sodium > 360 || energy.between?(22, 29) && sodium > 450 || energy.between?(29, 36) && sodium > 540 || energy.between?(36, 43) && sodium > 630 || energy.between?(43, 50) && sodium > 720 || energy.between?(50, 57) && sodium > 810 || energy.between?(57, 64) && sodium > 900 
+    #       self.negative_not_good << "High sodium" if high_sodium
+    #     end
+    #   end  
+    # end   
+
+    # def check_high_sodium(energy_range, max_)
+    #   energy.between?(energy_range) && sodium > max_sodium
+    # end
 
     # def product_sat_fat
     #   saturate_fat = self.ingredient.saturate.to_f
