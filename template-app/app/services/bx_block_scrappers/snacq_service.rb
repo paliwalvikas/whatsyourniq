@@ -28,15 +28,16 @@ module BxBlockScrappers
           base_urls.each do |base_url|
             if is_valid_url? base_url
               doc = HTTParty.get(base_url,headers: headers)
-              File.open('try.html', 'w') { |file| file.write(doc.body) }
+              # File.open('try.html', 'w') { |file| file.write(doc.body) }
               parsed_page = Nokogiri::HTML(doc.body)
-              products = parsed_page.css('a.grid-product__image-link')
+              products = parsed_page.css('a.full-unstyled-link')
               products.each do |product|
                 detail_url = append_url + product.attributes['href'].value rescue nil
                 if detail_url
-                  image = get_detail(detail_url)
-                  image[:images].flatten.compact.each do |image|
-                    writer << [ "https:" + image ]
+                  get_detail(detail_url)
+                  @src.each do |image|
+                    image.slice!("//")
+                    writer << [image]
                   end
                 end
               end
@@ -50,11 +51,15 @@ module BxBlockScrappers
      def get_detail url
         if is_valid_url? url
           doc = HTTParty.get(url,headers: headers)
-          File.open('try.html', 'w') { |file| file.write(doc.body) }
+          # File.open('try.html', 'w') { |file| file.write(doc.body) }
           parsed_page = Nokogiri::HTML(doc.body)
-          h = Hash.new{[]}
-          h[:images] = parsed_page.css("img").map{|a| a.attributes['src'].value}
-          h
+          @src = []
+          parsed_page.css("li.product__media-item").css('modal-opener').css('div').css('img').map{|i| @src << i['src']}
+          @src = @src.uniq
+          # h = Hash.new{[]}
+          # parsed_page.css("img").map{|i| @src << i.values[1]}
+          # h[:images] = parsed_page.css("img").map{|a| a.attributes['src'].value}
+          # h
         else
           nil
         end
