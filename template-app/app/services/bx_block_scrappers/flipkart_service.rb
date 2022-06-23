@@ -1,4 +1,6 @@
-module BxBlockScrappers  
+module BxBlockScrappers
+  require 'nokogiri'
+  require 'pp'
   class FlipkartService
     attr_accessor :headers, :base_urls, :append_url
     
@@ -27,9 +29,17 @@ module BxBlockScrappers
             details = []
             if is_valid_url? base_url
               html = HTTParty.get(base_url,headers: headers)
-              File.open('try.html', 'w') { |file| file.write(html) }
-              parsed_page = Nokogiri::HTML(html)
-              details = parsed_page.css('img._396cs4').map{|a| a.attributes['src'].value}.compact
+              deep_link = Nokogiri::HTML(html.body).search('div._1vhGDP')
+              deep_link.each do |children|
+                children.children.each do |value|
+                  obj_id = value.values.last
+                  deep_html = HTTParty.get(base_url+obj_id,headers: headers)
+                  link = Nokogiri::HTML(deep_html.body).search('img._396cs4')
+                  link.each do |images_url|
+                    details << images_url.attributes["src"].value
+                  end
+                end
+              end
             end
             details.each do |image|
               writer << [ image ]
