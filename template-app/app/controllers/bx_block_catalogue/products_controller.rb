@@ -6,13 +6,8 @@ module BxBlockCatalogue
     skip_before_action :validate_json_web_token, only: [:update, :index]
 
     def index
-      if product = BxBlockCatalogue::Product.find_by(product_name: params[:product_name])
+      if product = BxBlockCatalogue::Product.find_by(id: params[:id])
         product.calculation
-        product.product_sodium_level
-        product.vit_min_value
-        product.protein_value
-        product.dietary_fibre
-        product.calories_energy
         render json: ProductSerializer.new(product)
       else 
         render json: { errors: 'Product not found' }
