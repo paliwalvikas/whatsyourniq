@@ -40,7 +40,7 @@ module BxBlockScrappers
               values = get_detail(a['sku'])
               values_filter(values) if values[0][1].present?
               csv << [values[0][0], a['p_brand'], a['w'], a['pc_n'], a['mrp'], a['sp'], a['p_desc'],
-                      values[0][2], @nut ,@per, @energy, @fiber, @Proteins, @vitA, @vitC, @vitD, @vitB6, @vitB12, @folate, @calcium, @iron, @iodine, @calories, @total_fat, @saturated, @monounsaturated, @ployunsaturated, @trans_fa, @cholesterol, @sodium, @sugar, @magnesium, @zinc, @lodine, @phosphorus, @potassium, @riboflavin, @carbohydrate, @fat, @total_sugars]
+                      values[0][2], @nut.map{|i| i.display} ,@per, @energy, @fiber, @Proteins, @vitA, @vitC, @vitD, @vitB6, @vitB12, @folate, @calcium, @iron, @iodine, @calories, @total_fat, @saturated, @monounsaturated, @ployunsaturated, @trans_fa, @cholesterol, @sodium, @sugar, @magnesium, @zinc, @lodine, @phosphorus, @potassium, @riboflavin, @carbohydrate, @fat, @total_sugars]
             end
           end
         end
@@ -76,7 +76,7 @@ module BxBlockScrappers
       (0..values[0][1].length - 1).each do |a|
         val = values[0][1][a]
         p = val.map { |a| a.squish.pluralize(2).upcase if a.present? }
-        @per = val if p.include?('PERS') && nil_zero?(@per)
+        @per = val[0]+val[1]+val[2] if p.include?('PERS') 
         @energy = value(val) if p.include?('ENERGIES') && nil_zero?(@energy)
         @fiber = value(val) if p.include?('FIBERS') && nil_zero?(@fiber)
         @proteins = value(val) if p.include?('PROTEINS') && nil_zero?(@proteins)

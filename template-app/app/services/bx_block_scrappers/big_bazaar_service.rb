@@ -2,6 +2,8 @@ module BxBlockScrappers
   class BigBazaarService
     attr_accessor :headers, :base_url, :append_url, :base_image, :categories
     
+    ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
+
     def initialize
        @append_url = "https://shop.bigbazaar.com/"
        @base_image = "https://cflare.shop.bigbazaar.com/cdn-cgi/image/width=450/"
@@ -45,6 +47,17 @@ module BxBlockScrappers
       end
 
      private
+
+     # parsed_page.css('div._1vhGDP').each do |r| r.css('a').map{ |i| @href << i['href']} end
+     
+     def get_detail url
+      if is_valid_url? url
+        html = HTTParty.get(url,headers: headers)
+        parsed_page = Nokogiri::HTML(html.body)
+      else
+        nil
+      end
+    end
 
       def is_valid_url? url
         uri = URI.parse url
