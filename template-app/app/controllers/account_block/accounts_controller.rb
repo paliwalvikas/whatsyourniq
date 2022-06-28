@@ -46,7 +46,7 @@ module AccountBlock
        end
 
       when 'social_account'
-        account = AccountBlock::SocialAccount.find_by_email(params[:email])
+        account = AccountBlock::SocialAccount.find_by_email(params[:data][:attributes][:email])
         if account.present?
           render json: SmsAccountSerializer.new(account)
         else
