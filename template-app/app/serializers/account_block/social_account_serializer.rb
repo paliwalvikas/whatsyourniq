@@ -3,8 +3,7 @@ module AccountBlock
     include FastJsonapi::ObjectSerializer
 
     attributes *[
-      :first_name,
-      :last_name,
+      :full_name,
       :full_phone_number,
       :country_code,
       :phone_number,
