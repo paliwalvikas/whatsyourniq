@@ -26,15 +26,13 @@ module AccountBlock
 
         validator = EmailValidation.new(account_params['email'])
 
-        return render json: {errors: [
-          {account: 'Email invalid'},
-        ]}, status: :unprocessable_entity if account || !validator.valid?
+        return render json: EmailAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered"}), status: :unprocessable_entity if account || !validator.valid?
 
         @account = EmailAccount.new(jsonapi_deserialize(params))
         @account.platform = request.headers['platform'].downcase if request.headers.include?('platform')
         if @account.save
           # EmailAccount.create_stripe_customers(@account)
-          EmailValidationMailer 
+          EmailValidationMailer
           .with(account: @account, host: request.base_url)
           .activation_email.deliver
           render json: EmailAccountSerializer.new(@account, meta: {
@@ -46,19 +44,14 @@ module AccountBlock
        end
 
       when 'social_account'
-        account = AccountBlock::SocialAccount.find_by_email(params[:data][:attributes][:email])
-        if account.present?
-          render json: SocialAccountSerializer.new(account)
-        else
           @account = SocialAccount.new(jsonapi_deserialize(params))
           if @account.save
             render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id)}).serializable_hash, status: :created
           else
-
-            render json: {errors: (@account.errors)},
-            status: :unprocessable_entity
+            account = SocialAccount.where(email: @account.email).first
+            account.register = true
+            render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered", register: account.register }), status: :unprocessable_entity
           end
-        end
       else
        render json: {errors: [
           {account: 'Invalid Account Type'},
