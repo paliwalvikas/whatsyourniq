@@ -7,17 +7,24 @@ module AccountBlock
     def create
       case params[:data][:type] #### rescue invalid API format
       when 'sms_account'
-        @account = SmsAccount.new(jsonapi_deserialize(params))
-        if @account.save
-          @sms_otp = SmsOtp.create(full_phone_number: params[:data][:attributes][:full_phone_number])
-          render json: SmsAccountSerializer.new(@account, meta: {
-            token: encode(@sms_otp.id), pin: @sms_otp.pin
+        account = SmsAccount.find_by(full_phone_number: params[:data][:attributes][:full_phone_number])
+ 
+        sms_otp = sms_otp_pin
+        if account.present? 
+          render json: SmsAccountSerializer.new(account, meta: {
+            token: encode(sms_otp.id), pin: sms_otp.pin
           }).serializable_hash, status: :created
         else
-          render json: {errors: format_activerecord_errors(@account.errors)},
-          status: :unprocessable_entity
-        end
-
+          account = SmsAccount.new(jsonapi_deserialize(params))
+          if account.save
+           render json: SmsAccountSerializer.new(account, meta: {
+            token: encode(sms_otp.id), pin: sms_otp.pin
+          }).serializable_hash, status: :created
+          else
+            render json: {errors: format_activerecord_errors(@account.errors)},
+            status: :unprocessable_entity
+          end
+        end   
       when 'email_account'
         account_params = jsonapi_deserialize(params)
 
@@ -26,9 +33,7 @@ module AccountBlock
 
         validator = EmailValidation.new(account_params['email'])
 
-        return render json: {errors: [
-          {account: 'Email invalid'},
-        ]}, status: :unprocessable_entity if account || !validator.valid?
+        return render json: EmailAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered"}), status: :unprocessable_entity if account || !validator.valid?
 
         @account = EmailAccount.new(jsonapi_deserialize(params))
         @account.platform = request.headers['platform'].downcase if request.headers.include?('platform')
@@ -46,19 +51,14 @@ module AccountBlock
        end
 
       when 'social_account'
-        account = AccountBlock::SocialAccount.find_by_email(params[:email])
-        if account.present?
-          render json: SmsAccountSerializer.new(account)
-        else
           @account = SocialAccount.new(jsonapi_deserialize(params))
           if @account.save
             render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id)}).serializable_hash, status: :created
           else
-
-            render json: {errors: (@account.errors)},
-            status: :unprocessable_entity
+            account = SocialAccount.where(email: @account.email).first
+            account.register = true
+            render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered", register: account.register }), status: :unprocessable_entity
           end
-        end
       else
        render json: {errors: [
           {account: 'Invalid Account Type'},
@@ -107,6 +107,10 @@ module AccountBlock
     def encode(id)
       BuilderJsonWebToken.encode id
     end
+
+    def sms_otp_pin
+      sms_otp = SmsOtp.create(full_phone_number: params[:data][:attributes][:full_phone_number])
+    end  
 
     def search_params
       params.permit(:query)
