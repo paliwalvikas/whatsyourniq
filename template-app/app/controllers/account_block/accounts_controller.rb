@@ -2,7 +2,7 @@ module AccountBlock
   class AccountsController < ApplicationController
     skip_before_action :verify_authenticity_token
     include BuilderJsonWebToken::JsonWebTokenValidation 
-    before_action :validate_json_web_token, only: [:search]
+    before_action :validate_json_web_token, only: [:index]
 
     def create
       case params[:data][:type] #### rescue invalid API format
