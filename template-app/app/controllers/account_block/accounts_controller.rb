@@ -7,17 +7,24 @@ module AccountBlock
     def create
       case params[:data][:type] #### rescue invalid API format
       when 'sms_account'
-        @account = SmsAccount.new(jsonapi_deserialize(params))
-        if @account.save
-          @sms_otp = SmsOtp.create(full_phone_number: params[:data][:attributes][:full_phone_number])
-          render json: SmsAccountSerializer.new(@account, meta: {
-            token: encode(@sms_otp.id), pin: @sms_otp.pin
+        account = SmsAccount.find_by(full_phone_number: params[:data][:attributes][:full_phone_number])
+ 
+        sms_otp = sms_otp_pin
+        if account.present? 
+          render json: SmsAccountSerializer.new(account, meta: {
+            token: encode(sms_otp.id), pin: sms_otp.pin
           }).serializable_hash, status: :created
         else
-          render json: {errors: format_activerecord_errors(@account.errors)},
-          status: :unprocessable_entity
-        end
-
+          account = SmsAccount.new(jsonapi_deserialize(params))
+          if account.save
+           render json: SmsAccountSerializer.new(account, meta: {
+            token: encode(sms_otp.id), pin: sms_otp.pin
+          }).serializable_hash, status: :created
+          else
+            render json: {errors: format_activerecord_errors(@account.errors)},
+            status: :unprocessable_entity
+          end
+        end   
       when 'email_account'
         account_params = jsonapi_deserialize(params)
 
@@ -100,6 +107,10 @@ module AccountBlock
     def encode(id)
       BuilderJsonWebToken.encode id
     end
+
+    def sms_otp_pin
+      sms_otp = SmsOtp.create(full_phone_number: params[:data][:attributes][:full_phone_number])
+    end  
 
     def search_params
       params.permit(:query)
