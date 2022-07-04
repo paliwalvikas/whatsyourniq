@@ -1,7 +1,6 @@
 module AccountBlock
   class Account < AccountBlock::ApplicationRecord
     self.table_name = :accounts
-    attr_accessor :register
     include Wisper::Publisher
 
     # has_secure_password

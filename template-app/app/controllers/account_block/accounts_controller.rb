@@ -53,7 +53,7 @@ module AccountBlock
       when 'social_account'
           @account = SocialAccount.new(jsonapi_deserialize(params))
           if @account.save
-            render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id)}).serializable_hash, status: :created
+            render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id), register: @account.register}).serializable_hash, status: :created
           else
             account = SocialAccount.where(email: @account.email).first
             account.register = true
