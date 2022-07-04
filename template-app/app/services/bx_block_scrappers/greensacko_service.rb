@@ -1,10 +1,13 @@
 module BxBlockScrappers
   class GreensackoService
     attr_accessor :headers, :base_urls, :append_url
+    require 'google/cloud/vision'
+    require 'google/cloud/vision/v1/image_annotator'  
+    ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
     
     def initialize
        @append_url = "https://thegreensnackco.com"
-        @headers = {
+        headers = {
           'Connection': 'keep-alive',
           'Pragma': 'no-cache',
           'Cache-Control': 'no-cache',
@@ -18,25 +21,25 @@ module BxBlockScrappers
           'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
         }
 
-        @base_urls = ["https://thegreensnackco.com/collections/all"]
+        @base_urls = BxBlockScrappers::UrlService.new.greensacko #["https://thegreensnackco.com/collections/all","https://thegreensnackco.com/collections/nuts-seeds","https://thegreensnackco.com/collections/6-grain-stix","https://thegreensnackco.com/collections/quinoa-puffs","https://thegreensnackco.com/collections/roasted-namkeen","https://thegreensnackco.com/collections/makhana","https://thegreensnackco.com/collections/superseeds","https://thegreensnackco.com/collections/kids-snacks","https://thegreensnackco.com/collections/value-packs","https://thegreensnackco.com/collections/gifting"]
     end
 
       def scrap_data
         file = "#{Rails.root}/public/thegreensnackco.csv"
-        csv_headers = ["Images"]
+        csv_headers = ["Images",'Product Name','Price','Price post discount','Nutrition facts','Ingredients']
         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |writer|
-          base_urls.each do |base_url|
-            if is_valid_url? base_url
-              doc = HTTParty.get(base_url,headers: headers)
-              File.open('try.html', 'w') { |file| file.write(doc.body) }
-              parsed_page = Nokogiri::HTML(doc.body)
-              products = parsed_page.css('a.product-grid-image')
-              products.each do |product|
-                detail_url = append_url + product.attributes['href'].value rescue nil
-                if detail_url
-                  image = get_detail(detail_url)
-                  image[:images].flatten.compact.each do |image|
-                    writer << [ "https:" + image ]
+          @base_urls.each do |base_url|
+            (1..5).each do |page|
+              if is_valid_url? base_url
+                doc = HTTParty.get("#{base_url}?page=#{page}",headers: headers)
+                parsed_page = Nokogiri::HTML(doc.body)
+                products = parsed_page.css('a.product-grid-image')
+                products.each do |product|
+                  value = {}
+                  detail_url = @append_url + product.attributes['href'].value rescue nil
+                  if detail_url
+                    get_detail(detail_url, value)
+                    writer << [value[:img], value[:p_name] , value[:mrp], value[:p_post_d], value[:nutrition], value[:ingredient] ]
                   end
                 end
               end
@@ -47,25 +50,48 @@ module BxBlockScrappers
 
      private
 
-     def get_detail url
-        if is_valid_url? url
-          doc = HTTParty.get(url,headers: headers)
-          File.open('try.html', 'w') { |file| file.write(doc.body) }
-          parsed_page = Nokogiri::HTML(doc.body)
-          h = Hash.new{[]}
-          h[:images] = parsed_page.css("img").map{|a| a.attributes['src'].value}
-          h[:product_details] = parsed_page.css("img").map{|a| a.attributes['alt'].value}
-          h
-        else
-          nil
-        end
-      end
+    def is_valid_url? url
+      uri = URI.parse url
+      uri.kind_of? URI::HTTP
+    rescue URI::InvalidURIError
+      false
+    end
 
-      def is_valid_url? url
-        uri = URI.parse url
-        uri.kind_of? URI::HTTP
-      rescue URI::InvalidURIError
-        false
+    def get_detail(url,value)
+      if is_valid_url? url
+        doc = HTTParty.get(url,headers: headers)
+        parsed_page = Nokogiri::HTML(doc.body)
+        value[:img] = parsed_page.search('a.fancybox').map{ |o| o.attributes['href'].value}
+        value[:img] = value[:img].map{|img| "https:#{img}"}
+        value[:p_name] = parsed_page.css("h1.product-title").text.squish
+        mrp = parsed_page.search('div.prices').text.squish.split(' ')
+        value[:mrp] = mrp[1]
+        value[:p_post_d] = mrp[3]
+        for_gl = parsed_page.search('div.tab-content').search('img').map{|i| i.attributes['src'].value}
+        BxBlockScrappers::UrlService.new.google_fetch_data(for_gl, value) if for_gl.present?
+      else
+        nil
       end
+    end
+
+
   end
 end
+
+
+    # def google_fetch_data(image, value)
+    #   image.each do |img|
+    #     img.squish!
+    #     image_annotator = Google::Cloud::Vision::V1::ImageAnnotator::Client.new
+    #     response = image_annotator.document_text_detection image: img
+    #     response.responses.each do |res|
+    #       next unless res.text_annotations.present?
+    #       des = res.text_annotations.first.description
+    #       if des.include?('NUTRITION') || des.include?('Nutrition')
+    #         value[:nutrition] = des.squish
+    #       elsif des.include?('Ingredients') || des.include?('INGREDIENTS')
+    #         value[:ingredient] = des.squish
+    #       end
+    #     end
+    #   end
+    # end

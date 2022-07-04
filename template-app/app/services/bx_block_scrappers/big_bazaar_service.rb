@@ -5,9 +5,9 @@ module BxBlockScrappers
     ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
 
     def initialize
-       @append_url = "https://shop.bigbazaar.com/"
-       @base_image = "https://cflare.shop.bigbazaar.com/cdn-cgi/image/width=450/"
-        @headers = {
+      append_url = "https://shop.bigbazaar.com/"
+      base_image = "https://cflare.shop.bigbazaar.com/cdn-cgi/image/width=450/"
+      headers = {
           'Connection': 'keep-alive',
           'Pragma': 'no-cache',
           'Cache-Control': 'no-cache',
@@ -15,13 +15,13 @@ module BxBlockScrappers
           'Upgrade-Insecure-Requests': '1',
           # You may want to change the user agent if you get blocked
           'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36',
-          'Referer': @append_url,
+          'Referer': append_url,
           'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
         }
 
-        @categories = [287, 293, 283]
+      categories = [287, 293, 283]
 
-        @base_url = "https://express.shop.bigbazaar.com/express/product/search/lite"
+      base_url = "https://express.shop.bigbazaar.com/express/product/search/lite"
     end
 
       def scrap_data
@@ -33,10 +33,10 @@ module BxBlockScrappers
             (1..20).each do |page|
               body = {"pageNo": page,"perPage": 16,"storeCode": "5538","filters": [{"name": "category","values": ["#{category_id}"]}],"searchTerm": "","searchId": "#{category_id}"}
               if is_valid_url? base_url
-                @result = HTTParty.post(base_url, 
+                result = HTTParty.post(base_url, 
                   body: body,
                   headers: headers )
-                details << @result["responseData"]["results"].map{ |a| a["simples"].map {| b| b["images"] } }.flatten.compact
+                details << result["responseData"]["results"].map{ |a| a["simples"].map {| b| b["images"] } }.flatten.compact
               end
             end 
             details.flatten.each do |image|
