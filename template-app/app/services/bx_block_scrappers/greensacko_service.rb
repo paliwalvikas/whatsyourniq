@@ -1,9 +1,6 @@
 module BxBlockScrappers
   class GreensackoService
     attr_accessor :headers, :base_urls, :append_url
-    require 'google/cloud/vision'
-    require 'google/cloud/vision/v1/image_annotator'  
-    ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
     
     def initialize
        @append_url = "https://thegreensnackco.com"

@@ -19,7 +19,7 @@ module BxBlockScrappers
           'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
         }
 
-        @base_urls = BxBlockScrappers::UrlService.new.url
+        @base_urls = BxBlockScrappers::UrlService.new.flipkart_url
     end
 
       def scrap_data
