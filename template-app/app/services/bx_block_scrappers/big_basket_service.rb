@@ -38,7 +38,6 @@ module BxBlockScrappers
             p_data = {}
             resp = HTTParty.get("#{@base_url}&page=#{page}", headers: headers)
             resp['tab_info']['product_map']['all']['prods'].each do |data|
-              byebug
               values = get_detail(data['sku'], p_data)
               values_filter(values,p_data) if values[0][1].present?
               csv << [p_data[:src], data['p_brand'], data['w'], data['pc_n'], data['mrp'], data['sp'], data['p_desc'],
@@ -77,7 +76,6 @@ module BxBlockScrappers
       # @per, @energy, @fiber, @proteins, @vitA, @vitC, @vitD, @vitB6, @vitB12, @folate, @calcium, @iron, @iodine, @calories, @total_fat, @saturated, @monounsaturated, @ployunsaturated, @trans_fa, @sodium, @sugar, @magnesium, @zinc, @lodine, @phosphorus, @potassium, @riboflavin, @carbohydrate, @fat, @total_sugars = ''
       (0..p_data[:nutrition].length - 1).each do |a|
         val = p_data[:nutrition][a]
-        byebug
         text = val.map{ |a| a.squish.pluralize(2).upcase if a.present? }
         p_data[:per] = val[0]+val[1]+val[2] if is_include(text ,'PERS') 
         p_data[:energy] = value(val) if is_include(text ,'ENERGIES') && nil_zero?(@energy)
@@ -144,7 +142,6 @@ module BxBlockScrappers
     end
 
     def google_fetch_data(image, parsed_page, p_data)
-      byebug
       p_data[:nutrition] = []
       p_data[:src] = []
       p_data[:ingredient] = ''
