@@ -8,8 +8,8 @@ module BxBlockScrappers
     ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
     
     def initialize
-      @append_url = "https://www.amazon.in/"
-      @headers = {
+      append_url = "https://www.amazon.in/"
+      headers = {
         'Connection': 'keep-alive',
         'Pragma': 'no-cache',
         'Cache-Control': 'no-cache',
@@ -17,10 +17,9 @@ module BxBlockScrappers
         'Upgrade-Insecure-Requests': '1',
         # You may want to change the user agent if you get blocked
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36',
-        'Referer': @append_url,
+        'Referer': append_url,
         'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
       }
-
       @base_url = "https://www.amazon.in/Gourmet-Specialty-Foods/b/?ie=UTF8&node=2454178031&ref_=nav_cs_grocery"
     end
 
@@ -34,9 +33,13 @@ module BxBlockScrappers
           products = parsed_page.css('a.acs-product-block__product-title')
           products.each do |product|
             detail_url = append_url + product.attributes['href'].value rescue nil
-            if detail_url
-              
-              csv << get_detail(detail_url).first #[@src, @brand, @weight]
+            get_detail(detail_url,value)
+            value[:product].uniq.each do |p|
+              html = HTTParty.get(append_url+p,headers: headers)
+              parsed_page = Nokogiri::HTML(html.body)
+              weight_and_brand(parsed_page, value)
+              value = {}
+              csv << [value[:image].compact.uniq , value[:brand], value[:weight] ]
             end
           end
         end
@@ -45,24 +48,20 @@ module BxBlockScrappers
       end
     end
 
-    def get_detail url
+    def get_detail(url, value)
       if is_valid_url? url
+        link , value[:product] = [],[]
         html = HTTParty.get(url,headers: headers)
-        parsed_page = Nokogiri::HTML(html.body)
-        h = Hash.new{[]}
-        # @src = []
-        # parsed_page.css("ul.regularAltImageViewLayout").children.map{|i| @src << eval(i.children.children[1].css("img").to_json).flatten.last if i.children.children[1].present?}
-        h[:images] = parsed_page.css("img.a-dynamic-image").map{|a| a.attributes['src'].value}.compact
-        # parsed_page.css("ul.regularAltImageViewLayout")[0].children[1].children.children[1].css("img").to_json
-        # amazon_data_from_images(h[:images], parsed_page)
-        # weight_and_brand(parsed_page)
-        h
-        # @src.compact
+        parsed_page = Nokogiri::HTML(html.body).search('a.a-color-base')
+        (2..parsed_page.length-1).each do |i| link << parsed_page[i].attributes['href'].value end
+        (1..link.length-1).each do |a|
+          html = HTTParty.get((append_url+link[a]),headers: headers)
+          parsed_page = Nokogiri::HTML(html.body).search('a.a-link-normal').map{ |i| value[:product] << i.attributes['href'].value}
+        end
       else
         nil
       end
     end
-
 
     private
 
@@ -71,6 +70,49 @@ module BxBlockScrappers
       uri.kind_of? URI::HTTP
     rescue URI::InvalidURIError
       false
+    end
+
+
+
+    def weight_and_brand(parsed_page, value)
+      value[:image] = []
+      parsed_page.search('img.a-dynamic-image').map{ |i| value[:image] << i['src']}
+      a = parsed_page.css('div.a-spacing-small').map { |a| a.children.text }
+      filter = a.map{|p| p if  p.include?("Brand")}
+      filter.split("       ").each do |i|
+        value[:brand] = i.slice!("Brand") if i.include?("Brand")
+        value[:weight] = i if i.include?("Weight") || i.include?("Package Weight")
+      end if filter.present?
+      price(parsed_page,value)
+    end
+
+    def price parsed_page
+      price = parsed_page.css("div.offersConsistencyEnabled").map{|a| a.children.text}
+      text = price.map{|u| u if u.include?("M.R.P.")}
+      text.split("          ").each do |p|
+        value[:price] = p if p.include?("M.R.P.")
+        value[:selling_p] = p if p.include?("Deal of the Day") 
+      end if text.present?
+    end
+
+    def img_url_to_src(link)
+      q = []
+      link.each do |l|
+        html = HTTParty.get((append_url+l),headers: headers)
+        parsed_page = Nokogiri::HTML(html.body)
+        parsed_page.css('a.a-link-normal').map{ |u| q << u['href']}
+      end
+      last(q)
+    end
+
+    def last link
+      src = []
+      link.each do |l|
+        html = HTTParty.get((append_url+l),headers: headers)
+        parsed_page = Nokogiri::HTML(html.body)
+        parsed_page.css('img.a-dynamic-image').map{|p| src << p.values[1]}
+      end
+      src.uniq
     end
 
     # def amazon_data_from_images(image, parsed_page)
@@ -98,25 +140,12 @@ module BxBlockScrappers
     #   @src = @src.present? ? @src : image
     #   # [src.uniq, nutrition, ingredient]
     # end
-
-    def weight_and_brand parsed_page
-      a = parsed_page.css('div.a-spacing-small').map { |a| a.children.text }
-      a.map{|a| @w = a if  a.include?("Brand")}
-      @w.split("       ").each do |i|
-        @brand = i.slice!("Brand") if i.include?("Brand")
-        @weight = i if i.include?("Weight") || i.include?("Package Weight")
-      end
-      price(parsed_page)
-    end
-
-    def price parsed_page
-      price = parsed_page.css("div.offersConsistencyEnabled").map{|a| a.children.text}
-      price.map{|u| @p = u if u.include?("M.R.P.")}
-      @p.split("          ").each do |p|
-        @price = p if p.include?("M.R.P.")
-        @selling_p = p if p.include?("Deal of the Day") 
-      end
-    end
-
   end
 end
+              # img = parsed_page.search('ul.a-unordered-list').search('li.image')[0].search('img').first['src']
+            # if detail_url
+            #   @src.uniq
+            #   @src.collect do |i|
+            #     csv << [i , @brand, @weight]
+            #   end
+            # end
