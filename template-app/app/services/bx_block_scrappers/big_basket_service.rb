@@ -35,9 +35,9 @@ module BxBlockScrappers
                        'Product Description', 'Ingredient List', 'Nutritional facts', 'Nutritional Table for per 100gm/100ml/any other', 'Energy', 'Fibers', 'Proteins', 'Vitamin A', 'Vitamin C', 'Vitamin D', 'Vitamin B6', 'Vitamin B12', 'Folate', 'Calcium', 'Iron', 'Iodine', 'Calories', 'Total Fat', 'Saturated Fat', 'Monounsaturated Fat', 'Ployunsaturated Fat', 'Trans Fatty Acid', 'Cholesterol', 'Sodium', 'Sugar', 'Magnesium', 'Zinc', 'Lodine', 'Phosphorus', 'Potassium', 'Riboflavin', 'Carbohydrate', 'Fat', 'Total Sugars']
         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
           (2..1000).each do |page|
-            p_data = {}
             resp = HTTParty.get("#{@base_url}&page=#{page}", headers: headers)
             resp['tab_info']['product_map']['all']['prods'].each do |data|
+              p_data = {}
               values = get_detail(data['sku'], p_data)
               values_filter(values,p_data) if values[0][1].present?
               csv << [p_data[:src], data['p_brand'], data['w'], data['pc_n'], data['mrp'], data['sp'], data['p_desc'],
@@ -195,4 +195,3 @@ module BxBlockScrappers
   end
 end
 
- # puts '----------------------Next_Value-------------------------'

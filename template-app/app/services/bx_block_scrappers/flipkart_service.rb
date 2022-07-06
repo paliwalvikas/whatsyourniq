@@ -36,8 +36,7 @@ module BxBlockScrappers
                     value = {}
                     obj_id = children.children.first.attributes['href'].value #value.values.last
                     next unless obj_id.present?
-                    deep_html = HTTParty.get(base_url+obj_id,headers: headers)
-                    link = Nokogiri::HTML(deep_html.body)
+                    link = http_party_nokogiri(base_url+obj_id)
                     get_product_info(link, value)
                     writer << [value[:img], value[:brand], value[:p_name], value[:weight], value[:mrp], value[:price_p_dis], value[:p_type], value[:category], value[:ingredient], value[:nutrition] ]
                 end
@@ -90,5 +89,9 @@ module BxBlockScrappers
         nut = nut.split(',')
       end
 
+    def http_party_nokogiri(link)
+      doc = HTTParty.get(link ,headers: headers)
+      parsed_page = Nokogiri::HTML(doc.body)
+    end
   end
 end
