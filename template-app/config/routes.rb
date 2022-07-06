@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :bx_block_catalogue do
     resources :products
+    resources :order_items
+    resources :orders
     get 'search' , to: 'products#search'
   end 
 
@@ -22,6 +24,10 @@ Rails.application.routes.draw do
 
   namespace :bx_block_categories do
     resources :categories, only: %i[index]
+  end   
+
+  namespace :bx_block_search_history do
+    resources :total_time_spent_in_apps, only: %i[create show index]
   end   
 
   namespace :bx_block_login do 
