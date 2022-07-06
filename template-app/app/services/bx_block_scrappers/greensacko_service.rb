@@ -21,29 +21,28 @@ module BxBlockScrappers
         @base_urls = BxBlockScrappers::UrlService.new.greensacko #["https://thegreensnackco.com/collections/all","https://thegreensnackco.com/collections/nuts-seeds","https://thegreensnackco.com/collections/6-grain-stix","https://thegreensnackco.com/collections/quinoa-puffs","https://thegreensnackco.com/collections/roasted-namkeen","https://thegreensnackco.com/collections/makhana","https://thegreensnackco.com/collections/superseeds","https://thegreensnackco.com/collections/kids-snacks","https://thegreensnackco.com/collections/value-packs","https://thegreensnackco.com/collections/gifting"]
     end
 
-      def scrap_data
-        file = "#{Rails.root}/public/thegreensnackco.csv"
-        csv_headers = ["Images",'Product Name','Price','Price post discount','Nutrition facts','Ingredients']
-        CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |writer|
-          @base_urls.each do |base_url|
-            (1..5).each do |page|
-              if is_valid_url? base_url
-                doc = HTTParty.get("#{base_url}?page=#{page}",headers: headers)
-                parsed_page = Nokogiri::HTML(doc.body)
-                products = parsed_page.css('a.product-grid-image')
-                products.each do |product|
-                  value = {}
-                  detail_url = @append_url + product.attributes['href'].value rescue nil
-                  if detail_url
-                    get_detail(detail_url, value)
-                    writer << [value[:img], value[:p_name] , value[:mrp], value[:p_post_d], value[:nutrition], value[:ingredient] ]
-                  end
+    def scrap_data
+      file = "#{Rails.root}/public/thegreensnackco.csv"
+      csv_headers = ["Images",'Product Name','Price','Price post discount','Nutrition facts','Ingredients']
+      CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |writer|
+        @base_urls.each do |base_url|
+          (0..5).each do |page|
+            if is_valid_url? base_url
+              parsed_page = http_party_nokogiri(base_url+"?page=#{page}")
+              products = parsed_page.css('a.product-grid-image')
+              products.each do |product|
+                value = {}
+                detail_url = @append_url + product.attributes['href'].value rescue nil
+                if detail_url
+                  get_detail(detail_url, value)
+                  writer << [value[:img], value[:p_name] , value[:mrp], value[:p_post_d], value[:nutrition], value[:ingredient] ]
                 end
               end
             end
           end
         end
       end
+    end
 
      private
 
@@ -56,8 +55,7 @@ module BxBlockScrappers
 
     def get_detail(url,value)
       if is_valid_url? url
-        doc = HTTParty.get(url,headers: headers)
-        parsed_page = Nokogiri::HTML(doc.body)
+        parsed_page = http_party_nokogiri(url)
         value[:img] = parsed_page.search('a.fancybox').map{ |o| o.attributes['href'].value}
         value[:img] = value[:img].map{|img| "https:#{img}"}
         value[:p_name] = parsed_page.css("h1.product-title").text.squish
@@ -65,12 +63,16 @@ module BxBlockScrappers
         value[:mrp] = mrp[1]
         value[:p_post_d] = mrp[3]
         for_gl = parsed_page.search('div.tab-content').search('img').map{|i| i.attributes['src'].value}
-        BxBlockScrappers::UrlService.new.google_fetch_data(for_gl, value) if for_gl.present?
+        # BxBlockScrappers::UrlService.new.google_fetch_data(for_gl, value) if for_gl.present?
       else
         nil
       end
     end
 
+    def http_party_nokogiri(link)
+      doc = HTTParty.get(link ,headers: headers)
+      parsed_page = Nokogiri::HTML(doc.body)
+    end
 
   end
 end

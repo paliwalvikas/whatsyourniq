@@ -18,7 +18,7 @@ module BxBlockScrappers
           'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
         }
 
-        @base_urls = ["https://www.healthkart.com/health-food-n-drinks?navKey=CP-hfd-n-drnks&itracker=w:category|product|1|;p:4|;c:health-food-n-drinks|;", "https://www.healthkart.com/sports-nutrition?navKey=CP-nt-sn&itracker=w:category|product|1|;p:1|;c:sports-nutrition|;"]
+        @base_urls = ["https://www.healthkart.com/health-food-n-drinks?navKey=CP-hfd-n-drnks&itracker=w:category|product|1|;p:4|;c:health-food-n-drinks|;", "https://www.healthkart.com/sports-nutrition?navKey=CP-nt-sn&itracker=w:category|product|1|;p:1|;c:sports-nutrition|;","https://www.healthkart.com/ayurveda-n-herbs?navKey=CP-ayur-hrb&itracker=w:category%7Cproduct%7C1%7C;p:3%7C;c:ayurveda-n-herbs%7C;"]
     end
 
       def scrap_data
@@ -28,19 +28,23 @@ module BxBlockScrappers
           base_urls.each do |base_url|
             if is_valid_url? base_url
               deep_url = []
-              html = HTTParty.get(base_url,headers: headers)
-              parsed_page = Nokogiri::HTML(html.body)
-              parsed_page.search('div.toggle-box').search('a').map{|i| deep_url << i.attributes['href'].value if i.attributes['href'].present? }
-              deep_url.each do |link|
-                html = HTTParty.get((@append_url + link ), headers: headers)
-                products = Nokogiri::HTML(html.body).search('a.variantBoxDesktopLayoutLoyal_variant-img-container__1ZE7P')
-                products.each do |product|
-                  value = {}
-                  detail_url = append_url + product.attributes['href'].value rescue nil 
-                  get_detail(detail_url, value)
-                  writer << [value[:img] , value[:p_name], value[:weight] , value[:price][1], value[:price][0] ]
-                end 
-              end
+              # (0..5).each do |page|
+                parsed_page = http_party_nokogiri(base_url) #+ "&cache=#{page}")
+                parsed_page.search('div.toggle-box').search('a').map{|i| deep_url << i.attributes['href'].value if i.attributes['href'].present? }
+                deep_url.each do |link|
+                  parsed_page = http_party_nokogiri(@append_url + link)
+                  products = parsed_page.search('a.variantBoxDesktopLayoutLoyal_variant-img-container__1ZE7P')
+                  products.each do |product|
+                    value = {}
+                    detail_url = append_url + product.attributes['href'].value rescue nil 
+                    parsed_page = http_party_nokogiri(detail_url)
+                    if is_valid_url?(detail_url) && parsed_page.search('img').present?
+                      get_detail(parsed_page, value)
+                      writer << [value[:img], value[:p_name], value[:weight], value[:price][1], value[:price][0] ]
+                    end
+                  end 
+                end
+              # end
             end
           end
         end
@@ -48,21 +52,15 @@ module BxBlockScrappers
 
      private
 
-     def get_detail(url, value)
-        if is_valid_url? url
+     def get_detail(parsed_page, value)
           value[:img] = []
-          html = HTTParty.get(url,headers: headers)
-          parsed_page = Nokogiri::HTML(html.body)
           parsed_page.search('img.play-btn').map{|i| value[:img] << i.attributes['src'].value}
           value[:p_name] = parsed_page.search('h1.variant-name').text.squish
           value[:price] = parsed_page.search('div.price').map{|i| i.text}
           value[:p_brand] = parsed_page.search('div.brand-interlink').text
           parsed_page.search('a.attribute-item').map{|i| value[:weight] = i.text}
           value[:weight].slice!("#{value[:price][0]}") if value[:weight].present? && value[:weight].include?("#{value[:price][0]}")
-          google_lens(value) if value[:img].present?
-        else
-          nil
-        end
+          # google_lens(value) if value[:img].present?
       end
 
       def is_valid_url? url
@@ -73,7 +71,12 @@ module BxBlockScrappers
       end
 
       def google_lens(value)
-        BxBlockScrappers::UrlService.new.google_fetch_data(value[image], value)
+        BxBlockScrappers::UrlService.new.google_fetch_data(value[:img], value)
+      end
+
+      def http_party_nokogiri(link)
+        doc = HTTParty.get(link ,headers: headers)
+        parsed_page = Nokogiri::HTML(doc.body)
       end
   end
 end
