@@ -8,8 +8,8 @@ module BxBlockScrappers
     ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
     
     def initialize
-      append_url = "https://www.amazon.in/"
-      headers = {
+      @append_url = "https://www.amazon.in/"
+      @headers = {
         'Connection': 'keep-alive',
         'Pragma': 'no-cache',
         'Cache-Control': 'no-cache',
@@ -17,7 +17,7 @@ module BxBlockScrappers
         'Upgrade-Insecure-Requests': '1',
         # You may want to change the user agent if you get blocked
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36',
-        'Referer': append_url,
+        'Referer': @append_url,
         'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
       }
       @base_url = "https://www.amazon.in/Gourmet-Specialty-Foods/b/?ie=UTF8&node=2454178031&ref_=nav_cs_grocery"
@@ -26,20 +26,18 @@ module BxBlockScrappers
     def scrap_data
       if is_valid_url? @base_url
         file = "#{Rails.root}/public/amazon.csv"
-        csv_headers = ['images','Brand','Weight']
+        csv_headers = ['images','Brand','Weight','Price','Selling Price']
         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
-          html = HTTParty.get(@base_url,headers: headers)
-          parsed_page = Nokogiri::HTML(html.body)
+          parsed_page = BxBlockScrappers::UrlService.new.http_noko(@base_url, @headers) 
           products = parsed_page.css('a.acs-product-block__product-title')
           products.each do |product|
             detail_url = append_url + product.attributes['href'].value rescue nil
             get_detail(detail_url,value)
-            value[:product].uniq.each do |p|
-              html = HTTParty.get(append_url+p,headers: headers)
-              parsed_page = Nokogiri::HTML(html.body)
+            value[:product].uniq.each do |link|
+              parsed_page = BxBlockScrappers::UrlService.new.http_noko(@append_url+link, @headers) 
               weight_and_brand(parsed_page, value)
               value = {}
-              csv << [value[:image].compact.uniq , value[:brand], value[:weight] ]
+              csv << [value[:image].compact.uniq , value[:brand], value[:weight] , value[:price], value[:selling_p]]
             end
           end
         end
@@ -51,12 +49,12 @@ module BxBlockScrappers
     def get_detail(url, value)
       if is_valid_url? url
         link , value[:product] = [],[]
-        html = HTTParty.get(url,headers: headers)
-        parsed_page = Nokogiri::HTML(html.body).search('a.a-color-base')
+        parsed_page = BxBlockScrappers::UrlService.new.http_noko(link, @headers) 
+        parsed_page = parsed_page.search('a.a-color-base')
         (2..parsed_page.length-1).each do |i| link << parsed_page[i].attributes['href'].value end
         (1..link.length-1).each do |a|
-          html = HTTParty.get((append_url+link[a]),headers: headers)
-          parsed_page = Nokogiri::HTML(html.body).search('a.a-link-normal').map{ |i| value[:product] << i.attributes['href'].value}
+          parsed_page = BxBlockScrappers::UrlService.new.http_noko(append_url+link[a], @headers) 
+          parsed_page = parsed_page.search('a.a-link-normal').map{ |i| value[:product] << i.attributes['href'].value}
         end
       else
         nil
@@ -98,8 +96,7 @@ module BxBlockScrappers
     def img_url_to_src(link)
       q = []
       link.each do |l|
-        html = HTTParty.get((append_url+l),headers: headers)
-        parsed_page = Nokogiri::HTML(html.body)
+        parsed_page = BxBlockScrappers::UrlService.new.http_noko((append_url+l), @headers) 
         parsed_page.css('a.a-link-normal').map{ |u| q << u['href']}
       end
       last(q)
@@ -108,17 +105,16 @@ module BxBlockScrappers
     def last link
       src = []
       link.each do |l|
-        html = HTTParty.get((append_url+l),headers: headers)
-        parsed_page = Nokogiri::HTML(html.body)
+        parsed_page = BxBlockScrappers::UrlService.new.http_noko((append_url+l), @headers) 
         parsed_page.css('img.a-dynamic-image').map{|p| src << p.values[1]}
       end
       src.uniq
     end
 
-    # def amazon_data_from_images(image, parsed_page)
-    #   nut = []
-    #   @src = []
-    #   @ingredient = ''
+    # def amazon_data_from_images(image, parsed_page,value)
+    #   value[:nut] = []
+    #   value[:src] = []
+    #   value[:ingredient] = ''
     #   image.each do |img|
     #     image_annotator = Google::Cloud::Vision::V1::ImageAnnotator::Client.new
     #     response = image_annotator.document_text_detection image: img
@@ -127,18 +123,18 @@ module BxBlockScrappers
         
     #       des = res.text_annotations.first.description
     #       if des.include?('NUTRITION') || des.include?('Nutrition')
-    #         nut << des
-    #         @src << img
+    #         value[:nut] << des
+    #         value[:src] << img
     #       elsif des.include?('Ingredients') || des.include?('INGREDIENTS')
-    #         @ingredient = des.squish
-    #         @src << img
+    #         value[:ingredient] = des.squish
+    #         value[:src] << img
     #       end
     #     end
     #   end
     #   weight_and_brand(parsed_page)
-    #   # nutrition = nut.present? ? nutritional_values(nut) : filter_ingradiant(parsed_page)
-    #   @src = @src.present? ? @src : image
-    #   # [src.uniq, nutrition, ingredient]
+    #   value[:nutrition] = nut.present? ? nutritional_values(nut) : filter_ingradiant(parsed_page)
+    #   value[:src] = value[:src].present? ? value[:src] : image
+    #   # [value[:src].uniq, :value[:nutrition], value[ingredient]]
     # end
   end
 end

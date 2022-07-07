@@ -28,13 +28,13 @@ module BxBlockScrappers
         # base_urls.each do |base_url|
           if is_valid_url? @base_url[0]
             deep_urls = []
-            parsed_page = BxBlockScrappers::UrlService.new.http_noko(@base_url[0])
+            parsed_page = BxBlockScrappers::UrlService.new.http_noko(@base_url[0], @headers)
             parsed_page.search('div.divSuperCategoryTitle').each do |i|
               i.children.map{|o| deep_urls << o.attributes['href'].value if o.attributes['href'].present?}
             end
             deep_urls.each do |link|
-              parsed_page = BxBlockScrappers::UrlService.new.http_noko(@append_url+link)
-              # products = parsed_page.css('a.linkdisabled')
+              parsed_page = BxBlockScrappers::UrlService.new.http_noko(@append_url+link, @headers)
+              products = parsed_page.css('a.linkdisabled')
               products.each do |product|
                 detail_url = @append_url + product.attributes['href'].value rescue nil
                 if detail_url
@@ -54,9 +54,7 @@ module BxBlockScrappers
 
     def get_detail url
       if is_valid_url? url
-        html = HTTParty.get(url,headers: headers)
-        File.open('try.html', 'w') { |file| file.write(html) }
-        parsed_page = Nokogiri::HTML(html)
+        parsed_page = BxBlockScrappers::UrlService.new.http_noko(url, @headers)
         h = Hash.new{[]}
         h[:images] = parsed_page.css("img").map{|a| a.attributes['src'].value}
         h

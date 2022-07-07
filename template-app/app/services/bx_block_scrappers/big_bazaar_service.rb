@@ -21,7 +21,7 @@ module BxBlockScrappers
 
       categories = [287, 293, 283]
 
-      base_url = "https://express.shop.bigbazaar.com/express/product/search/lite"
+      @base_url = "https://express.shop.bigbazaar.com/express/product/search/lite"
     end
 
       def scrap_data
@@ -32,8 +32,8 @@ module BxBlockScrappers
             details = []
             (1..20).each do |page|
               body = {"pageNo": page,"perPage": 16,"storeCode": "5538","filters": [{"name": "category","values": ["#{category_id}"]}],"searchTerm": "","searchId": "#{category_id}"}
-              if is_valid_url? base_url
-                result = HTTParty.post(base_url, 
+              if is_valid_url? @base_url
+                result = HTTParty.post(@base_url, 
                   body: body,
                   headers: headers )
                 details << result["responseData"]["results"].map{ |a| a["simples"].map {| b| b["images"] } }.flatten.compact

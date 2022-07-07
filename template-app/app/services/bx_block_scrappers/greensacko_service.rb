@@ -28,7 +28,7 @@ module BxBlockScrappers
         @base_urls.each do |base_url|
           (0..5).each do |page|
             if is_valid_url? base_url
-              parsed_page = http_party_nokogiri(base_url+"?page=#{page}")
+              parsed_page = BxBlockScrappers::UrlService.new.http_noko(base_url+"?page=#{page}", @headers) 
               products = parsed_page.css('a.product-grid-image')
               products.each do |product|
                 value = {}
@@ -55,7 +55,7 @@ module BxBlockScrappers
 
     def get_detail(url,value)
       if is_valid_url? url
-        parsed_page = http_party_nokogiri(url)
+        parsed_page = BxBlockScrappers::UrlService.new.http_noko(url, @headers) 
         value[:img] = parsed_page.search('a.fancybox').map{ |o| o.attributes['href'].value}
         value[:img] = value[:img].map{|img| "https:#{img}"}
         value[:p_name] = parsed_page.css("h1.product-title").text.squish
@@ -69,13 +69,14 @@ module BxBlockScrappers
       end
     end
 
-    def http_party_nokogiri(link)
-      doc = HTTParty.get(link ,headers: headers)
-      parsed_page = Nokogiri::HTML(doc.body)
-    end
 
   end
 end
+
+    # def http_party_nokogiri(link)
+    #   doc = HTTParty.get(link ,headers: headers)
+    #   parsed_page = Nokogiri::HTML(doc.body)
+    # end
 
 
     # def google_fetch_data(image, value)
