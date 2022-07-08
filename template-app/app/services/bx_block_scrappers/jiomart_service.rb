@@ -17,8 +17,6 @@ module BxBlockScrappers
           'Access-Control-Allow-Origin': @append_url,
           'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
         }
-
-      
       @base_url = BxBlockScrappers::UrlService.new.jiomart
     end
 
@@ -30,7 +28,7 @@ module BxBlockScrappers
           (1..10).each do |page| 
             if is_valid_url? base_url
               link =  base_url.include?("page") ? base_url+"#{page}" : base_url+"/page/#{page}"
-              parsed_page = http_party_nokogiri(link)
+              parsed_page = BxBlockScrappers::UrlService.new.http_noko(@link, @headers)
               products = parsed_page.search('a.prod-name')
               products.each do |product|
                 value = {}
@@ -50,7 +48,7 @@ module BxBlockScrappers
 
     def get_detail(url, value)
       if is_valid_url? url
-        parsed_page = http_party_nokogiri(url)
+        parsed_page = BxBlockScrappers::UrlService.new.http_noko(url, @headers)
         parsed_page.search('table.prodDetTable').each do |i|
           text = i.text.squish
           value[:brand] =  text.split.slice(text.index('Brand')+1) if i.text.include?('Brand') 
@@ -70,14 +68,14 @@ module BxBlockScrappers
       false
     end
 
-    def http_party_nokogiri(link)
-      doc = HTTParty.get(link ,headers: headers)
-      parsed_page = Nokogiri::HTML(doc.body)
-    end
 
   end
 end
 
+    # def http_party_nokogiri(link)
+    #   doc = HTTParty.get(link ,headers: headers)
+    #   parsed_page = Nokogiri::HTML(doc.body)
+    # end
 
 
                 # image[:images].flatten.compact.each do |image|

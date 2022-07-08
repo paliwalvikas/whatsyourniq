@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
-  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount, :price_mrp, :category_id ,:positive_good, :negative_not_good
+  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount, :price_mrp, :category_id ,:positive_good, :negative_not_good, :images, :bar_code, :data_check
     active_admin_import
 
-  form do |f|
+  form  do |f|
     f.inputs do
       f.input :product_name
       f.input :product_type
@@ -16,6 +16,9 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       f.input :product_rating
       f.input :category_id, as: :select, collection: BxBlockCategories::Category.all.pluck(:category_type, :id)
       f.input :positive_good
+      f.input :images, as: :file, input_html: { multiple: true }  
+      f.input :bar_code
+      f.input :data_check
       f.input :negative_not_good
     end
     f.actions
@@ -32,6 +35,15 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       obj.positive_good
     end
     column :negative_not_good
+    column :images do |product|
+        product.images.each do |image|
+          div :class => "col-xs-4" do
+            image_tag(image, width:80, height:80 ) if image.present?
+          end
+        end
+      end
+    column :bar_code
+    column :data_check
     column :weight
     column :price_mrp
     column :price_post_discount
@@ -51,6 +63,14 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       row :product_rating
       row :brand_name
       row :weight
+      # row :images do |product|
+      #   product.images.each do |image|
+      #     div :class => "col-xs-4" do
+      #       image_tag(url_for(image)) if image.present?
+      #     end
+      #   end
+      # end
+      row :bar_code
       row :positive_good do |obj|
         obj.positive_good
       end
@@ -76,12 +96,12 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       csv.reverse_each.each do |product_data|
         product_data = product_data.to_h.reject { |k, _v| k.blank? }
         product_data = product_data.transform_keys { |k| k&.gsub(/\P{ASCII}/, '') }
-        product_params = product_data.except('id', 'product_id', 'energy', 'saturate', 'total_sugar', 'sodium','ratio_fatty_acid_lipids', 'fruit_veg', 'fibre', 'protein', 'vit_a','vit_c','vit_d','vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1','vit_b5','vit_b7','calcium','iron','magnesium','zinc','iodine','potassium','phosphorus','manganese','copper','selenium','chloride','chromium')
+        product_params = product_data.except('id', 'product_id', 'energy', 'saturate', 'total_sugar', 'sodium','ratio_fatty_acid_lipids', 'fruit_veg', 'fibre', 'protein', 'vit_a','vit_c','vit_d','vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1','vit_b5','vit_b7','calcium','iron','magnesium','zinc','iodine','potassium','phosphorus','manganese','copper','selenium','chloride','chromium','images','bar_code', 'data_check')
         
         ingredient_params = product_data.except('id', 'product_name', 'product_type','weight','price_mrp','price_post_discount','brand_name','category_id')
       
         begin
-          product = BxBlockCatalogue::Product.new(product_params)
+          product = BxBlockCatalogue::Product.new(product_params.merge(images: product_data['images'], data_check: product_data['data_check']))
           ingredient = product.build_ingredient(ingredient_params) 
           products << product
           count += 1

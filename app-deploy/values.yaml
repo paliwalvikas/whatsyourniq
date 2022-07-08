@@ -23,6 +23,12 @@ appExtConfig:
 # GOOGLE_APPLICATION_CREDENTIALS: "./../template-app/lib/key.json"
 GOOGLE_APPLICATION_CREDENTIALS:  "#{Rails.root}/lib/key.json"
 
+# minio creds
+STORAGE_ACCESS_KEY: "hello"
+STORAGE_BUCKET: "sbucket"
+STORAGE_ENDPOINT: "https://minio.b133842.dev.eastus.az.svc.builder.cafe"
+STORAGE_REGION: "builder-1"
+STORAGE_SECRET_ACCESS_KEY: "builderai"
 
 
 image:

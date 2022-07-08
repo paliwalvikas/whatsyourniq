@@ -29,15 +29,16 @@ module BxBlockScrappers
             if is_valid_url? base_url
               deep_url = []
               # (0..5).each do |page|
-                parsed_page = http_party_nokogiri(base_url) #+ "&cache=#{page}")
+              parsed_page = BxBlockScrappers::UrlService.new.http_noko(base_url, @headers)
+                 #+ "&cache=#{page}")
                 parsed_page.search('div.toggle-box').search('a').map{|i| deep_url << i.attributes['href'].value if i.attributes['href'].present? }
                 deep_url.each do |link|
-                  parsed_page = http_party_nokogiri(@append_url + link)
+                  parsed_page = BxBlockScrappers::UrlService.new.http_noko(@append_url + link, @headers)
                   products = parsed_page.search('a.variantBoxDesktopLayoutLoyal_variant-img-container__1ZE7P')
                   products.each do |product|
                     value = {}
                     detail_url = append_url + product.attributes['href'].value rescue nil 
-                    parsed_page = http_party_nokogiri(detail_url)
+                    parsed_page = BxBlockScrappers::UrlService.new.http_noko(detail_url, @headers) 
                     if is_valid_url?(detail_url) && parsed_page.search('img').present?
                       get_detail(parsed_page, value)
                       writer << [value[:img], value[:p_name], value[:weight], value[:price][1], value[:price][0] ]
@@ -74,9 +75,9 @@ module BxBlockScrappers
         BxBlockScrappers::UrlService.new.google_fetch_data(value[:img], value)
       end
 
-      def http_party_nokogiri(link)
-        doc = HTTParty.get(link ,headers: headers)
-        parsed_page = Nokogiri::HTML(doc.body)
-      end
   end
 end
+      # def http_party_nokogiri(link)
+      #   doc = HTTParty.get(link ,headers: headers)
+      #   parsed_page = Nokogiri::HTML(doc.body)
+      # end
