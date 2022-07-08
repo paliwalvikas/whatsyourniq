@@ -63,13 +63,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       row :product_rating
       row :brand_name
       row :weight
-      # row :images do |product|
-      #   product.images.each do |image|
-      #     div :class => "col-xs-4" do
-      #       image_tag(url_for(image)) if image.present?
-      #     end
-      #   end
-      # end
+      row :image 
       row :bar_code
       row :positive_good do |obj|
         obj.positive_good
@@ -98,10 +92,11 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
         product_data = product_data.transform_keys { |k| k&.gsub(/\P{ASCII}/, '') }
         product_params = product_data.except('id', 'product_id', 'energy', 'saturate', 'total_sugar', 'sodium','ratio_fatty_acid_lipids', 'fruit_veg', 'fibre', 'protein', 'vit_a','vit_c','vit_d','vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1','vit_b5','vit_b7','calcium','iron','magnesium','zinc','iodine','potassium','phosphorus','manganese','copper','selenium','chloride','chromium','images','bar_code', 'data_check')
         
-        ingredient_params = product_data.except('id', 'product_name', 'product_type','weight','price_mrp','price_post_discount','brand_name','category_id')
+        ingredient_params = product_data.except('id', 'product_name', 'product_type','weight','price_mrp','price_post_discount','brand_name','category_id','images','bar_code','data_check')
       
         begin
-          product = BxBlockCatalogue::Product.new(product_params.merge(images: product_data['images'], data_check: product_data['data_check']))
+          product = BxBlockCatalogue::Product.new(product_params.merge(data_check: product_data['data_check']))
+          product.image <<  product_data['images']
           ingredient = product.build_ingredient(ingredient_params) 
           products << product
           count += 1
