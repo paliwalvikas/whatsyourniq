@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
-  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount, :price_mrp, :category_id ,:positive_good, :negative_not_good, :images, :bar_code, :data_check
+  permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name, :price_post_discount, :price_mrp, :category_id ,:positive_good, :negative_not_good, :image, :bar_code, :data_check
     active_admin_import
 
   form  do |f|
@@ -16,7 +16,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       f.input :product_rating
       f.input :category_id, as: :select, collection: BxBlockCategories::Category.all.pluck(:category_type, :id)
       f.input :positive_good
-      f.input :images, as: :file, input_html: { multiple: true }  
+      f.input :image, as: :file, input_html: { multiple: true }  
       f.input :bar_code
       f.input :data_check
       f.input :negative_not_good
@@ -35,13 +35,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       obj.positive_good
     end
     column :negative_not_good
-    column :images do |product|
-        product.images.each do |image|
-          div :class => "col-xs-4" do
-            image_tag(image, width:80, height:80 ) if image.present?
-          end
-        end
-      end
+    column :image
     column :bar_code
     column :data_check
     column :weight
