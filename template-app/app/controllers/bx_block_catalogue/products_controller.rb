@@ -8,11 +8,12 @@ module BxBlockCatalogue
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
         product.calculation
-        if product.product_type.present? && product.category_id.present?
-          pr = case_for_product(product.product_rating, product.product_type, product.category_id).pluck(:id).last(5)
-          product = Product.where(id: pr << params[:id] )
-        end
-        render json: ProductSerializer.new(product.order(product_rating: :asc))
+        # if product.product_type.present? && product.category_id.present?
+        #   pr = case_for_product(product.product_rating, product.product_type, product.category_id).pluck(:id).last(5)
+        #   product = Product.where(id: pr << params[:id] )
+        # end
+        # .order(product_rating: :asc)
+        render json: ProductSerializer.new(product)
       else 
         render json: { errors: 'Product not found' }
       end     
