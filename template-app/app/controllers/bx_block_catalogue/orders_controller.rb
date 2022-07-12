@@ -25,10 +25,10 @@ module BxBlockCatalogue
 
     def show 
       order = BxBlockCatalogue::Order.find_by_id(params[:order_id])
+      data = []
+      calculation = order.order_product_calculation
+      data << calculation
       if order.present?
-        data = []
-        calculation = order.order_product_calculation 
-        data << calculation
         product =  BxBlockCatalogue::OrderSerializer.new(order)
         render json: { nutrition_value: data, product: product } 
       else 

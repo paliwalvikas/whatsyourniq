@@ -22,3 +22,4 @@ module BxBlockCatalogue
 
   end
 end
+
