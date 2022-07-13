@@ -129,3 +129,4 @@
 # calculation 
 
 BxBlockCatalogue::Product.all.delete_all
+BxBlockCatalogue::Ingredient.all.delete_all
