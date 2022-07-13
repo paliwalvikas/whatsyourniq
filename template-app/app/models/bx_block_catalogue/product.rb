@@ -2,18 +2,42 @@ module BxBlockCatalogue
   class Product < BxBlockCatalogue::ApplicationRecord
     self.table_name = :products
     enum product_type: [:cheese_and_oil, :beverage, :solid]
-    #validates :product_name, uniqueness: true
+    # validates :product_name, uniqueness: true
     has_one :ingredient, class_name: 'BxBlockCatalogue::Ingredient', dependent: :destroy
     has_one_attached :image
-    belongs_to :category, class_name: 'BxBlockCategories::Category', dependent: :destroy, foreign_key: 'category_id'
+    belongs_to :category, class_name: 'BxBlockCategories::Category', foreign_key: 'category_id'
+    has_many :order_items, class_name: 'BxBlockCatalogue::OrderItem', dependent: :destroy
+    attr_accessor :image_url
 
     accepts_nested_attributes_for :ingredient, allow_destroy: true
+    before_save :image_process
+    after_save :asfdgh
 
-    def calculation
-      np = []
-      pp = []
+    def asfdgh
+    end
     
 
+    def product_type=(val)
+      self[:product_type] = val.downcase
+    end
+
+    def image_process
+      # file = StringIO.new
+      # decoded_data = Base64.decode64(image_url)
+      # file.write(decoded_data)
+      # file.rewind
+      # image.attach(io: file, filename: 'image', content_type: 'image/jpg')
+      # file.close
+      file = open(image_url)
+      image.attach(io: file, filename: 'some-image.jpg', content_type: 'image/jpg')
+
+    end
+
+
+    def calculation
+      np = [] 
+      pp = []
+      
       unless self.product_point.present?
         ing = self.ingredient
         neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
@@ -30,7 +54,6 @@ module BxBlockCatalogue
           ing_value = ing.send(clm)
           pp << check_value('positive_value', clm, ing_value) if ing_value.present?
         end
-
         mp = micro_calculation(ing).sum
 
         p_point = np.sum - pp.sum 
@@ -104,12 +127,12 @@ module BxBlockCatalogue
             neg_point = coding_calculation(ni, ele, value)
             return neg_point if neg_point.present?
           end  
-        when 'positive_value'
+          when 'positive_value'
           BxBlockBeverage::BeveragePositiveIngredient.all.each do |pi|
             pos_point = coding_calculation(pi, ele, value)
             return pos_point if pos_point.present?
           end       
-        when 'micro_value'  
+          when 'micro_value'  
           BxBlockBeverage::BeverageMicroIngredient.all.each do |mi| 
             micro_point = coding_calculation(mi, ele, value)
             return micro_point if micro_point.present? 
@@ -119,20 +142,26 @@ module BxBlockCatalogue
     end
     
     def coding_calculation(ing,ele,value)
-      com_v = ing.send(ele)['value'].to_f
-      com_lower = ing.send(ele)['lower_limit'].to_f
-      com_upper = ing.send(ele)['upper_limit'].to_f
-      case ing.send(ele)['sign']
-      when 'less_than_equals_to'
-        return ing.point if value.to_f <= com_v
-      when 'greater_than_equals_to'
-        return ing.point if value.to_f >= com_v
-      when 'greater_than'
-        return ing.point if value.to_f > com_v
-      when 'less_than'
-        return ing.point if value.to_f < com_v
-      when 'in_between'
-        return ing.point if value.to_f.between?(com_lower, com_upper) 
+      unless ["carbohydrate", "cholestrol","soyabean","wheat","peanuts","tree_nuts","shellfish",'total_fat', 'monosaturated_fat', 'polyunsaturated_fat', 'fatty_acid', 'mono_unsaturated_fat', 'veg_and_nonveg', 'gluteen_free', 'added_sugar', 'artificial_preservative', 'organic', 'vegan_product', 'egg', 'fish', 'trans_fat'].include?(ele)
+        unless ing.send(ele).nil?
+          com_v = ing.send(ele)['value'].to_f
+          com_lower = ing.send(ele)['lower_limit'].to_f
+          com_upper = ing.send(ele)['upper_limit'].to_f
+          case ing.send(ele)['sign']
+          when 'less_than_equals_to'
+            return ing.point if value.to_f <= com_v
+          when 'greater_than_equals_to'
+            return ing.point if value.to_f >= com_v
+          when 'greater_than'
+            return ing.point if value.to_f > com_v
+          when 'less_than'
+            return ing.point if value.to_f < com_v
+          when 'in_between'
+            return ing.point if value.to_f.between?(com_lower, com_upper) 
+          end
+        end   
+      else
+        0
       end
     end  
 
@@ -206,15 +235,15 @@ module BxBlockCatalogue
     #       end   
     #     end 
 
-      # when 'beverage'   
-      #   if trans_fat < 0.5
-      #      self.positive_good << "trans_fat free"
-      #   elsif trans_fat >= 0.5 && trans_fat < 2.5
-      #     self.positive_good << "low trans_fat"
-      #   elsif 
-      #     if energy > 0 && trans_fat > 0.09 || energy.between?(0, 7) && trans_fat > 0.18 || energy.between?(7, 14) && trans_fat > 0.27 || energy.between?(14, 22) && trans_fat > 0.36 || energy.between?(22, 29) && trans_fat > 0.44 || energy.between?(29, 36) && trans_fat > 0.53 || energy.between?(36, 43) && trans_fat > 0.62 || energy.between?(43, 50) && trans_fat > 0.71 || energy.between?(50, 57) && trans_fat > 0.8 || energy.between?(57, 64) && trans_fat > 0.89 
-      #       self.negative_not_good << "High trans_fat"
-      #     end
+    #   when 'beverage'   
+    #     if trans_fat < 0.5
+    #        self.positive_good << "trans_fat free"
+    #     elsif trans_fat >= 0.5 && trans_fat < 2.5
+    #       self.positive_good << "low trans_fat"
+    #     elsif 
+    #       if energy > 0 && trans_fat > 0.09 || energy.between?(0, 7) && trans_fat > 0.18 || energy.between?(7, 14) && trans_fat > 0.27 || energy.between?(14, 22) && trans_fat > 0.36 || energy.between?(22, 29) && trans_fat > 0.44 || energy.between?(29, 36) && trans_fat > 0.53 || energy.between?(36, 43) && trans_fat > 0.62 || energy.between?(43, 50) && trans_fat > 0.71 || energy.between?(50, 57) && trans_fat > 0.8 || energy.between?(57, 64) && trans_fat > 0.89 
+    #         self.negative_not_good << "High trans_fat"
+    #       end
     #   #   end
     #   end    
     # end   
@@ -274,7 +303,7 @@ module BxBlockCatalogue
     #         return hs if hs
     #       end
 
-    #       # if energy > 0 && sodium > 90 || energy.between?(0, 7) && sodium > 180 || energy.between?(7, 14) && sodium > 270 || energy.between?(14, 22) && sodium > 360 || energy.between?(22, 29) && sodium > 450 || energy.between?(29, 36) && sodium > 540 || energy.between?(36, 43) && sodium > 630 || energy.between?(43, 50) && sodium > 720 || energy.between?(50, 57) && sodium > 810 || energy.between?(57, 64) && sodium > 900 
+    #       if energy > 0 && sodium > 90 || energy.between?(0, 7) && sodium > 180 || energy.between?(7, 14) && sodium > 270 || energy.between?(14, 22) && sodium > 360 || energy.between?(22, 29) && sodium > 450 || energy.between?(29, 36) && sodium > 540 || energy.between?(36, 43) && sodium > 630 || energy.between?(43, 50) && sodium > 720 || energy.between?(50, 57) && sodium > 810 || energy.between?(57, 64) && sodium > 900 
     #       self.negative_not_good << "High sodium" if high_sodium
     #     end
     #   end  
@@ -318,6 +347,7 @@ module BxBlockCatalogue
     def food_product_type
       type = self.product_type
       type
-    end    
+    end  
+
   end   
 end 
