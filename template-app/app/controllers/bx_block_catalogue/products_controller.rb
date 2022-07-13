@@ -8,11 +8,6 @@ module BxBlockCatalogue
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
         product.calculation
-        # if product.product_type.present? && product.category_id.present?
-        #   pr = case_for_product(product.product_rating, product.product_type, product.category_id).pluck(:id).last(5)
-        #   product = Product.where(id: pr << params[:id] )
-        # end
-        # .order(product_rating: :asc)
         render json: ProductSerializer.new(product)
       else 
         render json: { errors: 'Product not found' }
@@ -36,6 +31,18 @@ module BxBlockCatalogue
         render json: { errors: 'Product not present' } 
       end   
     end   
+
+    def niq_score
+      if product = BxBlockCatalogue::Product.find_by(id: params[:product_id])
+        if product.product_type.present? && product.category_id.present?
+          pr_ids = case_for_product(product.product_rating, product.product_type, product.category_id).pluck(:id).first(5)
+          product = Product.where(id: pr_ids)
+        end
+        render json: ProductSerializer.new(product.order(product_rating: :asc))
+      else 
+        render json: { errors: 'Product not found' }
+      end 
+    end
 
     def search
       search = "%#{params[:query]}%"
@@ -69,7 +76,7 @@ module BxBlockCatalogue
     end
 
     def find_product(category_id, type, rating)
-      Product.where(product_type: type, product_rating: rating, category_id: category_id)
+      Product.where(product_type: type, product_rating: rating, category_id: category_id).order(product_rating: :asc)
     end
 
     # def filter_product(value )

@@ -6,10 +6,14 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :bx_block_catalogue do
-    resources :products
+    resources :products do 
+    get 'search' , to: 'products#search'
+      collection do
+        get :niq_score
+      end
+    end
     resources :order_items
     resources :orders
-    get 'search' , to: 'products#search'
   end 
 
   namespace :account_block do 
