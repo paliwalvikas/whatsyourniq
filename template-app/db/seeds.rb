@@ -128,5 +128,5 @@
 
 # calculation 
 
-# BxBlockCatalogue::Product.all.delete_all
+BxBlockCatalogue::Product.all.destroy_all
 # BxBlockCatalogue::Ingredient.all.delete_all
