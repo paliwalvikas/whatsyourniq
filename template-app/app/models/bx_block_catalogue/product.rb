@@ -10,27 +10,15 @@ module BxBlockCatalogue
     attr_accessor :image_url
 
     accepts_nested_attributes_for :ingredient, allow_destroy: true
-    before_save :image_process
-    after_save :asfdgh
-
-    def asfdgh
-    end
-    
+    before_save :image_process, if: :image_url
 
     def product_type=(val)
       self[:product_type] = val.downcase
     end
 
     def image_process
-      # file = StringIO.new
-      # decoded_data = Base64.decode64(image_url)
-      # file.write(decoded_data)
-      # file.rewind
-      # image.attach(io: file, filename: 'image', content_type: 'image/jpg')
-      # file.close
       file = open(image_url)
       image.attach(io: file, filename: 'some-image.jpg', content_type: 'image/jpg')
-
     end
 
 
