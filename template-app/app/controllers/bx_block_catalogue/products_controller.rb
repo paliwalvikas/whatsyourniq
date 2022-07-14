@@ -36,9 +36,8 @@ module BxBlockCatalogue
       if product = BxBlockCatalogue::Product.find_by(id: params[:product_id])
         if product.product_type.present? && product.category_id.present?
           product = case_for_product(product.product_rating, product.product_type, product.category_id).first(5)
-          # product = Product.where(id: pr_ids)
         end
-        render json: ProductSerializer.new(product.order(product_rating: :asc))
+        render json: ProductSerializer.new(product)
       else 
         render json: { errors: 'Product not found' }
       end 
