@@ -33,9 +33,9 @@ module BxBlockCatalogue
     end   
 
     def niq_score
-      if product = BxBlockCatalogue::Product.find_by(id: params[:product_id])
-        if product.product_type.present? && product.category_id.present?
-          product = case_for_product(product.product_rating, product.product_type, product.category_id)
+      if prod = BxBlockCatalogue::Product.find_by(id: params[:product_id])
+        if prod.product_type.present? && prod.category_id.present?
+          product = case_for_product(prod.product_rating, prod.product_type, prod.category_id)
         end
       end
       if product.present?
@@ -58,6 +58,11 @@ module BxBlockCatalogue
       end
     end
 
+    # def smart_searching
+    #   product = filter_product
+    #   render json: ProductSerializer.new(product)
+    # end
+
     private
 
     def case_for_product(rating , type, category_id)
@@ -65,13 +70,13 @@ module BxBlockCatalogue
       when 'A'
         a = find_product(category_id, type, ['A'])
       when 'B'
-        a = find_product(category_id, type, ['A'])
+        a = find_product(category_id, type, ['A','B'])
       when 'C'
-        a = find_product(category_id, type, ['A', 'B'])
+        a = find_product(category_id, type, ['A', 'B','C'])
       when 'D'
-        a = find_product(category_id, type, ['A','B','C'])
-      when 'E'
         a = find_product(category_id, type, ['A','B','C','D'])
+      when 'E'
+        a = find_product(category_id, type, ['A','B','C','D','E'])
       end
       return a
     end
@@ -82,12 +87,11 @@ module BxBlockCatalogue
     end
 
     # def filter_product(value )
-    #   case params[:food_type]
-    #   when "pakaged_food"
-    #   when "row_food"
-    #   when "cooked_food"
-    #   end
-    #   case params[:category]
+    #   # "pakaged_food", "row_food", "cooked_food"
+    #     product = BxBlockCatalogue::Product.where(product_type: params[:food_type]) if params[:food_type].present?
+    #     product = BxBlockCatalogue::Product.where(category_id: params[:category_id]) if params[:category].present?
+          
+      
     #   when "packaged_drinks"
     #     case params[:category][:packaged_drinks]
     #     when "cofee_tea_and_breavrages"
@@ -106,15 +110,16 @@ module BxBlockCatalogue
     #     when "NA"
     #     end
     #   when params[:sub_category]
-
+    #     BxBlockCategories::SubCategory.find_by(params[:sub_category_id])
     #   when params[:niq_score]
-
+    #     BxBlockCatalogue::Product.where( product_rating: params[:product_rating])
     #   when params[:food_allergies]
 
     #   when params[:food_preferance]
 
     #   when params[:functional_preferance]
-
+    #     BxBlockCatalogue::Product.second.ingredient
+    #   when params[:health_preferance]
     #   end
         
     # end
