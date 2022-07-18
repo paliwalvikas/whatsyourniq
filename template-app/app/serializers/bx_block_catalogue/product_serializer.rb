@@ -13,8 +13,7 @@ module BxBlockCatalogue
     end
     
     attribute :category_type do |object|
-      BxBlockCategories::Category.find_by(id: object.category_id)
+      object.category.category_type.gsub('_', ' ').titleize
     end
-
   end
 end
