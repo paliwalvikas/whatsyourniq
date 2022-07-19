@@ -33,9 +33,10 @@ module AccountBlock
           @sms_otp.activated = true
           @sms_otp.save
           @account = AccountBlock::SmsAccount.find_by(full_phone_number: @sms_otp.full_phone_number)
+          @account.register = true
           render json: SmsAccountSerializer.new(@account, meta: {
             message: 'Phone Number Confirmed Successfully',
-            token: BuilderJsonWebToken.encode(@account.id),
+            token: BuilderJsonWebToken.encode(@account.id), register: @account.register
           }).serializable_hash, status: :ok
         else
           return render json: {errors: [
