@@ -32,8 +32,8 @@ module AccountBlock
         if @sms_otp.pin.to_s == params[:data][:attributes]['pin'].to_s
           @sms_otp.activated = true
           @sms_otp.save
-          @account = AccountBlock::SmsAccount.where(full_phone_number: @sms_otp.full_phone_number).last
-          render json: ValidateAvailableSerializer.new(@sms_otp, meta: {
+          @account = AccountBlock::SmsAccount.find_by(full_phone_number: @sms_otp.full_phone_number)
+          render json: SmsAccountSerializer.new(@account, meta: {
             message: 'Phone Number Confirmed Successfully',
             token: BuilderJsonWebToken.encode(@account.id),
           }).serializable_hash, status: :ok

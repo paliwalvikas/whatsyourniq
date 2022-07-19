@@ -10,9 +10,10 @@ module AccountBlock
         account = SmsAccount.find_by(full_phone_number: params[:data][:attributes][:full_phone_number])
  
         sms_otp = sms_otp_pin
-        if account.present? 
+        if account.present?
+          account.register = true
           render json: SmsAccountSerializer.new(account, meta: {
-            token: encode(sms_otp.id), pin: sms_otp.pin
+            token: encode(sms_otp.id), pin: sms_otp.pin, register: account.register
           }).serializable_hash, status: :created
         else
           account = SmsAccount.new(jsonapi_deserialize(params))
@@ -55,9 +56,9 @@ module AccountBlock
           if @account.save
             render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id), register: @account.register}).serializable_hash, status: :created
           else
-            account = SocialAccount.where(email: @account.email).first
+            account = SocialAccount.find_by(email: @account.email)
             account.register = true
-            render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered", register: account.register }), status: :unprocessable_entity
+            render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered", register: account.register }), status: :ok
           end
       else
        render json: {errors: [
