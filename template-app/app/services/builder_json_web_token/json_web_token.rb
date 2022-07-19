@@ -7,7 +7,7 @@ module BuilderJsonWebToken
         expiration, data = data, expiration unless data.is_a?(Hash)
 
         data       ||= {}
-        expiration ||= 24.hours.from_now
+        expiration ||= 6.month.from_now
 
         payload = build_payload_for(id.to_i, data, expiration.to_i)
 
