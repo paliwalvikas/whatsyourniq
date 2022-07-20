@@ -46,8 +46,7 @@ module BxBlockCatalogue
     end
 
     def search
-      search = "%#{params[:query]}%"
-      product = BxBlockCatalogue::Product.where('product_name ILIKE ?', search)
+      product = BxBlockCatalogue::Product.where("lower(products.product_name) LIKE ? OR lower(products.bar_code) LIKE ?", "%#{params[:query].downcase}%","%#{params[:query].downcase}%")
       if product.present? 
         if params[:category_id].present?
           product = product.where(category_id: params[:category_id])
@@ -59,12 +58,20 @@ module BxBlockCatalogue
     end
 
     # def smart_searching
-    #   product = filter_product
+    #   product = BxBlockCatalogue::ProductSmartSearchService.new.health_preference(Product.last,params)
     #   if product.present?
     #     render json: ProductSerializer.new(product)
     #   else
     #     render json: { error: 'Product Not Found' }
     #   end
+      # data = if params[:query] == "food_type"
+      #           category = BxBlockCategories::Category.all
+      #           render json: BxBlockCategories::CategorySerializer.new(category)
+      #         elsif params[:query] == "category"
+      #           product = category_type_product
+                # render json: ProductSerializer.new(product)
+              # end
+
     # end
 
     private
@@ -89,64 +96,16 @@ module BxBlockCatalogue
       product = BxBlockCatalogue::Product.where(product_type: type, product_rating: rating, category_id: category_id).where.not(id: p_id).order(product_rating: :asc)
       product.first(5)
     end
-
-    # def filter_product
-    #   product = BxBlockCatalogue::Product.all
-    #   # "pakaged_food", "row_food", "cooked_food"
-    #   product = product.where(product_type: params[:food_type]) if params[:food_type].present?
-    #   product = category_filter(product)
-    #   product = product.where(product_rating: params[:niq_score]) if params[:niq_score].present?
-    #   a = food_allergies(product) 
-    # end
-    #   # product = product.where(category_id: params[:category_id]) if params[:category].present?
-    #   # product = product.where(category_filter: params[:category][:category_filter])
-    #   # #foof preferance #no artificial colors (not present)
-    # def food_preferance
-    #   ingredients = BxBlockCatalogue::Ingredient.all
-    #   ingredients = ingredients.where(veg_and_nonveg: params[:veg_and_nonveg]) if params[:veg_and_nonveg].present?
-    #   ingredients = ingredients.where(gluteen_free: params[:gluteen_free]) if params[:gluteen_free].present?
-    #   ingredients = ingredients.where(added_sugar: params[:no_added_sugar]) if params[:no_added_sugar].present?
-    #   ingredients = ingredients.where(artificial_preservative: params[:artificial_preservative]) if params[:artificial_preservative].present?
-    #   ingredients = ingredients.where(organic: params[:organic]) if params[:organic].present?
-    #   ingredients = ingredients.where(vegan_product: params[:vegan_product]) if params[:vegan_product].present? 
-    # end
-
-    # def food_allergies(product)
-    #   # food allergiess filter
-    #   allergies = eval(params[:allergies])
-    #   ingredients = BxBlockCatalogue::Ingredient.all
-    #   ingredients = ingredients.where('egg ILIKE ?', 'yes') if check('egg', ingredients, allergies)
-    #   ingredients = ingredients.where('fish ILIKE ?', 'yes') if check('fish', ingredients, allergies)
-    #   ingredients = ingredients.where('shellfish ILIKE ?', 'yes') if check('shellfish',ingredients,allergies)
-    #   ingredients = ingredients.where('tree_nuts ILIKE ?', 'yes') if check('tree_nuts',ingredients,allergies)
-    #   ingredients = ingredients.where('peanuts ILIKE ?', 'yes') if check('peanuts', ingredients, allergies)
-    #   ingredients = ingredients.where('wheat ILIKE ?', 'yes') if check('wheat', ingredients, allergies)
-    #   ingredients = ingredients.where('soyabean ILIKE ?', 'yes') if check('soyabean', ingredients, allergies)
-    #   p_id = ingredients.pluck(:product_id) if ingredients.present?
-    #   product.where(id: p_id) if p_id.present?
-    # end
-
-    # def category_filter(product)
-    #   product = category_searching(product, 'Packaged_Food', params[:category]['packaged_food']) if params[:category]['packaged_food'].present? && product.present?
-    #   product = category_searching(product, 'raw_food', params[:category]['raw_food']) if params[:category]['raw_food'].present? && product.present?
-    #   product = category_searching(product, 'packaged_drink', params[:category]['packaged_drink']) if params[:category]['packaged_drink'].present? && product.present?
-    #   product = category_searching(product, 'packaged_cheese_oil', params[:category]['packaged_cheese_oil']) if params[:category]['packaged_cheese_oil'].present? && product.present?
-    #   product = category_searching(product, 'cooked_food', params[:category]['cooked_food']) if params[:category]['cooked_food'].present? && product.present?
-    #   product
-    # end
-
-    # def category_searching(product, cat_name, category_filter)
-    #   cat_id = BxBlockCategories::Category.find_by(category_type: cat_name) 
-    #   product = product.where(category_id: cat_id).where(category_filter: category_filter)
-    # end
-
-    # def check(value, ingredients,allergies)
-    #   allergies.include?(value) && ingredients.present?
-    # end
-
+     
     def product_param
       params.require(:data).permit(:product_name, :category_id)
     end  
 
+    # def category_type_product
+    #   category_id =  BxBlockCategories::Category.category_type(params[:category_type]).ids
+    #   product =  BxBlockCatalogue::Product.where(category_id: category_id) #.pluck(:food_drink_filter).uniq
+    #   # category = 
+    # end
+  
   end
 end
