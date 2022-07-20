@@ -58,7 +58,8 @@ module AccountBlock
           else
             account = SocialAccount.find_by(email: @account.email)
             account.register = true
-            render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered", register: account.register }), status: :ok
+            @account.additional_details = true unless @account.full_name.nil?
+            render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered", register: account.register, additional_details: @account.additional_details }), status: :ok
           end
       else
        render json: {errors: [
