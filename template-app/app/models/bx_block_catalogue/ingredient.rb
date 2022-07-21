@@ -10,9 +10,6 @@ module BxBlockCatalogue
     scope :artificial_preservative, ->(artificial_preservative) { where artificial_preservative: artificial_preservative }
     scope :organic, ->(organic) { where organic: organic }
     scope :vegan_product, ->(vegan_product) { where vegan_product: vegan_product }
-    scope :product_type, ->(product_type) { where product_type: product_type }
-    scope :product_type, ->(product_type) { where product_type: product_type }
-    scope :product_type, ->(product_type) { where product_type: product_type }
 
   end
 end
