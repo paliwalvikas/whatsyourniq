@@ -1,5 +1,5 @@
 module BxBlockCatalogue
-  class HealthPreferenceService
+  class SmartSearchService
   	def smart_search(params)
       product = BxBlockCatalogue::Product.all
       # "pakaged_food", "row_food", "cooked_food"
