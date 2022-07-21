@@ -9,8 +9,8 @@ module BxBlockCategories
     # mount_uploader :dark_icon_active, ImageUploader
     # mount_uploader :dark_icon_inactive, ImageUploader
 
-    # has_and_belongs_to_many :sub_categories,
-    #                         join_table: :categories_sub_categories, dependent: :destroy
+    has_and_belongs_to_many :sub_categories,
+                            join_table: :categories_sub_categories, dependent: :destroy
 
     # has_many :contents, class_name: "BxBlockContentmanagement::Content", dependent: :destroy
     # has_many :ctas, class_name: "BxBlockCategories::Cta", dependent: :nullify
@@ -21,5 +21,8 @@ module BxBlockCategories
     #          join_table: "user_categoeries"
     has_many :products, class_name: "BxBlockCatalogue::Product", dependent: :destroy
     enum category_type: [:Packaged_Food, :raw_food, :cooked_food]
+
+    scope :category_type, ->(category_type) { where category_type: category_type }
+    
   end
 end

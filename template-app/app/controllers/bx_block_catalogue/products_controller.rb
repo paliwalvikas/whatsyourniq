@@ -57,22 +57,16 @@ module BxBlockCatalogue
       end
     end
 
-    # def smart_searching
-    #   product = BxBlockCatalogue::ProductSmartSearchService.new.health_preference(Product.last,params)
-    #   if product.present?
-    #     render json: ProductSerializer.new(product)
-    #   else
-    #     render json: { error: 'Product Not Found' }
-    #   end
-      # data = if params[:query] == "food_type"
-      #           category = BxBlockCategories::Category.all
-      #           render json: BxBlockCategories::CategorySerializer.new(category)
-      #         elsif params[:query] == "category"
-      #           product = category_type_product
-                # render json: ProductSerializer.new(product)
-              # end
-
-    # end
+    def smart_searching
+      # product = BxBlockCatalogue::ProductSmartSearchService.new.health_preference(Product.last,params)
+      # if product.present?
+      #   render json: ProductSerializer.new(product)
+      # else
+      #   render json: { error: 'Product Not Found' }
+      # end
+      data = BxBlockCatalogue::SmartFiltersService.new.filters(params)
+      render json: data
+    end
 
     private
 
@@ -100,12 +94,6 @@ module BxBlockCatalogue
     def product_param
       params.require(:data).permit(:product_name, :category_id)
     end  
-
-    # def category_type_product
-    #   category_id =  BxBlockCategories::Category.category_type(params[:category_type]).ids
-    #   product =  BxBlockCatalogue::Product.where(category_id: category_id) #.pluck(:food_drink_filter).uniq
-    #   # category = 
-    # end
-  
+    
   end
 end

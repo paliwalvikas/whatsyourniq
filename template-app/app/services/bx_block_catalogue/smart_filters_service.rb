@@ -12,8 +12,8 @@ module BxBlockCatalogue
 	      end
       when "category"
         data = category(params, data)
-      when "sub_category"
-      	data = sub_category(params, data)
+      # when "sub_category"
+      # 	data = sub_category(params, data)
       end
       data
   	end
@@ -32,8 +32,8 @@ module BxBlockCatalogue
 			data
     end
 
-    def sub_category
-      product = find_product(params)
+    def sub_category(params, data)
+      # product = find_product(params)
     end
   	
   	def find_product(params) 
