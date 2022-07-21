@@ -8,9 +8,11 @@ module BxBlockCatalogue
     belongs_to :category, class_name: 'BxBlockCategories::Category', foreign_key: 'category_id'
     has_many :order_items, class_name: 'BxBlockCatalogue::OrderItem', dependent: :destroy
     attr_accessor :image_url
-
     accepts_nested_attributes_for :ingredient, allow_destroy: true
     before_save :image_process, if: :image_url
+
+    scope :product_type, ->(product_type) { where product_type: product_type }
+    scope :product_rating, ->(product_rating) { where product_rating: product_rating }
 
     def product_type=(val)
       self[:product_type] = val.downcase
