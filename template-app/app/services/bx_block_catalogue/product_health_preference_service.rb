@@ -1,5 +1,5 @@
 module BxBlockCatalogue
-    class HealthPreferenceService
+    class ProductHealthPreferenceService
 
     	# def health_preference(product, search)
      #    	ingredient = product.ingredient
