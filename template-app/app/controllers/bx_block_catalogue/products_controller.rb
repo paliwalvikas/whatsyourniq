@@ -64,8 +64,8 @@ module BxBlockCatalogue
       # else
       #   render json: { error: 'Product Not Found' }
       # end
-      # data = BxBlockCatalogue::SmartFiltersService.new.filters(params)
-      # render json: data
+      data = BxBlockCatalogue::SmartFiltersService.new.filters(params)
+      render json: data
     end
 
     private
