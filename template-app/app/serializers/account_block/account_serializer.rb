@@ -13,6 +13,16 @@ module AccountBlock
       phone_number_for object
     end
 
+    attribute :image do |object, _params|
+      if object.image.attached?
+        if Rails.env.development?
+          Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)
+        else
+          object.image&.service_url&.split('?')&.first
+        end
+      end
+    end
+
     class << self
       private
 

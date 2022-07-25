@@ -22,7 +22,12 @@ module BxBlockCatalogue
           val.flatten.last[:percent] = 100 if val.flatten.last[:percent] > 100
           object.positive_good.each do |column|
             key = val.first.to_s.include?('vit') ? 'vit' : val.first.to_s
-            val.flatten.last[:level] = column if column.include?(key)
+            if column.include?(key)
+              val.flatten.last[:level] = column
+              break
+            else
+             val.flatten.last[:level] = nil
+            end
           end
         end
       end
@@ -33,7 +38,12 @@ module BxBlockCatalogue
         _params[:not_so_good_ingredient].each do |val|
           val.flatten.last[:percent] = 100 if val.flatten.last[:percent] > 100
           object.negative_not_good.each do |column|
-            val.flatten.last[:level] = column if column.include?(val.first.to_s)
+            if column.include?(val.first.to_s)
+              val.flatten.last[:level] = column
+              break
+            else
+              val.flatten.last[:level] = nil
+            end
           end
         end
       end

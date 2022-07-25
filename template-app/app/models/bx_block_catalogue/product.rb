@@ -100,13 +100,13 @@ module BxBlockCatalogue
       positive_good << protein_value
       positive_good << dietary_fibre
       product_sugar_level
-      self.negative_not_good << calories_energy.compact.flatten unless calories_energy.compact.flatten.blank?
-      self.negative_not_good << trans_fat.compact.flatten
-      self.negative_not_good << product_sodium_level.compact.flatten
-      self.negative_not_good << product_sat_fat.compact.flatten
+      self.negative_not_good << calories_energy.try(:flatten).try(:compact)
+      self.negative_not_good << trans_fat.try(:flatten).try(:compact)
+      self.negative_not_good << product_sodium_level.try(:compact).try(:flatten)
+      self.negative_not_good << product_sat_fat.try(:compact).try(:flatten)
       self.negative_not_good << energy_from_saturated_fat
-      self.positive_good = positive_good.flatten.compact
-      self.negative_not_good = negative_not_good.compact.flatten.uniq
+      self.positive_good = positive_good.try(:flatten).try(:compact)
+      self.negative_not_good = negative_not_good.try(:compact).try(:flatten).uniq
       self.save!
     end  
 
@@ -268,7 +268,7 @@ module BxBlockCatalogue
     end
 
     def health_point_calculation
-      
+
     end
 
     def wertgyhjk
