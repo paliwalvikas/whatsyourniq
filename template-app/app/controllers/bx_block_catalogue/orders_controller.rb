@@ -24,16 +24,20 @@ module BxBlockCatalogue
     end
 
     def show 
-      order = BxBlockCatalogue::Order.find_by_id(params[:order_id])
       data = []
-      calculation = order.order_product_calculation
-      data << calculation
+      order = BxBlockCatalogue::Order.find_by_id(params[:order_id])
       if order.present?
-        product =  BxBlockCatalogue::OrderSerializer.new(order)
-        render json: { nutrition_value: data, product: product } 
-      else 
-        render json: {error: "product not present"}
-      end 
+        calculation = order.order_product_calculation
+        data << calculation
+        if order.present?
+          product =  BxBlockCatalogue::OrderSerializer.new(order)
+          render json: { nutrition_value: data, product: product } 
+        else 
+          render json: {error: "product not present"}
+        end
+      else
+        render json: {error: "Order not present"}
+      end
     end    
 
     private

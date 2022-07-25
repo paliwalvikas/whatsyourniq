@@ -52,15 +52,17 @@ module AccountBlock
        end
 
       when 'social_account'
-          @account = SocialAccount.new(jsonapi_deserialize(params))
-          if @account.save
-            render json: SocialAccountSerializer.new(@account, meta: {token: encode(@account.id), register: @account.register}).serializable_hash, status: :created
-          else
-            account = SocialAccount.find_by(email: @account.email)
-            account.register = true
-            @account.additional_details = true unless @account.full_name.nil?
-            render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered", register: account.register, additional_details: @account.additional_details }), status: :ok
+        account = SocialAccount.find_by(email: jsonapi_deserialize(params)["email"])
+        if account.present?
+          account.register = true
+          account.additional_details = true unless account.full_name.nil?
+          render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered", register: account.register, additional_details: account.additional_details }), status: :ok
+        else
+          account = SocialAccount.new(jsonapi_deserialize(params))
+          if account.save
+            render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), register: account.register}).serializable_hash, status: :created
           end
+        end
       else
        render json: {errors: [
           {account: 'Invalid Account Type'},
