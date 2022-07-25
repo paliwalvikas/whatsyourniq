@@ -86,7 +86,7 @@ module AccountBlock
     def update
       account = AccountBlock::Account.find_by_id(params[:id])
       if account.present?
-        account.update(jsonapi_deserialize(params))
+        account.update(update_params)
         render json: AccountSerializer.new(account)
       else
         render json: { message: "account not updated" }
@@ -106,6 +106,10 @@ module AccountBlock
         result << { attribute => error }
       end
       result
+    end
+
+    def update_params
+      params.require(:data).require(:attribute).permit(:full_name, :full_phone_number, :email, :activated, :image, :gender)
     end
 
     def encode(id)
