@@ -17,22 +17,27 @@ module BxBlockCatalogue
     end
 
     attribute :positive_good do |object, _params|
-      _params[:good_ingredient].each do |val|
-        val.flatten.last[:percent] = 100 if val.flatten.last[:percent] > 100
-        object.positive_good.each do |column|
-          key = val.first.to_s.include?('vit') ? 'vit' : val.first.to_s
-          val.flatten.last[:level] = column if column.include?(key)
+      if _params[:good_ingredient].present?
+        _params[:good_ingredient].each do |val|
+          val.flatten.last[:percent] = 100 if val.flatten.last[:percent] > 100
+          object.positive_good.each do |column|
+            key = val.first.to_s.include?('vit') ? 'vit' : val.first.to_s
+            val.flatten.last[:level] = column if column.include?(key)
+          end
         end
       end
     end
 
     attribute :negative_not_good do |object, _params|
-      _params[:not_so_good_ingredient].each do |val|
-        val.flatten.last[:percent] = 100 if val.flatten.last[:percent] > 100
-        object.negative_not_good.each do |column|
-          val.flatten.last[:level] = column if column.include?(val.first.to_s)
+      if _params[:not_so_good_ingredient].present?
+        _params[:not_so_good_ingredient].each do |val|
+          val.flatten.last[:percent] = 100 if val.flatten.last[:percent] > 100
+          object.negative_not_good.each do |column|
+            val.flatten.last[:level] = column if column.include?(val.first.to_s)
+          end
         end
       end
     end
+    
   end
 end
