@@ -3,12 +3,14 @@ require 'json'
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
-    skip_before_action :validate_json_web_token, only: [:update, :index, :search, :niq_score]
+    skip_before_action :validate_json_web_token, only: [:update, :index, :search, :niq_score, :calculation_for_rda]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
         product.calculation
-        render json: ProductSerializer.new(product)
+        data = product.rda_calculation
+
+        render json: ProductSerializer.new(product, params: {good_ingredient: data[:good_ingredient], not_so_good_ingredient: data[:not_so_good_ingredient]})
       else 
         render json: { errors: 'Product not found' }
       end     
@@ -16,7 +18,7 @@ module BxBlockCatalogue
 
     def update
       product = BxBlockCatalogue::Product.find_by(id: params[:id])
-      if product.calculation
+      if product.calculation or product.rda_calculation
         render json: {message: 'Calculated successfully!'}
       else
         render json: { error: 'Something went wrong!' }
@@ -67,6 +69,31 @@ module BxBlockCatalogue
       data = BxBlockCatalogue::SmartFiltersService.new.filters(params)
       render json: data
     end
+
+    def calculation_for_rda
+      if product = Product.find_by(id: params[:id])
+        render json: {data: product.rda_calculation}
+      else 
+        render json: { errors: 'Product not found' }
+      end 
+    end
+
+    # def smart_searching
+    #   product = BxBlockCatalogue::ProductSmartSearchService.new.health_preference(Product.last,params)
+    #   if product.present?
+    #     render json: ProductSerializer.new(product)
+    #   else
+    #     render json: { error: 'Product Not Found' }
+    #   end
+      # data = if params[:query] == "food_type"
+      #           category = BxBlockCategories::Category.all
+      #           render json: BxBlockCategories::CategorySerializer.new(category)
+      #         elsif params[:query] == "category"
+      #           product = category_type_product
+                # render json: ProductSerializer.new(product)
+              # end
+
+    # end
 
     private
 
