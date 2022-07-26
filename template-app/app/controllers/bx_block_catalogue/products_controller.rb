@@ -59,13 +59,7 @@ module BxBlockCatalogue
       end
     end
 
-    def smart_searching
-      # product = BxBlockCatalogue::ProductSmartSearchService.new.health_preference(Product.last,params)
-      # if product.present?
-      #   render json: ProductSerializer.new(product)
-      # else
-      #   render json: { error: 'Product Not Found' }
-      # end
+    def smart_search_filters
       data = BxBlockCatalogue::SmartFiltersService.new.filters(params)
       render json: data
     end

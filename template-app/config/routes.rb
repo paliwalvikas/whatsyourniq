@@ -10,9 +10,11 @@ Rails.application.routes.draw do
     resources :products do 
       collection do
         get :niq_score
-        get :smart_searching
+        get :smart_search_filters
+        get :smart_product_serach
       end
     end
+    resources :favourite_searches 
     resources :order_items
     resources :orders
   end 
