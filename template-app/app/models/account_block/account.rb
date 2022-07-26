@@ -2,6 +2,7 @@ module AccountBlock
   class Account < AccountBlock::ApplicationRecord
     self.table_name = :accounts
     include Wisper::Publisher
+    attr_accessor :image_url
 
     # has_secure_password
     has_one_attached :image
@@ -11,8 +12,9 @@ module AccountBlock
     has_one :blacklist_user, class_name: 'AccountBlock::BlackListUser', dependent: :destroy
     after_save :set_black_listed_user
 
+    before_save :image_process, if: :image_url
     enum status: %i[regular suspended deleted]
-
+    enum gender: %i[female male other]
     scope :active, -> { where(activated: true) }
     scope :existing_accounts, -> { where(status: ['regular', 'suspended']) }
 
@@ -47,6 +49,15 @@ module AccountBlock
           blacklist_user.destroy
         end
       end
+    end
+
+    def image_process
+      begin
+        file = open(image_url)
+      rescue Errno::ENOENT, OpenURI::HTTPError, Errno::ENAMETOOLONG, Net::OpenTimeout
+        file = open('lib/image_not_found.jpeg')
+      end
+      image.attach(io: file, filename: 'some-image.jpg', content_type: 'image/jpg')
     end
 
   end
