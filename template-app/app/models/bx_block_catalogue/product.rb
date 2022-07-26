@@ -19,7 +19,7 @@ module BxBlockCatalogue
     # belongs_to :filter_category, class_name: 'BxBlockCategories::FilterCategory', foreign_key: 'filter_category_id'
     # belongs_to :filter_sub_category, class_name: 'BxBlockCategories::FilterSubCategory', foreign_key: 'filter_sub_category_id'
 
-    # attr_accessor :image_url, :category_filter, :category_type_filter
+    attr_accessor :image_url, :category_filter, :category_type_filter
     
     enum product_type: [:cheese_and_oil, :beverage, :solid]
     # enum food_drink_filter: [:food, :drink]
@@ -244,22 +244,21 @@ module BxBlockCatalogue
         sugar_percent = ((ingredient.total_sugar.to_f / NOT_SO_GOOD_INGREDIENTS[:sugar]) * 100).round
 
         sodium_percent = ((ingredient.sodium.to_f / NOT_SO_GOOD_INGREDIENTS[:sodium]) * 100).round
-        
 
       good_ingredient = {
-        protein: [percent: protein_percent, upper_limit: GOOD_INGREDIENTS[:protein], level: positive_good.second],
-        fibre: [percent: fibre_percent, upper_limit: GOOD_INGREDIENTS[:fibre], level: positive_good.third],
-        vit_a: [percent: vit_a_percent, upper_limit: GOOD_INGREDIENTS[:vit_a], level: positive_good.first],
-        vit_c: [percent: vit_c_percent, upper_limit: GOOD_INGREDIENTS[:vit_c], level: positive_good.first],
-        vit_d: [percent: vit_d_percent, upper_limit: GOOD_INGREDIENTS[:vit_d], level: positive_good.first],
-        iron: [percent: iron_percent, upper_limit: GOOD_INGREDIENTS[:iron], level: positive_good.first],
-        calcium: [percent: calcium_percent, upper_limit: GOOD_INGREDIENTS[:calcium], level: positive_good.first],
-        magnesium: [percent: magnesium_percent, upper_limit: GOOD_INGREDIENTS[:magnesium], level: positive_good.first]
+        protein: [percent: protein_percent, upper_limit: GOOD_INGREDIENTS[:protein], level: positive_good.second, quantity: ingredient.protein.to_f.round(2)],
+        fibre: [percent: fibre_percent, upper_limit: GOOD_INGREDIENTS[:fibre], level: positive_good.third, quantity: ingredient.fibre.to_f.round(2)],
+        vit_a: [percent: vit_a_percent, upper_limit: GOOD_INGREDIENTS[:vit_a], level: positive_good.first, quantity: ingredient.vit_a.to_f.round(2)],
+        vit_c: [percent: vit_c_percent, upper_limit: GOOD_INGREDIENTS[:vit_c], level: positive_good.first, quantity: ingredient.vit_c.to_f.round(2)],
+        vit_d: [percent: vit_d_percent, upper_limit: GOOD_INGREDIENTS[:vit_d], level: positive_good.first, quantity: ingredient.vit_d.to_f.round(2)],
+        iron: [percent: iron_percent, upper_limit: GOOD_INGREDIENTS[:iron], level: positive_good.first, quantity: ingredient.iron.to_f.round(2)],
+        calcium: [percent: calcium_percent, upper_limit: GOOD_INGREDIENTS[:calcium], level: positive_good.first, quantity: ingredient.calcium.to_f.round(2)],
+        magnesium: [percent: magnesium_percent, upper_limit: GOOD_INGREDIENTS[:magnesium], level: positive_good.first, quantity: ingredient.magnesium.to_f.round(2)]
          }
       not_so_good_ingredient = {
-        saturate: [percent: saturate_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:saturated], level: negative_not_good.first(6).last],
-        sugar: [percent: sugar_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:sugar], level: negative_not_good.fifth],
-        sodium: [percent: sugar_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:sugar], level: negative_not_good.last(3).first]
+        saturate: [percent: saturate_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:saturated], level: negative_not_good.first(6).last, quantity: ingredient.saturate.to_f.round(2)],
+        sugar: [percent: sugar_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:sugar], level: negative_not_good.fifth, quantity: ingredient.total_sugar.to_f.round(2)],
+        sodium: [percent: sugar_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:sugar], level: negative_not_good.last(3).first, quantity: ingredient.sodium.to_f.round(2)]
          }
       data = {
         good_ingredient: good_ingredient,
