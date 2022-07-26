@@ -21,12 +21,11 @@ module BxBlockCatalogue
         _params[:good_ingredient].each do |val|
           val.flatten.last[:percent] = 100 if val.flatten.last[:percent] > 100
           object.positive_good.each do |column|
-            key = val.first.to_s.include?('vit') ? 'vit' : val.first.to_s
-            if column.include?(key)
+            if column.include?(val.first.to_s)
               val.flatten.last[:level] = column
               break
             else
-             val.flatten.last[:level] = nil
+              val.flatten.last[:level] = nil
             end
           end
         end
