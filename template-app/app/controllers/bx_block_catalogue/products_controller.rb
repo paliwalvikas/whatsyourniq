@@ -3,7 +3,7 @@ require 'json'
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
-    skip_before_action :validate_json_web_token, only: [:update, :index, :search, :niq_score, :calculation_for_rda]
+    skip_before_action :validate_json_web_token, only: [:update, :index, :search, :niq_score]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
