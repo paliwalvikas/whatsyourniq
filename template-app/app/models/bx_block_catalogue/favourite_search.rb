@@ -8,6 +8,6 @@ module BxBlockCatalogue
     validates :category_id, presence: true
     serialize :product_category
     serialize :product_sub_category
-    serialize :ingredient
+    serialize :functional_preference
   end
 end
