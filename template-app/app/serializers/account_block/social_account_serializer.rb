@@ -10,7 +10,6 @@ module AccountBlock
       :email,
       :activated,
       :flag
-      :gender
     ]
 
     attribute :image do |object, _params|
