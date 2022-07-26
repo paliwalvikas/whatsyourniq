@@ -58,7 +58,7 @@ module AccountBlock
           account.additional_details = true unless account.full_name.nil?
           render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), message: "Account already registered", register: account.register, additional_details: account.additional_details }), status: :ok
         else
-          account = SocialAccount.new(jsonapi_deserialize(params))
+          account = SocialAccount.new(social_params)
           if account.save
             render json: SocialAccountSerializer.new(account, meta: {token: encode(account.id), register: account.register}).serializable_hash, status: :created
           end
@@ -109,7 +109,11 @@ module AccountBlock
     end
 
     def update_params
-      params.require(:data).require(:attribute).permit(:full_name, :full_phone_number, :email, :activated, :image, :gender)
+      params.require(:data).require(:attributes).permit(:full_name, :full_phone_number, :email, :activated, :image, :gender)
+    end
+
+    def social_params
+      params.require(:data).require(:attributes).permit(:full_name, :full_phone_number, :email, :activated, :image, :gender, :unique_auth_id)
     end
 
     def encode(id)
