@@ -68,7 +68,18 @@ module AccountBlock
           {account: 'Invalid Account Type'},
         ]}, status: :unprocessable_entity
       end   
-    end   
+    end  
+     
+    def update
+      account = AccountBlock::Account.find_by_id(params[:id])
+      if account.present?
+        account.update(update_params)
+        account.additional_details = true 
+        render json: AccountSerializer.new(account, meta: {message: "Account updated successfully", additional_details: account.additional_details }), status: :ok
+      else
+        render json: { message: "account not updated" }
+      end
+    end
 
     def search
       @accounts = Account.where(activated: true)
@@ -83,15 +94,6 @@ module AccountBlock
       end
     end
 
-    def update
-      account = AccountBlock::Account.find_by_id(params[:id])
-      if account.present?
-        account.update(update_params)
-        render json: AccountSerializer.new(account)
-      else
-        render json: { message: "account not updated" }
-      end
-    end
 
     def show
       account = AccountBlock::Account.find_by_id(params[:id])
@@ -130,3 +132,5 @@ module AccountBlock
   end
 
 end
+
+
