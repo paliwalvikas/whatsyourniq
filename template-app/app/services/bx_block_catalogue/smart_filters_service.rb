@@ -5,11 +5,7 @@ module BxBlockCatalogue
   		data = []
   		data = case params[:query]
   		when  "food_type"
-			category = BxBlockCategories::Category.all
-	      category.each do |category|
-	        product = BxBlockCatalogue::Product.where(category_id: category.id)
-	        data << {count: product.count, food_type: category.category_type}
-	      end
+        food_type(data)
       when "category"
         category(params, data)
       when "sub_category"
@@ -20,13 +16,24 @@ module BxBlockCatalogue
       	food_allergies(data)
       when "food_preference"
         food_preference(data) 
+      when "functional_preference"
+        functional_preference(data)      
       when "health_preference"
-        health_preference(data)       
+        health_preference(data) 
       end
-      data
+      # data
   	end
 
   	private
+
+    def food_type(data)
+			category = BxBlockCategories::Category.all
+      category.each do |category|
+        product = BxBlockCatalogue::Product.where(category_id: category.id)
+        data << {count: product.count, food_type: category.category_type}
+      end
+      data = {count: total_count(data), food_type: data}
+    end
 
   	def category(params, data)
       product = find_product(params)
@@ -94,6 +101,14 @@ module BxBlockCatalogue
         data << {count: p_id.compact.count, health_preference: h_pref }
       end
       data = {count: total_count(data), health_preference: data}
+    end
+
+    def functional_preference(data)
+      ['energy','protein','fibre','vit_a','vit_c','total_sugar','trans_fat'].each do |f_p|
+        total_p = BxBlockCatalogue::Ingredient.where.not("#{f_p} IS ? ", nil).pluck(:product_id)
+        data << {count: total_p.compact.count, functional_preference: f_p }
+      end
+      data = {count: total_count(data), functional_preference: data}
     end
 
     def total_count(data)
