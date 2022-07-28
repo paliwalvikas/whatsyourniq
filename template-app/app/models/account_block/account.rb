@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AccountBlock
   class Account < AccountBlock::ApplicationRecord
     self.table_name = :accounts
@@ -8,7 +10,7 @@ module AccountBlock
     has_one_attached :image
     before_validation :parse_full_phone_number
     before_create :generate_api_key
-    has_many :favourite_searches, class_name: "BxBlockCatalogue::FavouriteSearch", dependent: :destroy
+    has_many :favourite_searches, class_name: 'BxBlockCatalogue::FavouriteSearch', dependent: :destroy
     has_one :blacklist_user, class_name: 'AccountBlock::BlackListUser', dependent: :destroy
     after_save :set_black_listed_user
 
@@ -16,7 +18,7 @@ module AccountBlock
     enum status: %i[regular suspended deleted]
     enum gender: %i[female male other]
     scope :active, -> { where(activated: true) }
-    scope :existing_accounts, -> { where(status: ['regular', 'suspended']) }
+    scope :existing_accounts, -> { where(status: %w[regular suspended]) }
 
     private
 
@@ -28,9 +30,7 @@ module AccountBlock
     end
 
     def valid_phone_number
-      unless Phonelib.valid?(full_phone_number)
-        errors.add(:full_phone_number, "Invalid or Unrecognized Phone Number")
-      end
+      errors.add(:full_phone_number, 'Invalid or Unrecognized Phone Number') unless Phonelib.valid?(full_phone_number)
     end
 
     def generate_api_key
@@ -59,6 +59,5 @@ module AccountBlock
       end
       image.attach(io: file, filename: 'some-image.jpg', content_type: 'image/jpg')
     end
-
   end
 end
