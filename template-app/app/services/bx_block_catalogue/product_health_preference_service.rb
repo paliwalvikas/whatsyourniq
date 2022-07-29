@@ -67,7 +67,7 @@ module BxBlockCatalogue
     	end
 
     	def cognitive_health(ingr, val)
-    		check_greater?(ingr[:iron], val[:iron]) && check_greater?(ingr[:iodine], val[:lodine]) && check_greater?(ingr[:vit_b12], val[:vit_b12]) || ingredient_herbs(ingr)#pending
+    		check_greater?(ingr[:iron], val[:iron]) && check_greater?(ingr[:iodine], val[:lodine]) && check_greater?(ingr[:vit_b12], val[:vit_b12]) || ingredient_herbs(ingr) && (ingr[:omega_3].to_f > 40 || ingr[:d_h_a].to_f == 40) 
     	end
 
     	def holistic_nutrition(ing, val)
@@ -83,7 +83,7 @@ module BxBlockCatalogue
     	end
 
     	def diabetes(ing, val, fibre)
-    		check_less?(ing[:sugar], val[:sugar]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:fibre], fibre) && diab_ingredient_list(ingr)
+    		check_less?(ing[:sugar], val[:sugar]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:fibre], fibre) && diab_ingredient_list(ing)
     	end
 
     	def low_colesterol(ing, val)
