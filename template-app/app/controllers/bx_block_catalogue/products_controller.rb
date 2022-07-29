@@ -1,25 +1,29 @@
+# frozen_string_literal: true
+
 require 'json'
 
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
-    skip_before_action :validate_json_web_token, only: [:update, :index, :search, :niq_score]
+    skip_before_action :validate_json_web_token, only: %i[update index search niq_score show delete_old_data]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
         product.calculation
         data = product.rda_calculation
 
-        render json: ProductSerializer.new(product, params: {good_ingredient: data[:good_ingredient], not_so_good_ingredient: data[:not_so_good_ingredient]})
-      else 
+        render json: ProductSerializer.new(product,
+                                           params: { good_ingredient: data[:good_ingredient],
+                                                     not_so_good_ingredient: data[:not_so_good_ingredient] })
+      else
         render json: { errors: 'Product not found' }
-      end     
+      end
     end
 
     def update
       product = BxBlockCatalogue::Product.find_by(id: params[:id])
-      if product.calculation or product.rda_calculation
-        render json: {message: 'Calculated successfully!'}
+      if product.calculation || product.rda_calculation
+        render json: { message: 'Calculated successfully!' }
       else
         render json: { error: 'Something went wrong!' }
       end
@@ -29,34 +33,38 @@ module BxBlockCatalogue
       product = BxBlockCatalogue::Product.find_by(id: params[:id])
       if product.present?
         render json: ProductSerializer.new(product)
-      else  
-        render json: { errors: 'Product not present' } 
-      end   
-    end   
+      else
+        render json: { errors: 'Product not present' }
+      end
+    end
 
     def niq_score
-      if prod = BxBlockCatalogue::Product.find_by(id: params[:product_id])
-        if prod.product_type.present? && prod.category_id.present?
-          product = case_for_product(prod.product_rating, prod.product_type, prod.category_id, prod.id)
-        end
+      if (prod = BxBlockCatalogue::Product.find_by(id: params[:product_id])) && (prod.product_type.present? && prod.category_id.present?)
+        product = case_for_product(prod.product_rating, prod.product_type, prod.category_id, prod.id)
       end
       if product.present?
         render json: ProductSerializer.new(product)
-      else 
+      else
         render json: { errors: 'Product not found' }
-      end 
+      end
     end
 
     def search
-      product = BxBlockCatalogue::Product.where("lower(products.product_name) LIKE ? OR lower(products.bar_code) LIKE ?", "%#{params[:query].downcase}%","%#{params[:query].downcase}%")
-      if product.present? 
-        if params[:category_id].present?
-          product = product.where(category_id: params[:category_id])
-        end
+      product = BxBlockCatalogue::Product.where(
+        'lower(products.product_name) LIKE ? OR lower(products.bar_code) LIKE ?', "%#{params[:query].downcase}%", "%#{params[:query].downcase}%"
+      )
+      if product.present?
+        product = product.where(category_id: params[:category_id]) if params[:category_id].present?
         render json: ProductSerializer.new(product)
       else
-        render json: {errors:'Product Not Found'}, status: :ok
+        render json: { errors: 'Product Not Found' }, status: :ok
       end
+    end
+
+    def delete_old_data
+      Product.delete_all
+      Ingredient.delete_all
+      render json: { message: 'deleted successfully!' }
     end
 
     def smart_search_filters
@@ -66,10 +74,10 @@ module BxBlockCatalogue
 
     def calculation_for_rda
       if product = Product.find_by(id: params[:id])
-        render json: {data: product.rda_calculation}
-      else 
+        render json: { data: product.rda_calculation }
+      else
         render json: { errors: 'Product not found' }
-      end 
+      end
     end
 
     # def smart_searching
@@ -79,42 +87,42 @@ module BxBlockCatalogue
     #   else
     #     render json: { error: 'Product Not Found' }
     #   end
-      # data = if params[:query] == "food_type"
-      #           category = BxBlockCategories::Category.all
-      #           render json: BxBlockCategories::CategorySerializer.new(category)
-      #         elsif params[:query] == "category"
-      #           product = category_type_product
-                # render json: ProductSerializer.new(product)
-              # end
+    # data = if params[:query] == "food_type"
+    #           category = BxBlockCategories::Category.all
+    #           render json: BxBlockCategories::CategorySerializer.new(category)
+    #         elsif params[:query] == "category"
+    #           product = category_type_product
+    # render json: ProductSerializer.new(product)
+    # end
 
     # end
 
     private
 
-    def case_for_product(rating , type, category_id, id)
+    def case_for_product(rating, type, category_id, id)
       case rating
       when 'A'
-        a = find_product(category_id, type, ['A'],id)
+        a = find_product(category_id, type, ['A'], id)
       when 'B'
-        a = find_product(category_id, type, ['A','B'],id)
+        a = find_product(category_id, type, %w[A B], id)
       when 'C'
-        a = find_product(category_id, type, ['A', 'B','C'],id)
+        a = find_product(category_id, type, %w[A B C], id)
       when 'D'
-        a = find_product(category_id, type, ['A','B','C','D'],id)
+        a = find_product(category_id, type, %w[A B C D], id)
       when 'E'
-        a = find_product(category_id, type, ['A','B','C','D','E'],id)
+        a = find_product(category_id, type, %w[A B C D E], id)
       end
-      return a
+      a
     end
 
     def find_product(category_id, type, rating, p_id)
-      product = BxBlockCatalogue::Product.where(product_type: type, product_rating: rating, category_id: category_id).where.not(id: p_id).order(product_rating: :asc)
+      product = BxBlockCatalogue::Product.where(product_type: type, product_rating: rating,
+                                                category_id: category_id).where.not(id: p_id).order(product_rating: :asc)
       product.first(5)
     end
-     
+
     def product_param
       params.require(:data).permit(:product_name, :category_id)
-    end  
-    
+    end
   end
 end

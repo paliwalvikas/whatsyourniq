@@ -46,7 +46,6 @@ module BxBlockCatalogue
           end
         end
       end
-    end
-    
+    end 
   end
 end
