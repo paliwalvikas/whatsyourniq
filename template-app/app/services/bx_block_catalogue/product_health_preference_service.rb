@@ -18,7 +18,7 @@ module BxBlockCatalogue
     	def options(ingredient, ash,search)
   	    fibre = ash[:fibre] == 3 ? 6 : 3
         case search
-        when 'immunity'
+        when 'Immunity'
       		immunity(ingredient, ash)
         when 'Gut Health'
   	    	gut_health(ingredient, ash[:gut_h])
@@ -112,6 +112,7 @@ module BxBlockCatalogue
 	    
       def diab_ingredient_list(ingr)
         list = ingr.product.ingredient_list.upcase if ingr.product.ingredient_list.present?
+        return false unless list.present?
         list.include?('MAIDA') || list.include?('WHEAT') || list.include?('FLOUR') ? false : true
       end
 

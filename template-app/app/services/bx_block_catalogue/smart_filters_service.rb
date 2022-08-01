@@ -74,31 +74,33 @@ module BxBlockCatalogue
 
   	def food_allergies(data)
   		["dairy","egg","fish","shellfish","tree_nuts","peanuts","wheat","soyabean"].each do |alg|
-        id_s = find_allergies(alg)
-        data << {count: BxBlockCatalogue::Product.where(id: id_s).count, product_rating: alg }
+        id_s = find_allergies(alg, 'no')
+        data << {count: BxBlockCatalogue::Product.where(id: id_s).count, product_rating: alg.titleize }
       end
       data = {count: total_count(data), food_allergies: data}
   	end
 
-    def find_allergies(value)
-      ingredients = BxBlockCatalogue::Ingredient.where( "#{value} ILIKE ?", 'no').pluck(:product_id)
+    def find_allergies(value, col)
+      ingredients = BxBlockCatalogue::Ingredient.where( "#{value} ILIKE ?", col).pluck(:product_id)
     end
 
     def food_preference(data)
-      ['veg','nonveg','vegan_product','organic','artificial_preservative','added_sugar','gluteen_free','no_artificial_color'].each do |alg|
+      ['veg','nonveg','vegan_product','organic','gluteen_free','artificial_preservative','added_sugar','no_artificial_color'].each do |alg|
         id_s = find_food_pref(alg)
-        data << {count: BxBlockCatalogue::Product.where(id: id_s).count, product_rating: alg }
+        alg = 'no_' + alg if alg == 'artificial_preservative' || alg == 'added_sugar' 
+        data << {count: BxBlockCatalogue::Product.where(id: id_s).count, product_rating: alg.titleize }
       end
       data = {count: total_count(data), food_preference: data}
     end
 
     def find_food_pref(value)
       value = value == 'veg' || value =='nonveg' ? 'veg_and_nonveg' : value
-      find_allergies(value)
+      c_val = value == 'artificial_preservative' || value == 'added_sugar' || value == 'no_artificial_color' ? 'no' : 'yes'
+      find_allergies(value, c_val)
     end
 
     def health_preference(data)
-      health =   ['immunity', 'Gut Health', 'Holistic Nutrition', 'weight loss', 'Weight gain','Diabetic','Low Cholestrol','Heart Friendly','Energy & Vitality','Physical growth','Cognitive health', 'Mental health\mood boosting foods']
+      health =   ['Immunity', 'Gut Health', 'Holistic Nutrition', 'weight loss', 'Weight gain','Diabetic','Low Cholestrol','Heart Friendly','Energy & Vitality','Physical growth','Cognitive health', 'Mental health\mood boosting foods']
       health.each do |h_pref|
         p_id = []
         BxBlockCatalogue::Product.all.each do |product|
@@ -113,7 +115,7 @@ module BxBlockCatalogue
     def functional_preference(data)
       ['energy','protein','fibre','vit_a','vit_c','total_sugar','trans_fat'].each do |f_p|
         total_p = BxBlockCatalogue::Ingredient.where.not("#{f_p} IS ? ", nil).pluck(:product_id)
-        data << {count: total_p.compact.count, functional_preference: f_p }
+        data << {count: total_p.compact.count, functional_preference: f_p.titleize }
       end
       data = {count: total_count(data), functional_preference: data}
     end
