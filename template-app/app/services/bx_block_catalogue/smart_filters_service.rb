@@ -74,7 +74,7 @@ module BxBlockCatalogue
   	end
 
     def find_allergies(value)
-      ingredients = BxBlockCatalogue::Ingredient.where( "#{value} ILIKE ?", 'yes').pluck(:product_id)
+      ingredients = BxBlockCatalogue::Ingredient.where( "#{value} ILIKE ?", 'no').pluck(:product_id)
     end
 
     def food_preference(data)

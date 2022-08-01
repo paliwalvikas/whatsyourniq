@@ -13,6 +13,7 @@ module AccountBlock
     has_many :favourite_searches, class_name: 'BxBlockCatalogue::FavouriteSearch', dependent: :destroy
     has_one :blacklist_user, class_name: 'AccountBlock::BlackListUser', dependent: :destroy
     after_save :set_black_listed_user
+    has_many :favourite_products, class_name: 'BxBlockCatalogue::FavouriteProduct', dependent: :destroy
 
     before_save :image_process, if: :image_url
     enum status: %i[regular suspended deleted]

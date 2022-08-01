@@ -14,11 +14,12 @@ Rails.application.routes.draw do
       collection do
         get :niq_score
         get :smart_search_filters
-        get :smart_product_serach
-        delete :delete_old_data
+        get :product_smart_serach
+        get :compare_product
       end
     end
-    resources :favourite_searches
+    resources :favourite_products
+    resources :favourite_searches 
     resources :order_items
     resources :orders
   end
