@@ -11,8 +11,8 @@ module BxBlockCategories
     # mount_uploader :dark_icon_active, ImageUploader
     # mount_uploader :dark_icon_inactive, ImageUploader
 
-    # has_and_belongs_to_many :sub_categories,
-    # join_table: :categories_sub_categories, dependent: :destroy
+    has_and_belongs_to_many :sub_categories,
+    join_table: :categories_sub_categories, dependent: :destroy
 
     # has_many :contents, class_name: "BxBlockContentmanagement::Content", dependent: :destroy
     # has_many :ctas, class_name: "BxBlockCategories::Cta", dependent: :nullify
@@ -33,12 +33,12 @@ module BxBlockCategories
       category_type = case val
                       when 'Packaged Foods'
                         'packaged_food'
-                      when 'Row Foods'
+                      when 'Raw Foods'
                         'raw_food'
                       else
                         'cooked_food'
                       end
-      Category.find_by(category_type: category_type).id
+      Category.find_by(category_type: category_type)&.id || Category.first.id
     end
   end
 end

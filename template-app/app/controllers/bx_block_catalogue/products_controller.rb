@@ -72,6 +72,16 @@ module BxBlockCatalogue
       render json: data
     end
 
+    def product_smart_serach
+      fav_s = current_user.favourite_searches.find_by(id: params[:fav_search_id])
+      if fav_s.present?
+        data = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)
+        render json: ProductSerializer.new(data)
+      else
+        render json: { errors: 'Product not found' }
+      end
+    end
+
     def calculation_for_rda
       if product = Product.find_by(id: params[:id])
         render json: { data: product.rda_calculation }
@@ -80,22 +90,14 @@ module BxBlockCatalogue
       end
     end
 
-    # def smart_searching
-    #   product = BxBlockCatalogue::ProductSmartSearchService.new.health_preference(Product.last,params)
-    #   if product.present?
-    #     render json: ProductSerializer.new(product)
-    #   else
-    #     render json: { error: 'Product Not Found' }
-    #   end
-    # data = if params[:query] == "food_type"
-    #           category = BxBlockCategories::Category.all
-    #           render json: BxBlockCategories::CategorySerializer.new(category)
-    #         elsif params[:query] == "category"
-    #           product = category_type_product
-    # render json: ProductSerializer.new(product)
-    # end
-
-    # end
+    def compare_product
+      data = cmp_product
+      if data.present? 
+        render json: {data: data} 
+      else 
+        render json: {message: "Product not found"}
+      end
+    end
 
     private
 
@@ -115,6 +117,18 @@ module BxBlockCatalogue
       a
     end
 
+    def cmp_product
+      products = Product.where(id: eval(params[:ids]))
+      data = []
+      products.each do |product|
+        product.calculation
+        p_data = product.rda_calculation
+
+        data << ProductSerializer.new(product, params: {good_ingredient: p_data[:good_ingredient], not_so_good_ingredient: p_data[:not_so_good_ingredient]})
+      end
+      data
+    end
+
     def find_product(category_id, type, rating, p_id)
       product = BxBlockCatalogue::Product.where(product_type: type, product_rating: rating,
                                                 category_id: category_id).where.not(id: p_id).order(product_rating: :asc)
@@ -123,6 +137,11 @@ module BxBlockCatalogue
 
     def product_param
       params.require(:data).permit(:product_name, :category_id)
+    end  
+
+    def product_found
+      @product = BxBlockCatalogue::Product.find_by(id: params[:id])
     end
+    
   end
 end

@@ -16,7 +16,7 @@ module BxBlockCatalogue
     end
 
   	def create
-      if @fav_search .save
+      if @fav_search.save
         render json: FavouriteSearchSerializer.new(@fav_search)
                  .serializable_hash,
         status: :created
@@ -28,6 +28,7 @@ module BxBlockCatalogue
 
   	def update
       fav_search = @fav_search.update(search_params)
+      fav_serach_update
       if fav_search
         render json: FavouriteSearchSerializer.new(@fav_search)
                          .serializable_hash,
@@ -42,10 +43,14 @@ module BxBlockCatalogue
 
     def initilize_fav_search
       @fav_search = current_user.favourite_searches.new(search_params)
-      @fav_search.niq_score = eval(params[:niq_score])
-      @fav_search.food_allergies = eval(params[:food_allergies])
-      @fav_search.food_preference = eval(params[:food_preference])
-      @fav_search.health_preference = eval(params[:health_preference])
+      fav_serach_update
+    end
+
+    def fav_serach_update
+      @fav_search.niq_score = eval(params[:niq_score]) if params[:niq_score].present?
+      @fav_search.food_allergies = eval(params[:food_allergies]) if params[:food_allergies].present?
+      @fav_search.food_preference = eval(params[:food_preference])if params[:food_preference].present?
+      @fav_search.health_preference = eval(params[:health_preference]) if params[:health_preference].present?
     end
 
     def find_favourite
