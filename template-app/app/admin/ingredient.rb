@@ -1,6 +1,41 @@
-ActiveAdmin.register BxBlockCatalogue::Ingredient, as: "ingredient" do
+# frozen_string_literal: true
+
+ActiveAdmin.register BxBlockCatalogue::Ingredient, as: 'ingredient' do
   permit_params :id, :product_id, :energy, :saturate, :total_sugar, :sodium, :ratio_fatty_acid_lipids, :fibre, :fruit_veg,
                 :protein, :vit_a, :vit_c, :vit_d, :vit_b6, :vit_b12, :vit_b9, :vit_b2, :vit_b3, :vit_b1, :vit_b5, :vit_b7, :calcium, :iron, :magnesium, :zinc, :iodine, :potassium, :phosphorus, :manganese, :copper, :selenium, :chloride, :chromium
+
+  filter :product_id, as: :select, collection: BxBlockCatalogue::Product.all.pluck(:id)
+  filter :energy
+  filter :saturate
+  filter :total_sugar
+  filter :ratio_fatty_acid_lipids
+  filter :fruit_veg
+  filter :protein
+  filter :vit_a
+  filter :vit_c
+  filter :vit_d
+  filter :vit_b6
+  filter :vit_b12
+  filter :vit_b9
+  filter :vit_b2
+  filter :vit_b3
+  filter :vit_b1
+  filter :vit_b5
+  filter :vit_b7
+  filter :calcium
+  filter :iron
+  filter :magnesium
+  filter :zinc
+  filter :iodine
+  filter :potassium
+  filter :phosphorus
+  filter :manganese
+  filter :copper
+  filter :selenium
+  filter :chloride
+  filter :chromium
+  filter :sodium
+  filter :fibre
 
   form do |f|
     f.inputs do
@@ -73,7 +108,7 @@ ActiveAdmin.register BxBlockCatalogue::Ingredient, as: "ingredient" do
     column :chromium
     column :sodium
     column :fibre
-    column "product" do |object|
+    column 'product' do |object|
       object&.product&.product_name
     end
     actions
