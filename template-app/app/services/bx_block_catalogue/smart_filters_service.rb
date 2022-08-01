@@ -30,7 +30,8 @@ module BxBlockCatalogue
 			category = BxBlockCategories::Category.all
       category.each do |category|
         product = BxBlockCatalogue::Product.where(category_id: category.id)
-        data << {count: product.count, food_type: category.category_type}
+        byebug
+        data << {count: product.count, food_type: category.category_type.titleize}
       end
       data = {count: total_count(data), food_type: data}
     end
@@ -38,22 +39,29 @@ module BxBlockCatalogue
   	def category(params, data)
       product = find_product(params)
     	product.each do |prd|
-    		product =  BxBlockCatalogue::Product.where(food_drink_filter: prd)
-    		uniq = product.pluck(:category_filter).uniq
   			filter = []
-    		uniq.map{|i| filter << {count: product.where(category_filter: i).count, category_filter: i }} 
-      	data << {count: product.count, category: prd, category_filter: filter }
+    		prod =  BxBlockCatalogue::Product.where(food_drink_filter: prd)
+    		uniq_p = prod.map{|p| p.filter_category}.uniq
+    		uniq_p.map{ |i| filter << {count: prod.where(filter_category_id: i.id).count, category_filter: i.name } }
+      	data << {count: total_count(filter), category: prd.titleize, category_filter: filter }
 			end
-			data = {category: data}
+			data = {count: total_count(data), category: data}
     end
 
     def sub_category(params, data)
       product = find_product(params)
-      data = {sub_category: data}
+      product.each do |prd|
+        filter = []
+        prod =  BxBlockCatalogue::Product.where(food_drink_filter: prd)
+        uniq_p = prod.map{|p| p.filter_sub_category}.uniq
+        uniq_p.map{ |i| filter << {count: prod.where(filter_sub_category_id: i.id).count, sub_category_filter: i.name } }
+        data << {count: total_count(filter), sub_category: prd.titleize, category_filter: filter }
+      end
+      data = {count: total_count(data), sub_category: data}
     end
   	
   	def find_product(params)
-  		category_id = BxBlockCategories::Category.category_type(params[:category_type]).ids
+  		category_id = BxBlockCategories::Category.category_type(params[:category_type].gsub(' ', '').underscore).ids
       product =  BxBlockCatalogue::Product.where(category_id: category_id).pluck(:food_drink_filter).uniq
   	end
 
