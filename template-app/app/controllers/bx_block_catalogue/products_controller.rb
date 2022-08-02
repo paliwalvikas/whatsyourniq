@@ -72,7 +72,7 @@ module BxBlockCatalogue
       render json: data
     end
 
-    def product_smart_serach
+    def product_smart_search
       fav_s = current_user.favourite_searches.find_by(id: params[:fav_search_id])
       if fav_s.present?
         data = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)
@@ -99,7 +99,7 @@ module BxBlockCatalogue
           render json: {message: "Product not found"}
         end
       else
-        render json: {message: ""}
+        render json: {message: "Please add one more product"}
       end
     end
 
