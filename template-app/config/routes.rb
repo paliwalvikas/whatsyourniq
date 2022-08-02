@@ -18,6 +18,7 @@ Rails.application.routes.draw do
         get :compare_product
       end
     end
+    resources :compare_products
     resources :favourite_products
     resources :favourite_searches 
     resources :order_items
