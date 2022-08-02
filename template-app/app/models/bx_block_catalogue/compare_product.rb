@@ -9,7 +9,7 @@ module BxBlockCatalogue
                 foreign_key: 'product_id'
 
     validates :product_id, uniqueness: {scope: [:account_id]}
-    validate :only_three_record
+    before_create :only_three_record
 
     def only_three_record
       if AccountBlock::Account.find_by(id: self.account_id).compare_products.where(selected: true).count >= 3

@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       collection do
         get :niq_score
         get :smart_search_filters
+        delete :delete_old_data
         get :product_smart_serach
         get :compare_product
       end
