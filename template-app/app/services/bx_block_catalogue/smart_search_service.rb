@@ -6,30 +6,30 @@ module BxBlockCatalogue
       # "pakaged_food", "row_food", "cooked_food"
       product = product.where(category_id: params[:category_id]) if params[:category_id].present?
       product = product.product_rating(params[:niq_score]) if params[:niq_score].present?
-      product = food_allergies(product, params) if params[:food_allergies].present?
-      # product = p_category_filter(product, params) 
+      product = s_food_allergies(product, params) if params[:food_allergies].present?
+      product = food_preferance(params, product) if params[:food_preference].present?
+      product = p_health_preference(params, product) if params[:health_preference].present?
 	  end
 
 	  private
 
-    def food_preferance
-      ingredients = BxBlockCatalogue::Ingredient.all
-      ingredients = ingredients.veg_and_nonveg(params[:veg_and_nonveg]) if params[:veg_and_nonveg].present?
-      ingredients = ingredients.gluteen_free(params[:gluteen_free]) if params[:gluteen_free].present?
-      ingredients = ingredients.added_sugar(params[:no_added_sugar]) if params[:no_added_sugar].present?
-      ingredients = ingredients.artificial_preservative(params[:artificial_preservative]) if params[:artificial_preservative].present?
-      ingredients = ingredients.organic(params[:organic]) if params[:organic].present?
-      ingredients = ingredients.vegan_product(params[:vegan_product]) if params[:vegan_product].present? 
+    # food allergiess filter
+    def s_food_allergies(product, params)
+      ingredients = BxBlockCatalogue::Ingredient.where(product_id: product.ids)
+        params[:food_allergies].each do |f_all|
+          ingredients = allergies(f_all.downcase, ingredients, 'no')
+        end
+      ingredient_to_product(ingredients, product)
     end
 
-    # food allergiess filter
-    def food_allergies(product, params)
-      ingredients = BxBlockCatalogue::Ingredient.all
-      params[:food_allergies].each do |f_all|
-        ingredients = allergies(f_all, ingredients)
+    def food_preferance(params, product)
+      ingredients = BxBlockCatalogue::Ingredient.where(product_id: product.ids)
+      params[:food_preference].each do |f_all|
+        val = f_all == 'artificial_preservative'|| f_all == 'added_sugar' || f_all == 'no_artificial_color' ? 'no' : 'yes'
+        f_all = f_all == 'veg' || f_all == 'nonveg' ? 'veg_and_nonveg' : f_all 
+        ingredients = allergies(f_all.downcase, ingredients, val)
       end
-      p_id = ingredients.pluck(:product_id) if ingredients.present?
-      product.where(id: p_id) if p_id.present?
+     ingredient_to_product(ingredients, product)
     end
 
     # def p_category_filter(product, params)
@@ -42,8 +42,13 @@ module BxBlockCatalogue
     #   product
     # end
 
-    def allergies(val, ingredients)
-      ingredients.where("#{val} ILIKE ?", 'no') 
+    def ingredient_to_product(ingredients, product)
+      p_id = ingredients.pluck(:product_id) if ingredients.present?
+      product.where(id: p_id) if p_id.present?
+    end
+
+    def allergies(val, ingredients, col)
+      ingredients.where("#{val} ILIKE ?", col) 
     end
 
     def category_searching(product, cat_name, category_filter)
