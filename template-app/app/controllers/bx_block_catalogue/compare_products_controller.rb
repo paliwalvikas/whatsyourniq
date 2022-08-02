@@ -30,7 +30,7 @@ module BxBlockCatalogue
     end
 
     def index
-      serializer = CompareProductSerializer.new(current_user.compare_products.all)
+      serializer = CompareProductSerializer.new(current_user.compare_products.where(selected: true))
 
       render json: serializer, status: :ok
     end
