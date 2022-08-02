@@ -1,11 +1,8 @@
 module BxBlockCatalogue
   class FavouriteSearch < BxBlockCatalogue::ApplicationRecord
     self.table_name = :favourite_searches
-    belongs_to :category,
-                class_name: 'BxBlockCategories::Category',
-              	foreign_key: 'category_id'
+
     belongs_to :account, class_name: 'AccountBlock::Account'
-    validates :category_id, presence: true
     serialize :product_category
     serialize :product_sub_category
     serialize :functional_preference
@@ -15,7 +12,6 @@ module BxBlockCatalogue
     scope :niq_score, ->(niq_score) { where niq_score: niq_score }
     scope :food_allergies, ->(food_allergies) { where food_allergies: food_allergies }
     scope :food_preference, ->(food_preference) { where food_preference: food_preference }
-    scope :health_preference, ->(health_preference) { where health_preference: health_preference }
     scope :favourite, ->(favourite) { where favourite: favourite }
     scope :functional_preference, ->(functional_preference) { where functional_preference: functional_preference }
     
