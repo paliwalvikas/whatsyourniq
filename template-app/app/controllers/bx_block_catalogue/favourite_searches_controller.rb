@@ -29,7 +29,7 @@ module BxBlockCatalogue
   	def update
       fav_search = @fav_search.update(search_params)
       fav_serach_update
-      if fav_search
+      if @fav_search.save
         render json: FavouriteSearchSerializer.new(@fav_search)
                          .serializable_hash,
                status: :ok

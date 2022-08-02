@@ -91,11 +91,15 @@ module BxBlockCatalogue
     end
 
     def compare_product
-      data = cmp_product
-      if data.present? 
-        render json: {data: data} 
-      else 
-        render json: {message: "Product not found"}
+      if eval(params[:ids]).count < 4 && eval(params[:ids]).count > 1
+        data = cmp_product
+        if data.present? 
+          render json: {data: data} 
+        else 
+          render json: {message: "Product not found"}
+        end
+      else
+        render json: {message: ""}
       end
     end
 

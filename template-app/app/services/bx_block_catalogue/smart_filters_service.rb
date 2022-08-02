@@ -52,9 +52,16 @@ module BxBlockCatalogue
       product.each do |prd|
         filter = []
         prod =  BxBlockCatalogue::Product.where(food_drink_filter: prd)
-        uniq_p = prod.map{|p| p.filter_sub_category}.uniq
-        uniq_p.map{ |i| filter << {count: prod.where(filter_sub_category_id: i.id).count, sub_category_filter: i.name } }
-        data << {count: total_count(filter), sub_category: prd.titleize, category_filter: filter }
+        cat_filter = prod.map{|p| p.filter_category}.uniq
+        cat_filter.each do |cat_f|
+          sub_filter =[]
+          uniq_sub = prod.where(filter_category_id: cat_f.id).map{|p| p.filter_sub_category}.uniq
+          uniq_sub.each do |sub_c|
+            sub_filter << {count: prod.where(filter_sub_category_id: sub_c.id).count, sub_category_filter: sub_c.name } 
+          end
+          filter << {count: total_count(sub_filter), category: cat_f.name , sub_category_filter: sub_filter } 
+        end
+        data << {count: total_count(filter), food_drink_filter: prd.titleize, category_filter: filter }
       end
       data = {count: total_count(data), sub_category: data}
     end
@@ -81,7 +88,7 @@ module BxBlockCatalogue
   	end
 
     def find_allergies(value, col)
-      ingredients = BxBlockCatalogue::Ingredient.where( "#{value} ILIKE ?", col).pluck(:product_id)
+      ingredients = BxBlockCatalogue::Ingredient.where("#{value} ILIKE ?", col).pluck(:product_id)
     end
 
     def food_preference(data)

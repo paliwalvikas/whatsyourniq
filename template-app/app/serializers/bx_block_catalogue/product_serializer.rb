@@ -44,7 +44,7 @@ module BxBlockCatalogue
               val.flatten.last[:level] = nil
             end
           end
-        end
+        end 
       end
     end 
   end
