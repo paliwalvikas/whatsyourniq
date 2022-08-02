@@ -44,6 +44,19 @@ module BxBlockCatalogue
     		uniq_p.map{ |i| filter << {count: prod.where(filter_category_id: i.id).count, category_filter: i.name } }
       	data << {count: total_count(filter), category: prd.titleize, category_filter: filter }
 			end
+      cao = BxBlockCatalogue::Product.where(product_type: "cheese_and_oil")
+      c_prod = cao.map{|p| p.filter_category}.uniq
+      c_prod.each do |cao|
+        data << {count: cao.where(filter_category_id: cao.id).count, category: 'cheese_and_oil', category_filter: cao.name }
+      end
+      cat= BxBlockCategories::Category.where.not(category_type: 'packaged_food')
+      cat.each do |c|
+        filter = []
+        prod = BxBlockCatalogue::Product.where(category_id: c.id)
+        u_f = prod.map{|i| i.filter_category}.uniq
+        u_f.map{ |i| filter << {count: prod.where(filter_category_id: i.id).count, category_filter: i.name } }
+        data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
+      end
 			data = {count: total_count(data), category: data}
     end
 
@@ -67,8 +80,7 @@ module BxBlockCatalogue
     end
   	
   	def find_product(params)
-  		category_id = BxBlockCategories::Category.category_type(params[:category_type].gsub(' ', '').underscore).ids
-      product =  BxBlockCatalogue::Product.where(category_id: category_id).pluck(:food_drink_filter).uniq
+      product =  BxBlockCatalogue::Product.all.pluck(:food_drink_filter).uniq
   	end
 
   	def niq_score(data)

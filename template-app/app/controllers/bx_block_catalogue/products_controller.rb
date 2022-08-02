@@ -91,8 +91,9 @@ module BxBlockCatalogue
     end
 
     def compare_product
-      if eval(params[:ids]).count < 4 && eval(params[:ids]).count > 1
-        data = cmp_product
+      prd_ids =  current_user.compare_products.where(selected: true)
+      if prd_ids.count > 1
+        data = cmp_product(prd_ids.pluck(:product_id))
         if data.present? 
           render json: {data: data} 
         else 
@@ -121,8 +122,8 @@ module BxBlockCatalogue
       a
     end
 
-    def cmp_product
-      products = Product.where(id: eval(params[:ids]))
+    def cmp_product(ids)
+      products = Product.where(id: ids)
       data = []
       products.each do |product|
         product.calculation

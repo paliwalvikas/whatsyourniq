@@ -21,7 +21,6 @@ module BxBlockCategories
     #          join_table: "user_categoeries", dependent: :destroy
     # has_many :accounts, class_name: "AccountBlock::Account", through: :user_categories,
     #          join_table: "user_categoeries"
-    has_many :favourite_searches, class_name: 'BxBlockCatalogue::FavouriteSearch', dependent: :destroy
     has_many :products, class_name: 'BxBlockCatalogue::Product', dependent: :destroy
     # enum category_type: [:Packaged_Food, :raw_food, :cooked_food]
 

@@ -9,6 +9,13 @@ module BxBlockCatalogue
                 foreign_key: 'product_id'
 
     validates :product_id, uniqueness: {scope: [:account_id]}
+    validate :only_three_record
+
+    def only_three_record
+      if AccountBlock::Account.find_by(id: self.account_id).compare_products.where(selected: true).count >= 3
+        errors.add(:selected, "You are not able to add more product")
+      end
+    end
 
   end
 end
