@@ -54,7 +54,7 @@ module BxBlockCatalogue
     end
 
     def load_product
-      @product = current_user.compare_products.find_by(id: params[:id])
+      @product = current_user.compare_products.find_by(product_id: params[:id])
 
       if @product.nil?
         render json: {

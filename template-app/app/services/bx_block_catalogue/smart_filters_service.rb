@@ -124,12 +124,8 @@ module BxBlockCatalogue
     def health_preference(data)
       health =   ['Immunity', 'Gut Health', 'Holistic Nutrition', 'weight loss', 'Weight gain','Diabetic','Low Cholestrol','Heart Friendly','Energy & Vitality','Physical growth','Cognitive health', 'Mental health\mood boosting foods']
       health.each do |h_pref|
-        p_id = []
-        BxBlockCatalogue::Product.all.each do |product|
-          prod = BxBlockCatalogue::ProductHealthPreferenceService.new.health_preference(product, h_pref)
-          p_id << (prod == true ? product.id : nil)
-        end
-        data << {count: p_id.compact.count, health_preference: h_pref }
+        prod = BxBlockCatalogue::ProductHealthPreferenceService.new.health_pref_search(BxBlockCatalogue::Product.all, h_pref)
+        data << {count: prod.compact.count, health_preference: h_pref }
       end
       data = {count: total_count(data), health_preference: data}
     end
