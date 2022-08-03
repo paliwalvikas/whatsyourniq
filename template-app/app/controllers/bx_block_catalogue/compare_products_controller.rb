@@ -1,6 +1,12 @@
 module BxBlockCatalogue
   class CompareProductsController < ApplicationController
-    before_action :load_product, only: [:update]
+    before_action :load_product, only: [:update, :destroy]
+
+    def index
+      serializer = CompareProductSerializer.new(current_user.compare_products.where(selected: true))
+
+      render json: serializer, status: :ok
+    end
 
     def create
       product = current_user.compare_products.new(compare_params.merge(selected: true))
@@ -17,7 +23,8 @@ module BxBlockCatalogue
     end
 
     def update
-      update_result = @product.update(compare_params)
+      @product.update(compare_params)
+      update_result = @product.save(validate: false)
       if update_result
         render json: CompareProductSerializer.new(@product)
                          .serializable_hash,
@@ -26,13 +33,18 @@ module BxBlockCatalogue
         render json: ErrorSerializer.new(@product).serializable_hash,
                status: :unprocessable_entity
       end
-
     end
 
-    def index
-      serializer = CompareProductSerializer.new(current_user.compare_products.where(selected: true))
 
-      render json: serializer, status: :ok
+    def destroy
+      return if @product.nil?
+
+      if @product.destroy
+        render json: { success: true }, status: :ok
+      else
+        render json: ErrorSerializer.new(@product).serializable_hash,
+               status: :unprocessable_entity
+      end
     end
 
     private
