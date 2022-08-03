@@ -46,9 +46,12 @@ module BxBlockCatalogue
 			end
       cao = BxBlockCatalogue::Product.where(product_type: "cheese_and_oil")
       c_prod = cao.map{|p| p.filter_category}.uniq
+      cao_filter = []
       c_prod.each do |cao|
-        data << {count: cao.where(filter_category_id: cao.id).count, category: 'cheese_and_oil', category_filter: cao.name }
+        cao_filter << {count: cao.where(filter_category_id: cao.id).count, category_filter: cao.name }
       end
+      data << {count:  total_count(cao_filter), category: 'cheese_and_oil'.titleize, category_filter: cao_filter }
+
       cat= BxBlockCategories::Category.where.not(category_type: 'packaged_food')
       cat.each do |c|
         filter = []
@@ -121,12 +124,8 @@ module BxBlockCatalogue
     def health_preference(data)
       health =   ['Immunity', 'Gut Health', 'Holistic Nutrition', 'weight loss', 'Weight gain','Diabetic','Low Cholestrol','Heart Friendly','Energy & Vitality','Physical growth','Cognitive health', 'Mental health\mood boosting foods']
       health.each do |h_pref|
-        p_id = []
-        BxBlockCatalogue::Product.all.each do |product|
-          prod = BxBlockCatalogue::ProductHealthPreferenceService.new.health_preference(product, h_pref)
-          p_id << (prod == true ? product.id : nil)
-        end
-        data << {count: p_id.compact.count, health_preference: h_pref }
+        prod = BxBlockCatalogue::ProductHealthPreferenceService.new.health_pref_search(BxBlockCatalogue::Product.all, h_pref)
+        data << {count: prod.compact.count, health_preference: h_pref }
       end
       data = {count: total_count(data), health_preference: data}
     end
