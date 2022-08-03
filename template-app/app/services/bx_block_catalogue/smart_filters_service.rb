@@ -46,9 +46,12 @@ module BxBlockCatalogue
 			end
       cao = BxBlockCatalogue::Product.where(product_type: "cheese_and_oil")
       c_prod = cao.map{|p| p.filter_category}.uniq
+      cao_filter = []
       c_prod.each do |cao|
-        data << {count: cao.where(filter_category_id: cao.id).count, category: 'cheese_and_oil', category_filter: cao.name }
+        cao_filter << {count: cao.where(filter_category_id: cao.id).count, category_filter: cao.name }
       end
+      data << {count:  total_count(cao_filter), category: 'cheese_and_oil'.titleize, category_filter: cao_filter }
+
       cat= BxBlockCategories::Category.where.not(category_type: 'packaged_food')
       cat.each do |c|
         filter = []
