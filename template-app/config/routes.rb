@@ -17,6 +17,7 @@ Rails.application.routes.draw do
         delete :delete_old_data
         get :product_smart_search
         get :compare_product
+        post :prod_health_preference
       end
     end
     resources :compare_products
