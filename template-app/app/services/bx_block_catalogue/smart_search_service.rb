@@ -12,6 +12,7 @@ module BxBlockCatalogue
 	    product = p_category_filter(product, params) if check?(params[:product_category]) && check?(product)
       product = p_sub_category(product, params) if check?(params[:product_sub_category]) && check?(product)
       product = functional_preference(product, params) if check?(params[:functional_preference]) && check?(product)
+      product
     end
 
 	  private
@@ -46,7 +47,7 @@ module BxBlockCatalogue
     end
 
     def food_type(params, product)
-      cat_ids= BxBlockCategories::Category.where(category_type: params[:food_type]).pluck(:id)
+      cat_ids= BxBlockCategories::Category.where(category_type: params[:food_type].map{|i| i.downcase.tr!(" ", "_")}).pluck(:id)
       product.where(category_id: cat_ids)
     end
 

@@ -1,11 +1,13 @@
 ActiveAdmin.register AccountBlock::Account, as: "Users" do
-  permit_params :full_name, :email, :full_phone_number, :activated 
+  permit_params :full_name, :email, :full_phone_number, :activated , :age, :gender
 
   form do |f|
     f.inputs do
       f.input :full_name
       f.input :email
       f.input :full_phone_number
+      f.input :gender, label: 'Gender', :as => :select, collection: ['Male', 'Female','Other']
+      f.input :age
       f.input :activated
     end
     f.actions
@@ -13,6 +15,8 @@ ActiveAdmin.register AccountBlock::Account, as: "Users" do
 
   index title: 'users' do
   	id_column
+    column :total_female_count
+    column :total_male_count
     column :full_name
     column :email
     column :full_phone_number
@@ -25,6 +29,8 @@ ActiveAdmin.register AccountBlock::Account, as: "Users" do
       row :full_name
       row :email
       row :full_phone_number
+      row :gender
+      row :age
       row :activated
     end  
   end
