@@ -43,7 +43,7 @@ module BxBlockCatalogue
          key = key.to_s.include?(' ') ? key.to_s.downcase.tr!(" ", "_") : key.to_s.downcase 
         hsh[key.to_sym] = value
       end
-      self.create_health_preference(immunity: hsh[:immunity], gut_health: hsh[:gut_health], holistic_nutrition: hsh[:holistic_nutrition],weight_loss: hsh[:weight_loss], weight_gain: hsh[:weight_gain], diabetes: hsh[:diabetes], low_colesterol: hsh[:low_colesterol], heart_friendly:hsh[:heart_friendly], energy_and_vitality: hsh[:energy_and_vitality],physical_growth: hsh[:physical_growth],cognitive_health: hsh[:cognitive_health],high_protein: hsh[:high_protein],low_sugar: hsh[:low_sugar])
+      self.create_health_preference(immunity: hsh[:immunity], gut_health: hsh[:gut_health], holistic_nutrition: hsh[:holistic_nutrition],weight_loss: hsh[:weight_loss], weight_gain: hsh[:weight_gain], diabetic: hsh[:diabetes], low_colesterol: hsh[:low_colesterol], heart_friendly:hsh[:heart_friendly], energy_and_vitality: hsh[:energy_and_vitality],physical_growth: hsh[:physical_growth],cognitive_health: hsh[:cognitive_health],high_protein: hsh[:high_protein],low_sugar: hsh[:low_sugar])
     end
 
     def product_type=(val)
