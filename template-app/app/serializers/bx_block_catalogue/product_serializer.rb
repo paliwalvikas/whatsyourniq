@@ -1,6 +1,6 @@
 module BxBlockCatalogue
   class ProductSerializer < BuilderBase::BaseSerializer
-    attributes :id, :product_name, :product_type, :product_point, :product_rating, :positive_good, :negative_not_good, :bar_code, :data_check, :description, :ingredient_list, :food_drink_filter, :category_filter, :category_type_filter, :created_at, :updated_at
+    attributes :id, :product_name, :product_type, :product_point, :product_rating, :positive_good, :negative_not_good, :bar_code, :data_check, :food_drink_filter, :image, :category_type, :filter_category, :filter_sub_category, :description, :ingredient_list, :created_at, :updated_at
     
     attribute :image do |object, _params|
       if object.image.attached?
@@ -16,6 +16,14 @@ module BxBlockCatalogue
       object.category.category_type.titleize
     end
 
+    attribute :filter_category do |object|
+      object.filter_category.name.titleize
+    end
+
+    attribute :filter_sub_category do |object|
+      object.filter_sub_category.name.titleize
+    end
+
     attribute :positive_good do |object, _params|
       if _params[:good_ingredient].present?
         _params[:good_ingredient].each do |val|
@@ -29,6 +37,7 @@ module BxBlockCatalogue
             end
           end
         end
+        # _params[:good_ingredient].merge(object.vitamins_and_minrals)
       end
     end
 

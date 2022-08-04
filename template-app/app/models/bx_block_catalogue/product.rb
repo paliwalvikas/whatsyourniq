@@ -130,12 +130,16 @@ module BxBlockCatalogue
     end
 
     def micro_calculation(ing)
-      micro_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::PositiveIngredient.column_names + BxBlockCheeseAndOil::NegativeIngredient.column_names + ['product_id'])
-      micro_clumns.each do |clm|
+      point = []
+      micro_columns.each do |clm|
         ing_value = ing.send(clm)
-        check_value('micro_value', clm, ing_value) if ing_value.present?
+        point << check_value('micro_value', clm, ing_value) if ing_value.present?
       end
-      micro_clumns
+      point
+    end
+
+    def micro_columns
+      micro_columns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::PositiveIngredient.column_names + BxBlockCheeseAndOil::NegativeIngredient.column_names + ['product_id'])
     end
 
     def check_value(val, ele, value)
@@ -227,17 +231,40 @@ module BxBlockCatalogue
 
     def vit_min_value 
       ing = ingredient
-      micro_clumns = micro_calculation(ing)
-      vt_mn = []
-      micro_clumns.each do |clm|
+      vit_min = []
+      micro_columns.each do |clm|
         mp = ing.send(clm).to_f
-        vt_mn << if (mp < 0.6)
+        vit_min << if (mp < 0.6)
                   "low in #{clm}"
                 else
                   (mp >= 0.6 && mp < 1.0 ? "source in #{clm}" : "high in #{clm}")
                 end
       end
-      vt_mn
+      vit_min
+    end
+
+    def levels_for_vit_and_min(columns)
+      ing = ingredient
+      vit_min = []
+      columns.each do |clm|
+        ing_value = ing.send(clm).to_f
+        vit_min << check_value('micro_value', clm, ing_value) if ing_value.present?
+      end
+      sum_of_vit_and_min = vit_min.sum.to_f
+      level = if (sum_of_vit_and_min < 0.6)
+                "Low"
+              else
+                (sum_of_vit_and_min >= 0.6 && sum_of_vit_and_min < 1.0 ? "Medium" : "High")
+              end
+      level
+    end
+
+    def minral_columns
+      ['calcium', 'iron', 'magnesium', 'zinc', 'iodine', 'potassium', 'phosphorus', 'manganese', 'copper', 'selenium', 'chloride', 'chromium']
+    end
+
+    def vitamin_columns
+      ['vit_a','vit_c','vit_d','vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1','vit_b5','vit_b7']
     end
 
     def dietary_fibre
@@ -299,6 +326,11 @@ module BxBlockCatalogue
         good_ingredient: good_ingredient,
         not_so_good_ingredient: not_so_good_ingredient
       }
+    end
+
+    def vitamins_and_minrals
+      good_ingredient = { vitamins: [percent: 0.0, upper_limit: 0.0, level: levels_for_vit_and_min(vitamin_columns), quantity: 0.0],
+        minerals: [percent: 0.0, upper_limit: 0.0, level: levels_for_vit_and_min(minral_columns), quantity: 0.0]}
     end
 
     def calories_energy
