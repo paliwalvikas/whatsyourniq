@@ -43,7 +43,7 @@ module BxBlockCatalogue
   	    	low_colesterol(ingredient, ash)
         when 'Heart Friendly'
   	    	heart_friendly(ingredient, ash, fibre)
-        when 'Energy & Vitality'
+        when 'Energy and Vitality'
   	    	energy_and_vitality(ingredient, ash)
         when 'Physical growth' 
   	    	physical_growth(ingredient, ash)

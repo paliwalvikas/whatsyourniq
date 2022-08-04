@@ -13,6 +13,8 @@ module BxBlockCatalogue
     before_save :image_process, if: :image_url
     has_one_attached :image
 
+    has_one :health_preference, class_name: 'BxBlockCatalogue::HealthPreference', dependent: :destroy
+
     has_one :ingredient, class_name: 'BxBlockCatalogue::Ingredient', dependent: :destroy
     has_many :order_items, class_name: 'BxBlockCatalogue::OrderItem', dependent: :destroy
     attr_accessor :image_url, :category_filter, :category_type_filter
@@ -29,9 +31,20 @@ module BxBlockCatalogue
     enum food_drink_filter: %i[food drink]
 
     accepts_nested_attributes_for :ingredient, allow_destroy: true
-
+    after_create :product_health_preference
     scope :product_type, ->(product_type) { where product_type: product_type }
     scope :product_rating, ->(product_rating) { where product_rating: product_rating }
+
+    def product_health_preference
+      health = {"Immunity": nil ,"Gut Health": nil,"Holistic Nutrition": nil, "weight loss": nil,"Weight gain": nil,"Diabetic": nil,"Low Cholestrol": nil,"Heart Friendly": nil,"Energy and Vitality": nil,"Physical growth": nil,"Cognitive health": nil,"High Protein": nil,"Low Sugar": nil}
+        hsh = {}
+      health.each do |key, value|
+         value = BxBlockCatalogue::ProductHealthPreferenceService.new.health_preference(self, key.to_s)
+         key = key.to_s.include?(' ') ? key.to_s.downcase.tr!(" ", "_") : key.to_s.downcase 
+        hsh[key.to_sym] = value
+      end
+      self.create_health_preference(immunity: hsh[:immunity], gut_health: hsh[:gut_health], holistic_nutrition: hsh[:holistic_nutrition],weight_loss: hsh[:weight_loss], weight_gain: hsh[:weight_gain], diabetes: hsh[:diabetes], low_colesterol: hsh[:low_colesterol], heart_friendly:hsh[:heart_friendly], energy_and_vitality: hsh[:energy_and_vitality],physical_growth: hsh[:physical_growth],cognitive_health: hsh[:cognitive_health],high_protein: hsh[:high_protein],low_sugar: hsh[:low_sugar])
+    end
 
     def product_type=(val)
       self[:product_type] = val&.downcase

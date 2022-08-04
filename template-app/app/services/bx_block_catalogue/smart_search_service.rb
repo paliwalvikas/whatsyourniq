@@ -15,6 +15,13 @@ module BxBlockCatalogue
       product
     end
 
+    def p_health_preference(params, product)
+      val = params[:health_preference] 
+      val = val.include?(' ') ? val.downcase.tr!(" ", "_") : val.downcase 
+      hp_ids = BxBlockCatalogue::HealthPreference.where("#{val} = ?", true).map(&:product_id)
+      hp_ids.present? ? product.where(id: hp_ids) : []
+    end
+
 	  private
 
     def functional_preference(product, f_p)
@@ -67,11 +74,6 @@ module BxBlockCatalogue
       end
      ingredient_to_product(ingredients, product)
     end
-
-    def p_health_preference(params, product)
-      BxBlockCatalogue::ProductHealthPreferenceService.new.health_pref_search(product, params[:health_preference])
-    end
-
 
     def p_sub_category(product, params)
       psc = eval(params[:product_sub_category])

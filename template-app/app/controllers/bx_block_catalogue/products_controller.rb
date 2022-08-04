@@ -49,6 +49,12 @@ module BxBlockCatalogue
       end
     end
 
+    def prod_health_preference
+      Product.all.each do |product|
+        product.product_health_preference
+      end
+    end
+
     def search
       product = BxBlockCatalogue::Product.where(
         'lower(products.product_name) LIKE ? OR lower(products.bar_code) LIKE ?', "%#{params[:query].downcase}%", "%#{params[:query].downcase}%"
