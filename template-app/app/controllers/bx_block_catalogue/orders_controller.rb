@@ -6,9 +6,10 @@ module BxBlockCatalogue
     before_action :set_order, only: [:create]
 
     def index
-      order = BxBlockCatalogue::Order.where(account_id: current_user.id)
-      if order.present?
-        render json: BxBlockCatalogue::OrderSerializer.new(order)
+      orders = BxBlockCatalogue::Order.where(account_id: current_user.id)
+      order_items = orders.includes(:order_items)
+      if orders.present?
+        render json: BxBlockCatalogue::OrderSerializer.new(orders)
       else 
         render json: {error: "no bucket present please create one"}
       end     
