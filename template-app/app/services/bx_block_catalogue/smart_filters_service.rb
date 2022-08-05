@@ -77,7 +77,7 @@ module BxBlockCatalogue
           end
           filter << {count: total_count(sub_filter), category: cat_f.name , sub_category_filter: sub_filter } 
         end
-        data << {count: total_count(filter), food_drink_filter: prd.titleize, category_filter: filter }
+        data << {count: total_count(filter), food_drink_filter: ("packaged " + prd).titleize, category_filter: filter }
       end
       data = {count: total_count(data), sub_category: data}
     end
