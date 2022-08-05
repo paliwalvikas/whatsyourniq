@@ -12,6 +12,7 @@ module BxBlockCatalogue
 	    product = p_category_filter(product, params) if check?(params[:product_category]) && check?(product)
       product = p_sub_category(product, params) if check?(params[:product_sub_category]) && check?(product)
       product = functional_preference(product, params) if check?(params[:functional_preference]) && check?(product)
+      params.update(product_count: product.count)
       product
     end
 
