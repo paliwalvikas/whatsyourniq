@@ -36,14 +36,16 @@ module BxBlockCatalogue
     scope :product_rating, ->(product_rating) { where product_rating: product_rating }
 
     def product_health_preference
-      health = {"Immunity": nil ,"Gut Health": nil,"Holistic Nutrition": nil, "weight loss": nil,"Weight gain": nil,"Diabetic": nil,"Low Cholestrol": nil,"Heart Friendly": nil,"Energy and Vitality": nil,"Physical growth": nil,"Cognitive health": nil,"High Protein": nil,"Low Sugar": nil}
+      unless self.health_preference.present?
+        health = {"Immunity": nil ,"Gut Health": nil,"Holistic Nutrition": nil, "weight loss": nil,"Weight gain": nil,"Diabetic": nil,"Low Cholestrol": nil,"Heart Friendly": nil,"Energy and Vitality": nil,"Physical growth": nil,"Cognitive health": nil,"High Protein": nil,"Low Sugar": nil}
         hsh = {}
-      health.each do |key, value|
-         value = BxBlockCatalogue::ProductHealthPreferenceService.new.health_preference(self, key.to_s)
-         key = key.to_s.include?(' ') ? key.to_s.downcase.tr!(" ", "_") : key.to_s.downcase 
-        hsh[key.to_sym] = value
+        health.each do |key, value|
+           value = BxBlockCatalogue::ProductHealthPreferenceService.new.health_preference(self, key.to_s)
+           key = key.to_s.include?(' ') ? key.to_s.downcase.tr!(" ", "_") : key.to_s.downcase 
+          hsh[key.to_sym] = value
+        end 
+        self.create_health_preference(immunity: hsh[:immunity], gut_health: hsh[:gut_health], holistic_nutrition: hsh[:holistic_nutrition],weight_loss: hsh[:weight_loss], weight_gain: hsh[:weight_gain], diabetic: hsh[:diabetic], low_cholestrol: hsh[:low_cholestrol], heart_friendly:hsh[:heart_friendly], energy_and_vitality: hsh[:energy_and_vitality],physical_growth: hsh[:physical_growth],cognitive_health: hsh[:cognitive_health],high_protein: hsh[:high_protein],low_sugar: hsh[:low_sugar])
       end
-      self.create_health_preference(immunity: hsh[:immunity], gut_health: hsh[:gut_health], holistic_nutrition: hsh[:holistic_nutrition],weight_loss: hsh[:weight_loss], weight_gain: hsh[:weight_gain], diabetic: hsh[:diabetic], low_cholestrol: hsh[:low_cholestrol], heart_friendly:hsh[:heart_friendly], energy_and_vitality: hsh[:energy_and_vitality],physical_growth: hsh[:physical_growth],cognitive_health: hsh[:cognitive_health],high_protein: hsh[:high_protein],low_sugar: hsh[:low_sugar])
     end
 
     def product_type=(val)
