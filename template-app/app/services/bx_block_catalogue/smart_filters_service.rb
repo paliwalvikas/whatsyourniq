@@ -42,15 +42,15 @@ module BxBlockCatalogue
     		prod =  BxBlockCatalogue::Product.where(food_drink_filter: prd)
     		uniq_p = prod.map{|p| p.filter_category}.uniq
     		uniq_p.map{ |i| filter << {count: prod.where(filter_category_id: i.id).count, category_filter: i.name } }
-      	data << {count: total_count(filter), category: prd.titleize, category_filter: filter }
+      	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter }
 			end
-      cao = BxBlockCatalogue::Product.where(product_type: "cheese_and_oil")
-      c_prod = cao.map{|p| p.filter_category}.uniq
+      c_ao = BxBlockCatalogue::Product.where(product_type: "cheese_and_oil")
+      c_prod = c_ao.map{|p| p.filter_category}.uniq
       cao_filter = []
       c_prod.each do |cao|
-        cao_filter << {count: cao.where(filter_category_id: cao.id).count, category_filter: cao.name }
+        cao_filter << {count: c_ao.where(filter_category_id: cao.id).count, category_filter: cao.name }
       end
-      data << {count:  total_count(cao_filter), category: 'cheese_and_oil'.titleize, category_filter: cao_filter }
+      data << {count:  total_count(cao_filter), category: 'packaged_cheese_and_oil'.titleize, category_filter: cao_filter }
 
       cat= BxBlockCategories::Category.where.not(category_type: 'packaged_food')
       cat.each do |c|
@@ -87,7 +87,7 @@ module BxBlockCatalogue
   	end
 
   	def niq_score(data)
-  		rating = BxBlockCatalogue::Product.all.order(product_rating: :asc).pluck(:product_rating).uniq.compact
+  		rating = BxBlockCatalogue::Product.all.order(product_rating: :asc).pluck(:product_rating).uniq.compact.delete_if(&:blank?)
   		rating.each do |rat|
   			data << {count: BxBlockCatalogue::Product.where(product_rating: rat).count, product_rating: rat }
   		end
