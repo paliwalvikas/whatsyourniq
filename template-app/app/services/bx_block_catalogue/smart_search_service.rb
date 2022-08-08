@@ -4,7 +4,7 @@ module BxBlockCatalogue
   	def smart_search(params)
       product = BxBlockCatalogue::Product.all
       # "pakaged_food", "row_food", "cooked_food"
-      product = food_type(params, product)if check?(params[:food_type]) && check?(product)
+      product = food_type(params, product) if check?(params[:food_type]) && check?(product)
       product = product.product_rating(params[:niq_score]) if check?(params[:niq_score]) && check?(product)
       product = s_food_allergies(product, params) if check?(params[:food_allergies]) && check?(product)
       product = food_preferance(params, product) if check?(params[:food_preference]) && check?(product)
