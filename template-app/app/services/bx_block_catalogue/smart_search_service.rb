@@ -97,17 +97,18 @@ module BxBlockCatalogue
     end
 
     def raw_and_cooked(product, cao)
+      f_c_ids =[]
       cat_ids = BxBlockCategories::Category.where.not(category_type: 'packaged_food').pluck(:id)
-      f_c_ids = BxBlockCategories::FilterCategory.where(name: cao[:raw_food] + cao[:cooked_food]).pluck(:id) 
-
-      product.where(category_id: cat_ids, filter_category_id: f_c_ids)
+      f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:cooked_food]).pluck(:id) if check?(cao[:cooked_food])
+      f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:raw_food]).pluck(:id) if check?(cao[:raw_food])
+      check?(f_c_ids.flatten) ? product.where(category_id: cat_ids, filter_category_id: f_c_ids.flatten.compact.uniq) : []
     end
 
     def food_drink_filter(product, cao)
-      food = cao[:Food] 
-      drink = cao[:Drink]
-      f_c_ids = BxBlockCategories::FilterCategory.where(name: food+drink).pluck(:id) if check?(food) || check?(drink)
-      prod = product.where(food_drink_filter: ['food', 'drink'], filter_category_id: f_c_ids)
+      f_c_ids = []
+      f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:Food]).pluck(:id) if check?(cao[:Food])
+      f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:Drink]).pluck(:id) if check?(cao[:Drink])
+      check?(f_c_ids.flatten) ? product.where(food_drink_filter: ['food', 'drink'], filter_category_id: f_c_ids.flatten.compact.uniq) : []
     end
 
     def cheese_and_oil(product, cao)
