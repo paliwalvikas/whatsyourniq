@@ -38,7 +38,7 @@ module BxBlockCatalogue
         end
        pr_ids << positive_negative(product, key.downcase, value)
       end
-      product.where(id: pr_ids.flatten.compact.uniq) if pr_ids.flatten.present
+      product.where(id: pr_ids.flatten.compact.uniq) if pr_ids.flatten.present?
     end
 
     def positive_negative(product, key, value)
