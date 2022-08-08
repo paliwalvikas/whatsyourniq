@@ -4,7 +4,7 @@ module BxBlockCatalogue
     before_action :initilize_fav_search, only: [:create]
 
     def index
-      fav_search = current_user.favourite_searches.all
+      fav_search = current_user.favourite_searches.where(favourite: true).order(added_count: :asc)
       if fav_search.present?
         render json: FavouriteSearchSerializer.new(fav_search)
                  .serializable_hash,
