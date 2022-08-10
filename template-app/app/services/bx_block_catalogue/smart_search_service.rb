@@ -18,9 +18,10 @@ module BxBlockCatalogue
 
     def p_health_preference(params, product)
       val = params[:health_preference] 
-      val = val.include?(' ') ? val.downcase.tr!(" ", "_") : val.downcase 
+      return product.where(id: 0) if val.include?('\\') 
+      val = val.include?(' ') ? val.downcase.tr!(" ", "_") : val.downcase
       hp_ids = BxBlockCatalogue::HealthPreference.where("#{val} = ?", true).map(&:product_id)
-      hp_ids.present? ? product.where(id: hp_ids) : []
+      hp_ids.present? ? product.where(id: hp_ids) : product.where(id: 0)
     end
 
 	  private
@@ -111,14 +112,14 @@ module BxBlockCatalogue
       cat_ids = BxBlockCategories::Category.where.not(category_type: 'packaged_food').pluck(:id)
       f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:cooked_food]).pluck(:id) if check?(cao[:cooked_food])
       f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:raw_food]).pluck(:id) if check?(cao[:raw_food])
-      check?(f_c_ids.flatten) ? product.where(category_id: cat_ids, filter_category_id: f_c_ids.flatten.compact.uniq) : []
+      check?(f_c_ids.flatten) ? product.where(category_id: cat_ids, filter_category_id: f_c_ids.flatten.compact.uniq) : product.where(id: 0)
     end
 
     def food_drink_filter(product, cao)
       f_c_ids = []
       f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:Food]).pluck(:id) if check?(cao[:Food])
       f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:Drink]).pluck(:id) if check?(cao[:Drink])
-      check?(f_c_ids.flatten) ? product.where(food_drink_filter: ['food', 'drink'], filter_category_id: f_c_ids.flatten.compact.uniq) : []
+      check?(f_c_ids.flatten) ? product.where(food_drink_filter: ['food', 'drink'], filter_category_id: f_c_ids.flatten.compact.uniq) : product.where(id: 0)
     end
 
     def cheese_and_oil(product, cao)
