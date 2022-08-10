@@ -13,7 +13,7 @@ module BxBlockCatalogue
       product = p_sub_category(product, params) if check?(params[:product_sub_category]) && check?(product)
       product = functional_preference(product, params) if check?(params[:functional_preference]) && check?(product)
       params.update(product_count: product.count) if product.present?
-      product
+      data_batches(product)
     end
 
     def p_health_preference(params, product)
@@ -24,6 +24,16 @@ module BxBlockCatalogue
     end
 
 	  private
+
+    def data_batches(product)
+      products = []
+      product.find_in_batches(batch_size: 2000) do |prod|
+        prod.each do |prd|
+          products << prd
+        end
+      end
+      products
+    end
 
     def functional_preference(product, f_p)
       fun = eval(f_p[:functional_preference])
