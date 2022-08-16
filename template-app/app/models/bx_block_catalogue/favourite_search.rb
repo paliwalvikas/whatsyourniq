@@ -8,6 +8,7 @@ module BxBlockCatalogue
     serialize :functional_preference
     before_create :inc_added_count
     after_create :update_product_count
+    # validates :product_category, :product_sub_category, :niq_score, :food_allergies, :food_preference, :functional_preference, :health_preference, :food_type, uniqueness: true 
 
     scope :product_category, ->(product_category) { where product_category: product_category }
     scope :product_sub_category, ->(product_sub_category) { where product_sub_category: product_sub_category }
@@ -18,7 +19,7 @@ module BxBlockCatalogue
     scope :functional_preference, ->(functional_preference) { where functional_preference: functional_preference }
     
     def inc_added_count
-      self.added_count = self.account.favourite_searches.where(favourite: true).count+1
+      self.added_count = self.account&.favourite_searches&.where(favourite: true).count+1
     end
 
     def update_product_count

@@ -73,7 +73,7 @@ module BxBlockCatalogue
     def s_food_allergies(product, params)
       ingredients = BxBlockCatalogue::Ingredient.where(product_id: product.ids)
         params[:food_allergies].each do |f_all|
-          ingredients = allergies(f_all.downcase, ingredients, 'no')
+          ingredients = allergies(f_all.downcase, ingredients, 'yes')
         end
       ingredient_to_product(ingredients, product)
     end

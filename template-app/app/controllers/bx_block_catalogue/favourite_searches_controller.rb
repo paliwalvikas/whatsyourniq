@@ -1,6 +1,6 @@
 module BxBlockCatalogue
   class FavouriteSearchesController < ApplicationController
-    before_action :find_favourite, only: [:update]
+    before_action :find_favourite, only: [:update, :destroy]
     before_action :initilize_fav_search, only: [:create]
 
     def index
@@ -39,10 +39,25 @@ module BxBlockCatalogue
       end
   	end
 
+    def destroy
+      return if @fav_search.nil?
+
+      if @fav_search.destroy
+        render json: { success: true }, status: :ok
+      else
+        render json: ErrorSerializer.new(@fav_search).serializable_hash,
+               status: :unprocessable_entity
+      end
+    end
+
   	private
 
     def initilize_fav_search
-      @fav_search = current_user.favourite_searches.new(search_params)
+      if current_user.present?
+        @fav_search = current_user.favourite_searches.new(search_params)
+      else
+        @fav_search = FavouriteSearch.new(search_params)
+      end 
       fav_serach_update
     end
 
