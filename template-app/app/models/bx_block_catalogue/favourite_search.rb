@@ -2,14 +2,13 @@ module BxBlockCatalogue
   class FavouriteSearch < BxBlockCatalogue::ApplicationRecord
     self.table_name = :favourite_searches
 
-    belongs_to :account, class_name: 'AccountBlock::Account'
+    belongs_to :account, class_name: 'AccountBlock::Account', optional: true
     serialize :product_category
     serialize :product_sub_category
     serialize :functional_preference
-    before_create :inc_added_count
-    after_create :update_product_count
+    before_create :inc_added_count, if: :check?
+    after_create :update_product_count, if: :check?
     after_destroy :update_all_records
-    # validates :product_category, :product_sub_category, :niq_score, :food_allergies, :food_preference, :functional_preference, :health_preference, :food_type, uniqueness: true 
 
     scope :product_category, ->(product_category) { where product_category: product_category }
     scope :product_sub_category, ->(product_sub_category) { where product_sub_category: product_sub_category }
@@ -26,6 +25,10 @@ module BxBlockCatalogue
     def update_product_count
       prod = BxBlockCatalogue::SmartSearchService.new.smart_search(self)
       prod.present? ? self.update(product_count: prod.count) : self.update(product_count: 0)
+    end
+
+    def check?
+      self.account_id.present? ? true : false
     end
 
     def update_all_records
