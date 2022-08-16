@@ -8,6 +8,7 @@ module BxBlockCatalogue
     serialize :functional_preference
     before_create :inc_added_count
     after_create :update_product_count
+    after_destroy :update_all_records
     # validates :product_category, :product_sub_category, :niq_score, :food_allergies, :food_preference, :functional_preference, :health_preference, :food_type, uniqueness: true 
 
     scope :product_category, ->(product_category) { where product_category: product_category }
@@ -25,6 +26,15 @@ module BxBlockCatalogue
     def update_product_count
       prod = BxBlockCatalogue::SmartSearchService.new.smart_search(self)
       prod.present? ? self.update(product_count: prod.count) : self.update(product_count: 0)
+    end
+
+    def update_all_records
+      favourite = self.account&.favourite_searches&.order(updated_at: :asc)
+      count = favourite.count
+      favourite.each do |i|
+        i.update(added_count: count) 
+        count = count - 1
+      end
     end
 
   end
