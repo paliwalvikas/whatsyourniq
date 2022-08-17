@@ -9,7 +9,8 @@ module BxBlockCatalogue
       orders = BxBlockCatalogue::Order.where(account_id: current_user.id)
       order_items = orders.includes(:order_items)
       if orders.present?
-        render json: BxBlockCatalogue::OrderSerializer.new(orders)
+        serializer = valid_user.present? ? BxBlockCatalogue::OrderSerializer.new(order_items, params: {user: valid_user }) : BxBlockCatalogue::OrderSerializer.new(order_items)
+        render json: serializer
       else 
         render json: {error: "no bucket present please create one"}
       end     

@@ -285,10 +285,6 @@ module BxBlockCatalogue
       fb
     end
 
-    # def probiotic_value
-
-    # end
-
     def rda_calculation
       protein_percent = ((ingredient.protein.to_f / GOOD_INGREDIENTS[:protein]) * 100).round
       fibre_percent = ((ingredient.fibre.to_f / GOOD_INGREDIENTS[:fibre]) * 100).round
