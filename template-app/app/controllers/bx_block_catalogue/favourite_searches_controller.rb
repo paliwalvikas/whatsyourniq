@@ -2,7 +2,6 @@ module BxBlockCatalogue
   class FavouriteSearchesController < ApplicationController
     before_action :find_favourite, only: [:update, :destroy]
     before_action :initilize_fav_search, only: [:create]
-    # before_action :check_validation, only: %i[create]
     skip_before_action :validate_json_web_token, only: %i[create]
 
     def index

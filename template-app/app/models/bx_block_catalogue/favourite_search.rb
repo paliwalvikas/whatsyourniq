@@ -28,7 +28,7 @@ module BxBlockCatalogue
     end
 
     def check?
-      self.account_id.present? ? true : false
+      self.account_id.present?
     end
 
     def update_all_records

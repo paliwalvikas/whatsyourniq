@@ -16,6 +16,15 @@ module BxBlockCatalogue
       object.category.category_type.titleize
     end
 
+    attributes :compare_product do |object, user|
+      if user[:user].present?
+        compare = user[:user].compare_products.where(selected: true, product_id: object.id)
+        compare.present? 
+      else
+        false
+      end
+    end
+
     attribute :positive_good do |object, _params|
       if _params[:good_ingredient].present?
         _params[:good_ingredient].each do |val|
