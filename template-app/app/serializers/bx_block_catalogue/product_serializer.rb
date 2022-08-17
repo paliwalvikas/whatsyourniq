@@ -45,7 +45,7 @@ module BxBlockCatalogue
             end
           end
         end
-        # _params[:good_ingredient].merge(object.vitamins_and_minrals)
+        _params[:good_ingredient].merge(object.vitamins_and_minrals)
       end
     end
 
