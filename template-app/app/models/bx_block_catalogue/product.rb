@@ -90,7 +90,6 @@ module BxBlockCatalogue
           pp << check_value('positive_value', clm, ing_value) if ing_value.present?
         end
         mp = micro_calculation(ing).sum
-
         p_point = np.sum - pp.sum
         p_rating = if p_point <= (-1)
                      'A'
@@ -186,28 +185,25 @@ module BxBlockCatalogue
     end
 
     def coding_calculation(ing, ele, value)
-      if %w[carbohydrate cholestrol soyabean wheat peanuts tree_nuts shellfish total_fat
-            monosaturated_fat polyunsaturated_fat fatty_acid mono_unsaturated_fat veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish trans_fat].include?(ele)
-        0
-      else
-        unless ing.send(ele).nil?
-          com_v = ing.send(ele)['value'].to_f
-          com_lower = ing.send(ele)['lower_limit'].to_f
-          com_upper = ing.send(ele)['upper_limit'].to_f
-          case ing.send(ele)['sign']
-          when 'less_than_equals_to'
-            return ing.point if value.to_f <= com_v
-          when 'greater_than_equals_to'
-            return ing.point if value.to_f >= com_v
-          when 'greater_than'
-            return ing.point if value.to_f > com_v
-          when 'less_than'
-            return ing.point if value.to_f < com_v
-          when 'in_between'
-            return ing.point if value.to_f.between?(com_lower, com_upper)
-          end
-        end
+      return 0 if %w[carbohydrate cholestrol soyabean wheat peanuts tree_nuts shellfish total_fat
+            monosaturated_fat polyunsaturated_fat fatty_acid mono_unsaturated_fat veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish trans_fat].include?(ele) || ing.send(ele).nil?
+
+      com_v = ing.send(ele)['value'].to_f
+      com_lower = ing.send(ele)['lower_limit'].to_f
+      com_upper = ing.send(ele)['upper_limit'].to_f
+      point = case ing.send(ele)['sign']
+      when 'less_than_equals_to'
+        ing.point if value.to_f <= com_v
+      when 'greater_than_equals_to'
+        ing.point if value.to_f >= com_v
+      when 'greater_than'
+        ing.point if value.to_f > com_v
+      when 'less_than'
+        ing.point if value.to_f < com_v
+      when 'in_between'
+        ing.point if value.to_f.between?(com_lower, com_upper)
       end
+      point
     end
 
     def protein_value
