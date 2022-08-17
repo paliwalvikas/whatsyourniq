@@ -319,7 +319,7 @@ module BxBlockCatalogue
         magnesium: [percent: magnesium_percent, upper_limit: GOOD_INGREDIENTS[:magnesium], level: positive_good.first, quantity: "#{ingredient.magnesium.to_f.round(2)} mg"]
       }
       not_so_good_ingredient = {
-        saturate: [percent: saturate_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:saturated], level: negative_not_good.first(6).last, quantity: "#{ingredient.saturate.to_f.round(2)} g"],
+        saturate_fat: [percent: saturate_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:saturated], level: negative_not_good.first(6).last, quantity: "#{ingredient.saturate.to_f.round(2)} g"],
         sugar: [percent: sugar_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:sugar], level: negative_not_good.fifth, quantity: "#{ingredient.total_sugar.to_f.round(2)} mg"],
         sodium: [percent: sodium_percent, upper_limit: NOT_SO_GOOD_INGREDIENTS[:sodium], level: negative_not_good.last(3).first, quantity: "#{ingredient.sodium.to_f.round(2)} mg"],
         calories: [percent: 0.0, upper_limit: 0.0, level: calories_energy, quantity: "#{ingredient.energy.to_f.round(2)} kcal"]
@@ -490,7 +490,7 @@ module BxBlockCatalogue
                                                                                                                                                                                                                                                                                                           ) && sodium > 900
  
 
-          negative_not_good << 'High sodium' if high_sodium
+          negative_not_good << 'High sodium'
         end
       end
     end
