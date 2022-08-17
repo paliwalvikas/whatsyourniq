@@ -96,7 +96,7 @@ module BxBlockCatalogue
 
   	def food_allergies(data)
   		["dairy","egg","fish","shellfish","tree_nuts","peanuts","wheat","soyabean"].each do |alg|
-        id_s = find_allergies(alg, 'no')
+        id_s = find_allergies(alg, 'yes')
         data << {count: BxBlockCatalogue::Product.where(id: id_s).count, product_rating: alg.titleize }
       end
       data = {count: total_count(data), food_allergies: data}

@@ -16,5 +16,13 @@ module BxBlockCatalogue
       return unless @token
       @current_user ||= AccountBlock::Account.find(@token.id)
     end
+
+    def valid_user
+      token = request.headers[:token] || params[:token]
+      if token.present?
+        validate_json_web_token
+        AccountBlock::Account.find(@token.id)
+      end
+    end
   end
 end

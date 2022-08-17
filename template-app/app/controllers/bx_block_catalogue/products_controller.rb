@@ -5,7 +5,7 @@ require 'json'
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
-    skip_before_action :validate_json_web_token, only: %i[update index search niq_score show delete_old_data]
+    skip_before_action :validate_json_web_token, only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
@@ -61,7 +61,8 @@ module BxBlockCatalogue
       )
       if product.present?
         product = product.where(category_id: params[:category_id]) if params[:category_id].present?
-        render json: ProductSerializer.new(product)
+        serializer = valid_user.present? ? ProductSerializer.new(product, params: {user: valid_user }) : ProductSerializer.new(product)
+        render json: serializer
       else
         render json: { errors: 'Product Not Found' }, status: :ok
       end
@@ -79,10 +80,11 @@ module BxBlockCatalogue
     end
 
     def product_smart_search
-      fav_s = current_user.favourite_searches.find_by(id: params[:fav_search_id])
+      fav_s = BxBlockCatalogue::FavouriteSearch.find_by(id: params[:fav_search_id])
       if fav_s.present?
         data = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)
-        render json: ProductSerializer.new(data)
+        serializer = valid_user.present? ? ProductSerializer.new(data, params: {user: valid_user }) : ProductSerializer.new(data)
+        render json: serializer
       else
         render json: { errors: 'Product not found' }
       end

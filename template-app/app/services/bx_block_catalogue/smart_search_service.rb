@@ -73,7 +73,7 @@ module BxBlockCatalogue
     def s_food_allergies(product, params)
       ingredients = BxBlockCatalogue::Ingredient.where(product_id: product.ids)
         params[:food_allergies].each do |f_all|
-          ingredients = allergies(f_all.downcase, ingredients, 'no')
+          ingredients = allergies(f_all.downcase, ingredients, 'yes')
         end
       ingredient_to_product(ingredients, product)
     end
@@ -81,6 +81,7 @@ module BxBlockCatalogue
     def food_preferance(params, product)
       ingredients = BxBlockCatalogue::Ingredient.where(product_id: product.ids)
       params[:food_preference].each do |f_all|
+        f_all = f_all.include?(' ') ? f_all.downcase.tr!(" ", "_") : f_all.downcase
         val = f_all == 'artificial_preservative'|| f_all == 'added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
         ingredients = allergies(f_all.downcase, ingredients, val)
       end
