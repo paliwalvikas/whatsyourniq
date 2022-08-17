@@ -83,8 +83,8 @@ module BxBlockCatalogue
       fav_s = BxBlockCatalogue::FavouriteSearch.find_by(id: params[:fav_search_id])
       if fav_s.present?
         data = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)
-        serializer = valid_user.present? ? ProductSerializer.new(data, params: {user: valid_user }) : ProductSerializer.new(data)
-        render json: serializer
+        products = data_batches(data) if data.present?
+        render json: {data: products}
       else
         render json: { errors: 'Product not found' }
       end
@@ -113,6 +113,15 @@ module BxBlockCatalogue
     end
 
     private
+
+    def data_batches(product)
+      products = []
+      product.find_in_batches(batch_size: 7000) do |prod|
+        serializer = valid_user.present? ? ProductSerializer.new(prod, params: {user: valid_user }) : ProductSerializer.new(prod)
+        products << serializer
+      end
+      products.flatten
+    end
 
     def case_for_product(rating, type, category_id, id)
       case rating

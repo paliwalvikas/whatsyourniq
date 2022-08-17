@@ -6,8 +6,8 @@ module BxBlockCatalogue
       obj.order_items.count
     end
 
-    attributes :order_id do |obj|
-      BxBlockCatalogue::OrderItemSerializer.new(obj.order_items)
+    attributes :order_id do |obj, user|
+      BxBlockCatalogue::OrderItemSerializer.new(obj.order_items, params: {user: user[:user] })
     end
 
   end
