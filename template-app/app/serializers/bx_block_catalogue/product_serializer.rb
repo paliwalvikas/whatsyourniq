@@ -23,6 +23,7 @@ module BxBlockCatalogue
       else
         false
       end
+    end
 
     attribute :filter_category do |object|
       object.filter_category.name.titleize
@@ -63,6 +64,7 @@ module BxBlockCatalogue
           end
         end 
       end
-    end 
+    end
+
   end
 end
