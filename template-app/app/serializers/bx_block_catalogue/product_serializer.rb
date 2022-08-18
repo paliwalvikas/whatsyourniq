@@ -17,7 +17,7 @@ module BxBlockCatalogue
     end
 
     attribute :product_rating do |object|
-      object.product_rating.present? || "NA"
+      object.product_rating.present? ? object.product_rating : "NA"
     end
 
     attributes :compare_product do |object, user|
