@@ -3,7 +3,13 @@
 namespace :Product do
   desc 'Niq Score Update'
   task niq: :environment do
-    BxBlockCatalogue::Product.all.map { |product| product.calculation }
-    puts 'Niq Score Updated Successfully'
+    count = 0
+    BxBlockCatalogue::Product.find_in_batches do |products|
+      products.each do |product|
+        product.calculation
+        count += 1
+      end
+    end
+    puts "#{count} Products Niq Score Updated Successfully"
   end
 end
