@@ -73,7 +73,7 @@ module BxBlockCatalogue
       np = []
       pp = []
 
-      unless product_point.present?
+      # unless product_point.present?
         ing = ingredient
         neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
 
@@ -89,8 +89,10 @@ module BxBlockCatalogue
           ing_value = ing.send(clm)
           pp << check_value('positive_value', clm, ing_value) if ing_value.present?
         end
+
         mp = micro_calculation(ing).sum
         p_point = np.sum - pp.sum
+
         p_rating = if p_point <= (-1)
                      'A'
                    elsif p_point.between?(0, 2)
@@ -102,9 +104,14 @@ module BxBlockCatalogue
                    else
                      'E'
                    end
-        self.product_rating = p_rating
-        self.product_point = p_point
-      end
+        if np.blank? && pp.blank?
+          self.product_rating = nil
+          self.product_point = nil
+        else
+          self.product_rating = p_rating
+          self.product_point = p_point
+        end
+      # end
       if product_rating.present?
         pr = if mp.to_f.between?(0, 4)
                product_rating
@@ -151,16 +158,19 @@ module BxBlockCatalogue
             neg_point = coding_calculation(ni, ele, value)
             return neg_point if neg_point.present?
           end
+          0
         when 'positive_value'
           BxBlockCheeseAndOil::PositiveIngredient.all.each do |pi|
             pos_point = coding_calculation(pi, ele, value)
             return pos_point if pos_point.present?
           end
+          0
         when 'micro_value'
           BxBlockCheeseAndOil::MicroIngredient.all.each do |mi|
             micro_point = coding_calculation(mi, ele, value)
             return micro_point if micro_point.present?
           end
+          0
         end
       else
         product_type == 'beverage'
@@ -170,16 +180,20 @@ module BxBlockCatalogue
             neg_point = coding_calculation(ni, ele, value)
             return neg_point if neg_point.present?
           end
+          0
         when 'positive_value'
           BxBlockBeverage::BeveragePositiveIngredient.all.each do |pi|
             pos_point = coding_calculation(pi, ele, value)
             return pos_point if pos_point.present?
           end
+          0
         when 'micro_value'
+
           BxBlockBeverage::BeverageMicroIngredient.all.each do |mi|
             micro_point = coding_calculation(mi, ele, value)
             return micro_point if micro_point.present?
           end
+          0
         end
       end
     end
