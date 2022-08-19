@@ -130,7 +130,7 @@ module BxBlockCatalogue
     end
 
     def health_preference(data)
-      health = ['Immunity', 'Gut Health', 'Holistic Nutrition', 'weight loss', 'Weight gain','Diabetic','Low Cholestrol','Heart Friendly','Energy and Vitality','Physical growth','Cognitive health', 'Mental health\mood boosting foods']
+      health = ['Immunity', 'Gut Health', 'Holistic Nutrition', 'weight loss', 'Weight gain','Diabetic','Low Cholesterol','Heart Friendly','Energy and Vitality','Physical growth','Cognitive health', 'Mental health\mood boosting foods']
       health.each do |h_pref|
         unless h_pref == 'Mental health\mood boosting foods'
           prod =BxBlockCatalogue::SmartSearchService.new.p_health_preference({health_preference: h_pref}, BxBlockCatalogue::Product.all) 
