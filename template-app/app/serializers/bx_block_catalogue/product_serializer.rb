@@ -20,6 +20,10 @@ module BxBlockCatalogue
       object.product_rating.present? ? object.product_rating : "NA"
     end
 
+    attribute :product_point do |object|
+      object.product_point.present? ? object.product_point : "NA"
+    end
+
     attributes :compare_product do |object, user|
       if user[:user].present?
         compare = user[:user].compare_products.where(selected: true, product_id: object.id)

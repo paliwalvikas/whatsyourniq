@@ -62,7 +62,11 @@ module BxBlockCatalogue
       if product.present?
         product = product.where(category_id: params[:category_id]) if params[:category_id].present?
         serializer = valid_user.present? ? ProductSerializer.new(product, params: {user: valid_user }) : ProductSerializer.new(product)
-        render json: serializer
+        begin
+          return render json: serializer if serializer.present?
+        rescue AbstractController::DoubleRenderError
+          return
+        end
       else
         render json: { errors: 'Product Not Found' }, status: :ok
       end
