@@ -34,7 +34,10 @@ module BxBlockCatalogue
     after_create :product_health_preference
     scope :product_type, ->(product_type) { where product_type: product_type }
     scope :product_rating, ->(product_rating) { where product_rating: product_rating }
-    
+    scope :food_drink_filter, ->(food_drink_filter) {where food_drink_filter: food_drink_filter}
+    scope :filter_category_id, ->(filter_category_id) {where filter_category_id: filter_category_id}
+    scope :filter_sub_category_id, ->(filter_sub_category_id) {where filter_sub_category_id: filter_sub_category_id}
+
     def product_health_preference
       unless self.health_preference.present?
         health = {"Immunity": nil ,"Gut Health": nil,"Holistic Nutrition": nil, "weight loss": nil,"Weight gain": nil,"Diabetic": nil,"Low Cholestrol": nil,"Heart Friendly": nil,"Energy and Vitality": nil,"Physical growth": nil,"Cognitive health": nil,"High Protein": nil,"Low Sugar": nil}
