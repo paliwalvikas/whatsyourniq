@@ -9,7 +9,7 @@ module BxBlockCatalogue
     private
     
     def not_found
-      render :json => {'errors' => ['Record not found']}, :status => :not_found
+      return render :json => {'errors' => ['Record not found']}, :status => :not_found
     end
 
     def current_user
@@ -21,7 +21,7 @@ module BxBlockCatalogue
       token = request.headers[:token] || params[:token]
       if token.present?
         validate_json_web_token
-        AccountBlock::Account.find(@token.id)
+        AccountBlock::Account.find_by(id: @token&.id)
       end
     end
   end
