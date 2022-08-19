@@ -39,16 +39,16 @@ module BxBlockCatalogue
       product = find_product(params)
     	product.each do |prd|
   			filter = []
-    		prod =  BxBlockCatalogue::Product.where(food_drink_filter: prd)
-    		uniq_p = prod.map{|p| p.filter_category}.uniq
-    		uniq_p.map{ |i| filter << {count: prod.where(filter_category_id: i.id).count, category_filter: i.name } }
+    		prod =  BxBlockCatalogue::Product.food_drink_filter(prd)
+    		uniq_p = filter_category_p(prod.pluck(:filter_category_id).uniq)
+    		uniq_p.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
       	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter }
 			end
-      c_ao = BxBlockCatalogue::Product.where(product_type: "cheese_and_oil")
-      c_prod = c_ao.map{|p| p.filter_category}.uniq
+      c_ao = BxBlockCatalogue::Product.product_type("cheese_and_oil")
+      c_prod = filter_category_p(c_ao.pluck(:filter_category_id).uniq)
       cao_filter = []
       c_prod.each do |cao|
-        cao_filter << {count: c_ao.where(filter_category_id: cao.id).count, category_filter: cao.name }
+        cao_filter << {count: c_ao.filter_category_id(cao.id).count, category_filter: cao.name }
       end
       data << {count:  total_count(cao_filter), category: 'packaged_cheese_and_oil'.titleize, category_filter: cao_filter }
 
@@ -56,11 +56,15 @@ module BxBlockCatalogue
       cat.each do |c|
         filter = []
         prod = BxBlockCatalogue::Product.where(category_id: c.id)
-        u_f = prod.map{|i| i.filter_category}.uniq
-        u_f.map{ |i| filter << {count: prod.where(filter_category_id: i.id).count, category_filter: i.name } }
+        u_f = filter_category_p(prod.pluck(:filter_category_id).uniq)
+        u_f.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
         data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
       end
 			data = {count: total_count(data), category: data}
+    end
+
+    def filter_category_p(ids)
+      BxBlockCategories::FilterCategory.where(id: ids)
     end
 
     def sub_category(params, data)
@@ -68,18 +72,22 @@ module BxBlockCatalogue
       product.each do |prd|
         filter = []
         prod =  BxBlockCatalogue::Product.where(food_drink_filter: prd)
-        cat_filter = prod.map{|p| p.filter_category}.uniq
+        cat_filter = filter_category_p(prod.pluck(:filter_category_id).uniq)
         cat_filter.each do |cat_f|
           sub_filter =[]
-          uniq_sub = prod.where(filter_category_id: cat_f.id).map{|p| p.filter_sub_category}.uniq
+          uniq_sub = filter_sub_category(prod.filter_category_id(cat_f.id).pluck(:filter_sub_category_id).uniq)
           uniq_sub.each do |sub_c|
-            sub_filter << {count: prod.where(filter_sub_category_id: sub_c.id).count, sub_category_filter: sub_c.name } 
+            sub_filter << {count: prod.filter_sub_category_id(sub_c.id).count, sub_category_filter: sub_c.name } 
           end
           filter << {count: total_count(sub_filter), category: cat_f.name , sub_category_filter: sub_filter } 
         end
         data << {count: total_count(filter), food_drink_filter: ("packaged " + prd).titleize, category_filter: filter }
       end
       data = {count: total_count(data), sub_category: data}
+    end
+
+    def filter_sub_category(ids)
+      BxBlockCategories::FilterSubCategory.where(id: ids)
     end
   	
   	def find_product(params)
