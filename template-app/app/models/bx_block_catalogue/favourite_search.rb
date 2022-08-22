@@ -25,16 +25,16 @@ module BxBlockCatalogue
 
     def check_dupicate
       fav_search = account.favourite_searches if account.present?
-      if present?(fav_search)
-        fav = fav_search.where(niq_score: self.niq_score,food_allergies: self.food_allergies, health_preference: self.health_preference, food_type: self.food_type, account_id: self.account_id, food_preference: self.food_preference) if present?(self.account)
-        p_cat = fav_search.pluck(:product_category, :id).map{|i| i.last if i.include?(self.product_category)} if present?(self.product_category)
-        p_s_cat = fav_search.pluck(:product_sub_category, :id).map{|i| i.last if i.include?(self.product_sub_category)} if present?(self.product_sub_category)
-        f_p = fav_search.pluck(:functional_preference, :id).map{|i| i.last if i.include?(self.functional_preference)} if present?(self.functional_preference)
+      if val_present?(fav_search)
+        fav = fav_search.where(niq_score: self.niq_score,food_allergies: self.food_allergies, health_preference: self.health_preference, food_type: self.food_type, account_id: self.account_id, food_preference: self.food_preference) if val_present?(self.account)
+        p_cat = fav_search.pluck(:product_category, :id).map{|i| i.last if i.include?(self.product_category)} if val_present?(self.product_category)
+        p_s_cat = fav_search.pluck(:product_sub_category, :id).map{|i| i.last if i.include?(self.product_sub_category)} if val_present?(self.product_sub_category)
+        f_p = fav_search.pluck(:functional_preference, :id).map{|i| i.last if i.include?(self.functional_preference)} if val_present?(self.functional_preference)
         paire = conditions_for_duplicate(p_cat, p_s_cat, f_p)
         final  = paire & fav.ids
         if final.present? 
           error_msg
-        elsif fav.present? && (self.niq_score.present? || self.food_allergies.present? || self.health_preference.present? || self.food_type.present? ||  self.account_id.present? ||  self.food_preference.present?) && !present?(self.product_category) && !present?(self.product_sub_category) && !present?(self.functional_preference)
+        elsif fav.present? && (self.niq_score.present? || self.food_allergies.present? || self.health_preference.present? || self.food_type.present? ||  self.account_id.present? ||  self.food_preference.present?) && !val_present?(self.product_category) && !val_present?(self.product_sub_category) && !val_present?(self.functional_preference)
           error_msg
         end
       end
@@ -64,28 +64,26 @@ module BxBlockCatalogue
       end
     end
 
-    private
-
     def conditions_for_duplicate(p_cat, p_s_cat, f_p)
-      if present?(self.product_category) && present?(self.product_sub_category) && present?(self.functional_preference)
+      if val_present?(self.product_category) && val_present?(self.product_sub_category) && val_present?(self.functional_preference)
          paire = p_cat & f_p & p_s_cat
-      elsif present?(self.product_category) && present?(self.functional_preference)
+      elsif val_present?(self.product_category) && val_present?(self.functional_preference)
         paire = p_cat & f_p
-      elsif present?(self.product_sub_category) && present?(self.functional_preference)
+      elsif val_present?(self.product_sub_category) && val_present?(self.functional_preference)
         paire =  p_s_cat & f_p
-      elsif self.product_sub_category.present? && present?(self.product_category) 
+      elsif self.product_sub_category.present? && val_present?(self.product_category) 
         paire = p_s_cat & p_cat
-      elsif present?(self.product_sub_category)
+      elsif val_present?(self.product_sub_category)
         paire = p_s_cat
-      elsif present?(self.product_category)
+      elsif val_present?(self.product_category)
         paire = p_cat
-      elsif present?(self.functional_preference)
+      elsif val_present?(self.functional_preference)
         paire = f_p
       end
       paire
     end
 
-    def present?(val)
+    def val_present?(val)
       val.present?
     end
 
