@@ -24,7 +24,7 @@ module BxBlockCatalogue
     end
 
     def check_dupicate
-      fav_search = account.favourite_searches if account.present?
+      fav_search = account.favourite_searches.where(favourite: true) if account.present?
       if val_present?(fav_search)
         fav = fav_search.where(niq_score: self.niq_score,food_allergies: self.food_allergies, health_preference: self.health_preference, food_type: self.food_type, account_id: self.account_id, food_preference: self.food_preference) if val_present?(self.account)
         p_cat = fav_search.pluck(:product_category, :id).map{|i| i.last if i.include?(self.product_category)} if val_present?(self.product_category)
@@ -41,7 +41,7 @@ module BxBlockCatalogue
     end
 
     def error_msg
-      errors.add(:functional_preference, "please select uniq filters")
+      errors.add(:message, "please select uniq filters")
     end
 
     def update_product_count
