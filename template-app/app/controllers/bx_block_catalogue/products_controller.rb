@@ -87,12 +87,9 @@ module BxBlockCatalogue
       fav_s = BxBlockCatalogue::FavouriteSearch.find_by(id: params[:fav_search_id])
       if fav_s.present?
         products = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)
-
         options = serialization_options.deep_dup
-
-        products_array = products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(15) : []
-
-        options.merge!({ meta: page_meta(products_array).to_h.deep_transform_keys { |key| key.to_sym } })
+        params[:per] = 15
+        products_array = products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(params[:per]) : []
 
         serializer = valid_user.present? ? ProductSerializer.new(products_array, params: {user: valid_user}) : ProductSerializer.new(products_array, options)
 
