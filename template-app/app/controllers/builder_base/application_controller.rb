@@ -6,5 +6,14 @@ module BuilderBase
     def not_found
       render :json => {'errors' => ['Record not found']}, :status => :not_found
     end
+
+    def serialization_options
+      { params: { host: request.protocol + request.host_with_port } }
+    end
+    
+    def page_params
+      params.permit(:page, :per)
+    end
+
   end
 end
