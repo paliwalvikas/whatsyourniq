@@ -86,10 +86,17 @@ module BxBlockCatalogue
     def product_smart_search
       fav_s = BxBlockCatalogue::FavouriteSearch.find_by(id: params[:fav_search_id])
       if fav_s.present?
-        data = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)
-        products = data.present? ? data_batches(data) : []
-        serializer = valid_user.present? ? ProductSerializer.new(products, params: {user: valid_user }) : ProductSerializer.new(products)
-        render json: serializer
+        products = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)
+
+        options = serialization_options.deep_dup
+
+        products_array = products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(15) : []
+
+        options.merge!({ meta: page_meta(products_array).to_h.deep_transform_keys { |key| key.to_sym } })
+
+        serializer = valid_user.present? ? ProductSerializer.new(products_array, params: {user: valid_user}) : ProductSerializer.new(products_array, options)
+
+        render json: {products: serializer, meta: page_meta(products_array)}
       else
         render json: { errors: 'Product not found' }
       end
@@ -118,15 +125,6 @@ module BxBlockCatalogue
     end
 
     private
-
-    def data_batches(product)
-      products = []
-      product.find_in_batches(batch_size: 7000) do |prod|
-        # serializer = valid_user.present? ? ProductSerializer.new(prod, params: {user: valid_user }) : ProductSerializer.new(prod)
-        products << prod
-      end
-      products.flatten
-    end
 
     def case_for_product(rating, type, category_id, id)
       case rating
