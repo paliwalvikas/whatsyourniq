@@ -11,10 +11,10 @@ module BxBlockCatalogue
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
         product.calculation
         data = product.rda_calculation
-
+        
         render json: ProductSerializer.new(product,
                                            params: { good_ingredient: data[:good_ingredient],
-                                                     not_so_good_ingredient: data[:not_so_good_ingredient] })
+                                                     not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
       else
         render json: { errors: 'Product not found' }
       end
