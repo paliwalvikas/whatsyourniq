@@ -11,10 +11,13 @@ module BxBlockCatalogue
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
         product.calculation
         data = product.rda_calculation
-        
-        render json: ProductSerializer.new(product,
-                                           params: { good_ingredient: data[:good_ingredient],
-                                                     not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
+        begin
+          return render json: ProductSerializer.new(product,
+                                             params: { good_ingredient: data[:good_ingredient],
+                                                       not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
+        rescue AbstractController::DoubleRenderError
+          return
+        end
       else
         render json: { errors: 'Product not found' }
       end
@@ -92,8 +95,11 @@ module BxBlockCatalogue
         products_array = products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(params[:per]) : []
 
         serializer = valid_user.present? ? ProductSerializer.new(products_array, params: {user: valid_user}) : ProductSerializer.new(products_array, options)
-
-        render json: {products: serializer, meta: page_meta(products_array)}
+        begin
+          return render json: {products: serializer, meta: page_meta(products_array)}
+        rescue AbstractController::DoubleRenderError
+          return
+        end
       else
         render json: { errors: 'Product not found' }
       end
