@@ -72,8 +72,12 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     column :category_id do |obj|
       obj&.category&.category_type
     end
-    column :product_point
-    column :product_rating
+    column :product_point do |obj|
+      obj.product_point.present? ? obj.product_point : "NA"
+    end
+    column :product_rating do |obj|
+      obj.product_rating.present? ? obj.product_rating : "NA"
+    end
     column :brand_name
     column :positive_good, &:positive_good
     column :negative_not_good
@@ -97,8 +101,12 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     attributes_table do
       row :product_name
       row :product_type
-      row :product_point
-      row :product_rating
+      row :product_point do |obj|
+        obj.product_point.present? ? obj.product_point : "NA"
+      end
+      row :product_rating do |obj|
+        obj.product_rating.present? ? obj.product_rating : "NA"
+      end
       row :brand_name
       row :weight
       row :image
