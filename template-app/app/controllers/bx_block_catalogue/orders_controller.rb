@@ -4,6 +4,7 @@ module BxBlockCatalogue
     include BuilderJsonWebToken::JsonWebTokenValidation
     before_action :validate_json_web_token, :current_user, only: %i[create index show]
     before_action :set_order, only: [:create]
+    skip_before_action :validate_json_web_token, only: %i[index show]
 
     def index
       orders = BxBlockCatalogue::Order.where(account_id: current_user.id)
@@ -32,8 +33,8 @@ module BxBlockCatalogue
         calculation = order.order_product_calculation
         data << calculation
         if order.present?
-          product =  BxBlockCatalogue::OrderSerializer.new(order, params: {user: valid_user })
-          render json: { nutrition_value: data, product: product } 
+          serializer = valid_user.present? ? BxBlockCatalogue::OrderSerializer.new(order, params: {user: valid_user }) : BxBlockCatalogue::OrderSerializer.new(order)
+          render json: { nutrition_value: data, product: serializer } 
         else 
           render json: {error: "product not present"}
         end
