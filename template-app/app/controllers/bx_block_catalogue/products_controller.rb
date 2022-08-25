@@ -60,7 +60,7 @@ module BxBlockCatalogue
 
     def search
       query = params[:query].split().map {|val| "%#{val}%" }
-      product = BxBlockCatalogue::Product.where('product_name ilike any ( array[?]) OR bar_code ilike any (array[?])',query,query)
+      product = BxBlockCatalogue::Product.where('product_name ilike any ( array[?]) OR bar_code ilike any (array[?])',query,query).order('product_name ASC')
 
       # product = BxBlockCatalogue::Product.where(
       #   'lower(products.product_name) LIKE ? OR lower(products.bar_code) LIKE ?', "%#{params[:query].downcase}%", "%#{params[:query].downcase}%"
