@@ -85,7 +85,9 @@ module BxBlockCatalogue
       psc.keys.each do |f_d|
         fc = BxBlockCategories::FilterCategory.where(name: psc[f_d].keys).ids
         fsc = BxBlockCategories::FilterSubCategory.where(name: psc[f_d].values.flatten).ids
-        prd << product.where(food_drink_filter: f_d.downcase, filter_category_id: fc, filter_sub_category_id: fsc).ids 
+        val = f_d.to_s.downcase
+        val.slice!('packaged ')
+        prd << product.where(food_drink_filter: val, filter_category_id: fc, filter_sub_category_id: fsc).ids 
       end
       product.where(id: prd.flatten.compact)
     end
@@ -93,8 +95,8 @@ module BxBlockCatalogue
     def p_category_filter(product, params)
       cao = eval(params[:product_category]) 
       p_ids = []
-      p_ids << cheese_and_oil(product, cao[:cheese_and_oil]).pluck(:id) if check?(cao[:cheese_and_oil]) && check?(product)
-      p_ids << food_drink_filter(product, cao).pluck(:id) if (check?(cao[:Food]) || check?(cao[:Drink])) && check?(product)
+      p_ids << cheese_and_oil(product, cao[:"Packaged Cheese And Oil"]).pluck(:id) if check?(cao[:"Packaged Cheese And Oil"]) && check?(product)
+      p_ids << food_drink_filter(product, cao).pluck(:id) if (check?(cao[:"Packaged Food"]) || check?(cao[:"Packaged Drink"])) && check?(product)
       p_ids << raw_and_cooked(product, cao).pluck(:id) if (check?(cao[:raw_food]) || check?([:cooked_food])) && check?(product)
       product.where(id: p_ids.flatten.compact.uniq) if check?(p_ids)
     end
@@ -109,8 +111,9 @@ module BxBlockCatalogue
 
     def food_drink_filter(product, cao)
       f_c_ids = []
-      f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:Food]).pluck(:id) if check?(cao[:Food])
-      f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:Drink]).pluck(:id) if check?(cao[:Drink])
+      f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:"Packaged Food"]).pluck(:id) if check?(cao[:"Packaged Food"])
+      f_c_ids << BxBlockCategories::FilterCategory.where(name: cao[:"Packaged Drink"]).pluck(:id) if check?(cao[:"Packaged Drink"])
+      product = cao[:"Packaged Food"].present? ? product.food : product.drink
       check?(f_c_ids.flatten) ? product.where(food_drink_filter: ['food', 'drink'], filter_category_id: f_c_ids.flatten.compact.uniq) : product.where(id: 0)
     end
 
