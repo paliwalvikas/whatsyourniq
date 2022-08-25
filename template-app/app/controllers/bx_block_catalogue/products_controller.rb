@@ -59,9 +59,12 @@ module BxBlockCatalogue
     end
 
     def search
-      product = BxBlockCatalogue::Product.where(
-        'lower(products.product_name) LIKE ? OR lower(products.bar_code) LIKE ?', "%#{params[:query].downcase}%", "%#{params[:query].downcase}%"
-      )
+      query = params[:query].split().map {|val| "%#{val}%" }
+      product = BxBlockCatalogue::Product.where('product_name ilike any ( array[?]) OR bar_code ilike any (array[?])',query,query)
+
+      # product = BxBlockCatalogue::Product.where(
+      #   'lower(products.product_name) LIKE ? OR lower(products.bar_code) LIKE ?', "%#{params[:query].downcase}%", "%#{params[:query].downcase}%"
+      # )
       if product.present?
         product = product.where(category_id: params[:category_id]) if params[:category_id].present?
         serializer = valid_user.present? ? ProductSerializer.new(product, params: {user: valid_user }) : ProductSerializer.new(product)
