@@ -144,16 +144,17 @@ module BxBlockCatalogue
 
     def functional_preference(data)
       ['energy','protein','fibre','vit_a','vit_c','total_sugar','trans_fat'].each do |f_p|
-        fp_count = 0
-         prod_id = BxBlockCatalogue::Ingredient.where.not("#{f_p} IS ? ", nil).pluck(:product_id)
-          BxBlockCatalogue::Product.all.pluck(:positive_good, :negative_not_good).uniq.each do |val|
-            fp_count = val[0].any? {|n| n.include?(f_p)} || val[1].any? {|n| n.include?(f_p)} ? fp_count+ 1 : fp_count 
+        fp_count = []
+         prod_id =BxBlockCatalogue::Ingredient.where.not("#{f_p} IS ? ", nil).pluck(:product_id)
+        BxBlockCatalogue::Product.pluck(:positive_good, :negative_not_good, :id).each do |val|
+          ['high','low','medium'].each do |value| 
+            fp_count << val[2] if val[0].include?("#{value} in #{f_p}") || val[1].include?("#{f_p} #{value}") || val[0].include?("#{value} in #{f_p}") || val[1].include?("#{f_p} #{value}") 
           end
-        data << {count: fp_count, functional_preference: f_p.titleize }
+        end
+        data << {count: fp_count.uniq.count, functional_preference: f_p.titleize }
       end
       data = {count: total_count(data), functional_preference: data}
     end
-        # total_p = BxBlockCatalogue::Ingredient.where.not("#{f_p} IS ? ", nil).pluck(:product_id)
 
     def total_count(data)
       total = 0
