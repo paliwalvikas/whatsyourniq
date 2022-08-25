@@ -52,7 +52,7 @@ module BxBlockCatalogue
       end
       data << {count:  total_count(cao_filter), category: 'packaged_cheese_and_oil'.titleize, category_filter: cao_filter }
 
-      cat= BxBlockCategories::Category.where.not(category_type: 'packaged_food')
+      cat= BxBlockCategories::Category.where.not(category_type: ['packaged_food','cooked_food'])
       cat.each do |c|
         filter = []
         prod = BxBlockCatalogue::Product.where(category_id: c.id)
