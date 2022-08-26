@@ -24,7 +24,7 @@ module AccountBlock
                                                     token: encode(sms_otp.id), pin: sms_otp.pin
                                                   }).serializable_hash, status: :created
           else
-            render json: { errors: format_activerecord_errors(@account.errors) },
+            render json: { errors: format_activerecord_errors(account.errors) },
                    status: :unprocessable_entity
           end
         end

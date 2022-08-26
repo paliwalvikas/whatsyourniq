@@ -16,8 +16,9 @@ module BxBlockCatalogue
     end 
 
     def create
-      order_item = @order.order_items.find_or_initialize_by(order_item_params) 
-      if order_item.save 
+      order_item = @order.order_items.find_by(order_item_params) 
+      return render json: {error: "Food Already Present"} if order_item.present?
+      if @order.order_items.create(order_item_params)
         render json: BxBlockCatalogue::OrderSerializer.new(@order)
       else 
         render json: { error: order_item.errors }
@@ -61,9 +62,11 @@ module BxBlockCatalogue
       @order = if order_item_params[:order_id].present?
         current_user.orders.find_by_id(order_item_params[:order_id])
       else
-        current_user.orders.find_or_create_by(order_params)
+        order = current_user.orders.find_by(order_params)
+        return render json: {error: "Basket Name Already Present"} if order.present?
+        current_user.orders.create(order_params)
       end
-      render json: {error: "Order not present"} unless @order.present?
+      render json: {error: "Basket Not Present"} unless @order.present?
     end
   end
 end
