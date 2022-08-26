@@ -4,18 +4,13 @@ module BxBlockCatalogue
     include BuilderJsonWebToken::JsonWebTokenValidation
     before_action :validate_json_web_token, :current_user, only: %i[create index show]
     before_action :set_order, only: [:create]
-    skip_before_action :validate_json_web_token, only: %i[index show]
 
     def index
-      orders = BxBlockCatalogue::Order.where(account_id: current_user&.id)
+      orders = BxBlockCatalogue::Order.where(account_id: current_user.id)
       order_items = orders.includes(:order_items)
       if orders.present?
-        serializer = valid_user.present? ? BxBlockCatalogue::OrderSerializer.new(order_items, params: {user: valid_user }) : BxBlockCatalogue::OrderSerializer.new(order_items)
-        begin
-          return render json: serializer
-        rescue AbstractController::DoubleRenderError
-          return
-        end
+        serializer = BxBlockCatalogue::OrderSerializer.new(order_items, params: {user: current_user }) 
+        render json: serializer
       else 
         render json: {error: "no bucket present please create one"}
       end     
@@ -36,12 +31,8 @@ module BxBlockCatalogue
       if order.present?
         calculation = order.order_product_calculation
         data << calculation
-        serializer = valid_user.present? ? BxBlockCatalogue::OrderSerializer.new(order, params: {user: valid_user }) : BxBlockCatalogue::OrderSerializer.new(order)
-        begin
-          return render json: { nutrition_value: data, product: serializer } 
-        rescue AbstractController::DoubleRenderError
-          return
-        end
+        serializer = BxBlockCatalogue::OrderSerializer.new(order, params: {user: current_user })
+        render json: { nutrition_value: data, product: serializer } 
       else
         render json: {error: "Order not present"}
       end
