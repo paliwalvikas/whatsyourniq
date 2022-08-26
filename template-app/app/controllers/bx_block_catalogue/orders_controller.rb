@@ -6,9 +6,8 @@ module BxBlockCatalogue
     before_action :set_order, only: [:create]
 
     def index
-      orders = BxBlockCatalogue::Order.where(account_id: current_user.id)
-      order_items = orders.includes(:order_items)
-      if orders.present?
+      order_items = current_user.orders.includes(:order_items)
+      if order_items.present?
         serializer = BxBlockCatalogue::OrderSerializer.new(order_items, params: {user: current_user }) 
         render json: serializer
       else 
@@ -17,7 +16,7 @@ module BxBlockCatalogue
     end 
 
     def create
-      order_item = @order.order_items.new(order_item_params) 
+      order_item = @order.order_items.find_or_initialize_by(order_item_params) 
       if order_item.save 
         render json: BxBlockCatalogue::OrderSerializer.new(@order)
       else 
@@ -36,7 +35,17 @@ module BxBlockCatalogue
       else
         render json: {error: "Order not present"}
       end
-    end    
+    end  
+
+    def destroy
+      order = BxBlockCatalogue::Order.find_by_id(params[:order_id])
+      if order.present?
+        order.destroy
+        render json: {message: "Order successfully deleted"}
+      else
+        render json: {error: "Order not found"}
+      end
+    end  
 
     private
 
@@ -50,10 +59,11 @@ module BxBlockCatalogue
 
     def set_order
       @order = if order_item_params[:order_id].present?
-        BxBlockCatalogue::Order.find_by_id(order_item_params[:order_id])
+        current_user.orders.find_by_id(order_item_params[:order_id])
       else
-        BxBlockCatalogue::Order.create(order_params)
-      end 
+        current_user.orders.find_or_create_by(order_params)
+      end
+      render json: {error: "Order not present"} unless @order.present?
     end
   end
 end
