@@ -27,7 +27,7 @@ module BxBlockCatalogue
   	private
 
     def food_type(data)
-			category = BxBlockCategories::Category.all
+			category = BxBlockCategories::Category.where.not(category_type: "cooked_food")
       category.each do |category|
         product = BxBlockCatalogue::Product.where(category_id: category.id)
         data << {count: product.count, food_type: category.category_type.titleize}
