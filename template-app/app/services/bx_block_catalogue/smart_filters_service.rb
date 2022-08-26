@@ -143,10 +143,11 @@ module BxBlockCatalogue
     end
 
     def functional_preference(data)
+      product = BxBlockCatalogue::Product.where.not(positive_good: nil, negative_not_good: nil)
+      product = product.pluck(:positive_good, :negative_not_good, :id)
       ['energy','protein','fibre','vit_a','vit_c','total_sugar','trans_fat'].each do |f_p|
         fp_count = []
-         prod_id =BxBlockCatalogue::Ingredient.where.not("#{f_p} IS ? ", nil).pluck(:product_id)
-        BxBlockCatalogue::Product.pluck(:positive_good, :negative_not_good, :id).each do |val|
+        product.each do |val|
           ['high','low','medium'].each do |value| 
             fp_count << val[2] if val[0].include?("#{value} in #{f_p}") || val[1].include?("#{f_p} #{value}") || val[0].include?("#{value} in #{f_p}") || val[1].include?("#{f_p} #{value}") 
           end
