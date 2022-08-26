@@ -15,6 +15,9 @@ module AccountBlock
     after_save :set_black_listed_user
     has_many :favourite_products, class_name: 'BxBlockCatalogue::FavouriteProduct', dependent: :destroy
     has_many :compare_products, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
+    has_many :members, class_name: 'AccountBlock::Member', dependent: :destroy
+    has_many :addresses, class_name: 'BxBlockAddress::Address', as: :addressble, dependent: :destroy
+    has_many :orders, class_name: 'BxBlockCatalogue::Order', dependent: :destroy
 
     before_save :image_process, if: :image_url
     enum status: %i[regular suspended deleted]
