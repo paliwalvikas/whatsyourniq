@@ -3,7 +3,6 @@
 module BxBlockCatalogue
   class Product < BxBlockCatalogue::ApplicationRecord
     self.table_name = :products
-    paginates_per 5
     
     validates :bar_code , uniqueness: true
 

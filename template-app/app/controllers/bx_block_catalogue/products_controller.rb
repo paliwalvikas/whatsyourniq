@@ -60,11 +60,12 @@ module BxBlockCatalogue
 
     def search
       query = params[:query].split().map {|val| "%#{val}%" }
-      product = Product.where('product_name ilike any ( array[?]) OR bar_code ilike any (array[?])', query, query).order('product_name ASC').page(params[:page])
+      products = Product.where('product_name ilike any ( array[?]) OR bar_code ilike any (array[?])', query, query).order('product_name ASC')
+      product = Kaminari.paginate_array(products).page(params[:page]).per(params[:per_page])
       if product.present?
         serializer = valid_user.present? ? ProductSerializer.new(product, params: {user: valid_user }) : ProductSerializer.new(product)
         begin
-          return render json: serializer
+          return render json: {products: serializer, meta: page_meta(product)}
         rescue AbstractController::DoubleRenderError
           return
         end
