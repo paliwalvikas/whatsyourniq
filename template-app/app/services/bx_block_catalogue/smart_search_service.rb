@@ -30,9 +30,9 @@ module BxBlockCatalogue
       fun = eval(f_p[:functional_preference])
       pr_ids =[]
       fun.each do |key, value|
-        if key.to_s == 'Vitamin C' 
+        if key.to_s == 'Vit C' 
           key = 'vit_c'
-        elsif key.to_s == 'Vitamin A'
+        elsif key.to_s == 'Vit A'
           key = 'vit_a'
         elsif key.to_s == 'Calories'
           key = 'energy'
@@ -73,7 +73,8 @@ module BxBlockCatalogue
       ingredients = BxBlockCatalogue::Ingredient.where(product_id: product.ids)
       params[:food_preference].each do |f_all|
         f_all = f_all.include?(' ') ? f_all.downcase.tr!(" ", "_") : f_all.downcase
-        val = f_all == 'artificial_preservative'|| f_all == 'added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
+        val = f_all == 'artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
+        f_all = 'added_sugar' if f_all == 'no_added_sugar'
         ingredients = allergies(f_all.downcase, ingredients, val)
       end
      ingredient_to_product(ingredients, product)
