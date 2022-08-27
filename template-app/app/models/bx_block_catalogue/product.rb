@@ -3,6 +3,8 @@
 module BxBlockCatalogue
   class Product < BxBlockCatalogue::ApplicationRecord
     self.table_name = :products
+    paginates_per 5
+    
     validates :bar_code , uniqueness: true
 
     GOOD_INGREDIENTS = { protein: 54, fibre: 32, vit_a: 1000, vit_c: 80, vit_d: 600, iron: 19, calcium: 1000,
@@ -95,7 +97,6 @@ module BxBlockCatalogue
 
         mp = micro_calculation(ing).sum
         p_point = np.sum - pp.sum
-
         p_rating = if p_point <= (-1)
                      'A'
                    elsif p_point.between?(0, 2)
@@ -115,6 +116,7 @@ module BxBlockCatalogue
           self.product_point = p_point
         end
       # end
+      
       if product_rating.present?
         pr = if mp.to_f.between?(0, 4)
                product_rating
@@ -194,7 +196,7 @@ module BxBlockCatalogue
 
           BxBlockBeverage::BeverageMicroIngredient.all.each do |mi|
             micro_point = coding_calculation(mi, ele, value)
-            return micro_point if micro_point.present?
+            return micro_point if micro_point.present? 
           end
           0
         end
