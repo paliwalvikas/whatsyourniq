@@ -13,7 +13,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   end
 
   collection_action :download, method: :get do
-    file_name = "#{Rails.root}lib/image_not_found.jpeg"
+    file_name = "#{Rails.root}/lib/product_importable_file_format.csv"
     send_file file_name, type: 'application/csv'
   end
 
