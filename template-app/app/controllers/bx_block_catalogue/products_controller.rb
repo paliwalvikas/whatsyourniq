@@ -59,8 +59,8 @@ module BxBlockCatalogue
     end
 
     def search
-      query = params[:query].split().map {|val| "%#{val}%" }
-      products = Product.where('product_name ilike any ( array[?]) OR bar_code ilike any (array[?])', query, query).order('product_name ASC')
+      query = "%#{params[:query]}%"
+      products = Product.where('product_name ilike ? OR bar_code ilike ?', query, query).order('product_name ASC')
       product = Kaminari.paginate_array(products).page(params[:page]).per(params[:per_page])
       if product.present?
         serializer = valid_user.present? ? ProductSerializer.new(product, params: {user: valid_user }) : ProductSerializer.new(product)
