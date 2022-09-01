@@ -27,17 +27,29 @@ module BxBlockCatalogue
       fav_search = account.favourite_searches.where(favourite: true) if account.present?
       if val_present?(fav_search)
         fav = fav_search.where(niq_score: self.niq_score,food_allergies: self.food_allergies, health_preference: self.health_preference, food_type: self.food_type, account_id: self.account_id, food_preference: self.food_preference) if val_present?(self.account)
+
+        fav_ids = check_fav?(fav)
+
         p_cat = fav_search.pluck(:product_category, :id).map{|i| i.last if i.include?(self.product_category)} if val_present?(self.product_category)
         p_s_cat = fav_search.pluck(:product_sub_category, :id).map{|i| i.last if i.include?(self.product_sub_category)} if val_present?(self.product_sub_category)
         f_p = fav_search.pluck(:functional_preference, :id).map{|i| i.last if i.include?(self.functional_preference)} if val_present?(self.functional_preference)
+
         paire = conditions_for_duplicate(p_cat, p_s_cat, f_p)
         final  = paire & fav.ids
+
         if final.present? 
           error_msg
-        elsif fav.present? && (self.niq_score.present? || self.food_allergies.present? || self.health_preference.present? || self.food_type.present? ||  self.account_id.present? ||  self.food_preference.present?) && !val_present?(self.product_category) && !val_present?(self.product_sub_category) && !val_present?(self.functional_preference)
+        elsif fav.present? && fav_ids.present? && (self.niq_score.present? || self.food_allergies.present? || self.health_preference.present? || self.food_type.present? ||  self.account_id.present? ||  self.food_preference.present?) && !val_present?(self.product_category) && !val_present?(self.product_sub_category) && !val_present?(self.functional_preference)
           error_msg
         end
+
       end
+    end
+
+    def check_fav?(fav)
+      ids = fav.pluck(:product_category, :product_sub_category, :functional_preference, :id).map{|a| a[3] if a[0].blank? && a[1].blank? && a[2].blank?}
+
+      fav.where(id: ids,niq_score: self.niq_score,food_allergies: self.food_allergies, health_preference: self.health_preference, food_type: self.food_type, account_id: self.account_id, food_preference: self.food_preference)  
     end
 
     def error_msg
