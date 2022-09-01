@@ -126,6 +126,15 @@ module BxBlockCatalogue
       end
     end
 
+    def regenerate_master_data
+      request = BxBlockCatalogue::MasterDataTableService.new().call
+      if request.errors.messages.empty?
+        render json: { message: "Success"}, status: :ok
+      else
+        render json: { message: request.errors.messages}, status: :unprocessable_entity
+      end
+    end
+
     private
 
     def case_for_product(rating, type, category_id, id)

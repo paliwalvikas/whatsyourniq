@@ -20,8 +20,8 @@ module AccountBlock
     end
 
     def send_pin_via_sms
-      message = "Your Pin Number is #{self.pin}"
-      txt     = BxBlockSms::SendSms.new("+#{self.full_phone_number}", message)
+      message = "<#> #{self.pin} is your OTP. Please do not share it with anyone. #{self.hash_key}. Thank you. SuperFoods valley Private Limited."
+      txt = BxBlockSms::SendSms.new("+#{self.full_phone_number}", message)
       txt.call
     end
 
