@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :bx_block_catalogue do
     get 'search', to: 'products#search'
+    get 'regenerate_master_data', to: 'products#regenerate_master_data'
     resources :products do
       collection do
         get :niq_score

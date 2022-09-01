@@ -18,7 +18,7 @@ module AccountBlock
                                                   token: encode(sms_otp.id), pin: sms_otp.pin, register: account.register
                                                 }).serializable_hash, status: :created
         else
-          account = SmsAccount.new(jsonapi_deserialize(params))
+          account = SmsAccount.new(full_phone_number: params[:data][:attributes][:full_phone_number])
           if account.save
             render json: SmsAccountSerializer.new(account, meta: {
                                                     token: encode(sms_otp.id), pin: sms_otp.pin
@@ -132,7 +132,7 @@ module AccountBlock
     end
 
     def sms_otp_pin
-      sms_otp = SmsOtp.create(full_phone_number: params[:data][:attributes][:full_phone_number])
+      sms_otp = SmsOtp.create(full_phone_number: params[:data][:attributes][:full_phone_number], hash_key: params[:data][:attributes][:hash_key])
     end
 
     def search_params
