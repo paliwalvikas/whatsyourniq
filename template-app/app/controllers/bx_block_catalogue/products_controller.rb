@@ -59,8 +59,13 @@ module BxBlockCatalogue
     end
 
     def search
-      query = "%#{params[:query]}%"
-      products = Product.where('product_name ilike ? OR bar_code ilike ?', query, query).order('product_name ASC')
+      query = params[:query].split(' ')
+      query_string = ""
+      query.each do |data|
+        query_string += "(product_name ilike '%#{data}%' OR bar_code ilike '%#{data}%')"
+        query_string += " AND " unless data == query[-1]
+      end
+      products = Product.where(query_string)
       product = Kaminari.paginate_array(products).page(params[:page]).per(params[:per_page])
       if product.present?
         serializer = valid_user.present? ? ProductSerializer.new(product, params: {user: valid_user }) : ProductSerializer.new(product)
