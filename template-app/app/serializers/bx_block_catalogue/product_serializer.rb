@@ -13,7 +13,7 @@ module BxBlockCatalogue
     end
     
     attribute :category_type do |object|
-      object.category.category_type.titleize
+      object.category&.category_type&.titleize
     end
 
     attribute :product_rating do |object|

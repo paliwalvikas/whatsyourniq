@@ -3,9 +3,12 @@ module BxBlockCatalogue
     before_action :load_product, only: [:update, :destroy]
 
     def index
-      serializer = CompareProductSerializer.new(current_user.compare_products.where(selected: true))
-
-      render json: serializer, status: :ok
+      list_of_product = current_user.compare_products.where(selected: true)
+      if list_of_product.present?
+        render json: CompareProductSerializer.new(list_of_product)
+      else
+        render json: {error: "No product found"}, status: :unprocessable_entity
+      end
     end
 
     def create
