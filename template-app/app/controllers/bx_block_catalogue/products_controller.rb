@@ -45,8 +45,7 @@ module BxBlockCatalogue
       products = BxBlockCatalogue::Product.all
       product = products.find_by(id: params[:product_id])
       if product.present?
-        products = products.where(filter_sub_category_id: product.filter_sub_category_id)
-        products = case_for_product(product.product_rating, product.filter_sub_category_id, product.filter_category_id)
+        products = case_for_product(product)
         render json: ProductSerializer.new(products)
       else
         render json: { errors: 'Product not found' }
@@ -143,18 +142,20 @@ module BxBlockCatalogue
 
     private
 
-    def case_for_product(rating, filter_sub_category_id, filter_category_id)
-      case rating
+    def case_for_product(product)
+      filter_sub_category_id = product.filter_sub_category_id
+      filter_category_id = product.filter_category_id
+      case product.product_rating
       when 'A'
-        a = find_product("A", filter_sub_category_id, filter_category_id)
+        a = find_filter_products(["A"], filter_sub_category_id, filter_category_id, product.id)
       when 'B'
-        a = find_product("A", filter_sub_category_id, filter_category_id)
+        a = find_filter_products(["A"], filter_sub_category_id, filter_category_id, product.id)
       when 'C'
-        a = find_product("A B", filter_sub_category_id, filter_category_id)
+        a = find_filter_products(["A", "B"], filter_sub_category_id, filter_category_id, product.id)
       when 'D'
-        a = find_product("A B C", filter_sub_category_id, filter_category_id)
+        a = find_filter_products(["A", "B" ,"C"], filter_sub_category_id, filter_category_id, product.id)
       when 'E'
-        a = find_product("A B C D", filter_sub_category_id, filter_category_id)
+        a = find_filter_products(["A", "B" ,"C", "D"], filter_sub_category_id, filter_category_id, product.id)
       end
       a
     end
@@ -171,14 +172,9 @@ module BxBlockCatalogue
       data
     end
 
-    def find_product(rating, filter_sub_category_id,filter_category_id)
-      ratings = rating.split(' ')
-      products = []
-      ratings.each do |val|
-        product = BxBlockCatalogue::Product.where(product_rating: val, filter_sub_category_id: filter_sub_category_id, filter_category_id: filter_category_id)
-        products << product
-      end
-      products.first.limit(5)
+    def find_filter_products(rating, filter_sub_category_id,filter_category_id, product_id)
+      products = BxBlockCatalogue::Product.where.not(id: product_id).where(product_rating: rating, filter_sub_category_id: filter_sub_category_id, filter_category_id: filter_category_id)
+      products.limit(5)
     end
 
     def product_param
