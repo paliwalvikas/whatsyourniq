@@ -5,13 +5,13 @@ module BxBlockCatalogue
       product = BxBlockCatalogue::Product.all
       # "pakaged_food", "row_food", "cooked_food"
       product = food_type(params, product) if check?(params[:food_type]) && check?(product)
+	    product = p_category_filter(product, params) if check?(params[:product_category]) && check?(product)
+      product = p_sub_category(product, params) if check?(params[:product_sub_category]) && check?(product)
       product = product.product_rating(params[:niq_score]) if check?(params[:niq_score]) && check?(product)
       product = s_food_allergies(product, params) if check?(params[:food_allergies]) && check?(product)
       product = food_preferance(params, product) if check?(params[:food_preference]) && check?(product)
-      product = p_health_preference(params, product) if check?(params[:health_preference]) && check?(product)
-	    product = p_category_filter(product, params) if check?(params[:product_category]) && check?(product)
-      product = p_sub_category(product, params) if check?(params[:product_sub_category]) && check?(product)
       product = functional_preference(product, params) if check?(params[:functional_preference]) && check?(product)
+      product = p_health_preference(params, product) if check?(params[:health_preference]) && check?(product)
       params.update(product_count: product.count) if product.present?
       product if product.present?
     end
@@ -62,22 +62,28 @@ module BxBlockCatalogue
 
     def s_food_allergies(product, params)
       ingredients = BxBlockCatalogue::Ingredient.where(product_id: product.ids)
+      ids = []
         params[:food_allergies].each do |f_all|
           f_all = f_all.include?(' ') ? f_all.downcase.tr!(" ", "_") : f_all.downcase
-          ingredients = allergies(f_all, ingredients, 'yes')
+          ing = allergies(f_all, ingredients, 'no')
+          ids << ing.pluck(:product_id) if ing.present?
         end
-      ingredient_to_product(ingredients, product)
+      product.where.not(id: ids.flatten.compact.uniq) if ids.flatten.present?
+      # ingredient_to_product(ingredients, product)
     end
 
     def food_preferance(params, product)
       ingredients = BxBlockCatalogue::Ingredient.where(product_id: product.ids)
+      ids = []
       params[:food_preference].each do |f_all|
         f_all = f_all.include?(' ') ? f_all.downcase.tr!(" ", "_") : f_all.downcase
         val = f_all == 'artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
         f_all = 'added_sugar' if f_all == 'no_added_sugar'
-        ingredients = allergies(f_all.downcase, ingredients, val)
+        ing = allergies(f_all.downcase, ingredients, val)
+        ids << ing.pluck(:product_id) if ing.present?
       end
-     ingredient_to_product(ingredients, product)
+      product.where(id: ids.flatten.compact.uniq) if ids.flatten.present?
+      # ingredient_to_product(ingredients, product)
     end
 
     def p_sub_category(product, params)

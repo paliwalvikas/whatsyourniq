@@ -11,15 +11,15 @@ module BxBlockCatalogue
       when "sub_category"
       	sub_category(params, data)
       when "niq_score"
-      	niq_score(data)
+      	niq_score(params, data)
       when "food_allergies"
-      	food_allergies(data)
+      	food_allergies(params, data)
       when "food_preference"
-        food_preference(data) 
+        food_preference(params, data) 
       when "functional_preference"
-        functional_preference(data)      
+        functional_preference(params, data)      
       when "health_preference"
-        health_preference(data) 
+        health_preference(params, data) 
       end
       # data
   	end
@@ -36,15 +36,16 @@ module BxBlockCatalogue
     end
 
   	def category(params, data)
-      product = find_product(params)
-    	product.each do |prd|
+      fav = fav_serach(params[:fav_search_id])
+      product = find_product(fav)
+    	['food', 'drink'].each do |prd|
   			filter = []
-    		prod =  BxBlockCatalogue::Product.food_drink_filter(prd)
+    		prod =  product.food_drink_filter(prd)
     		uniq_p = filter_category_p(prod.pluck(:filter_category_id).uniq)
     		uniq_p.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
       	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter }
 			end
-      c_ao = BxBlockCatalogue::Product.product_type("cheese_and_oil")
+      c_ao = product.product_type("cheese_and_oil")
       c_prod = filter_category_p(c_ao.pluck(:filter_category_id).uniq)
       cao_filter = []
       c_prod.each do |cao|
@@ -55,7 +56,7 @@ module BxBlockCatalogue
       cat= BxBlockCategories::Category.where.not(category_type: ['packaged_food','cooked_food'])
       cat.each do |c|
         filter = []
-        prod = BxBlockCatalogue::Product.where(category_id: c.id)
+        prod = product.where(category_id: c.id)
         u_f = filter_category_p(prod.pluck(:filter_category_id).uniq)
         u_f.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
         data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
@@ -67,11 +68,16 @@ module BxBlockCatalogue
       BxBlockCategories::FilterCategory.where(id: ids)
     end
 
+    def fav_product(params)
+      fav = fav_serach(params[:fav_search_id])
+      product = BxBlockCatalogue::SmartSearchService.new.smart_search(fav)
+    end
+
     def sub_category(params, data)
-      product = find_product(params)
-      product.each do |prd|
+      product = fav_product(params)
+      ['food', 'drink'].each do |prd|
         filter = []
-        prod =  BxBlockCatalogue::Product.where(food_drink_filter: prd)
+        prod = product.where(food_drink_filter: prd)
         cat_filter = filter_category_p(prod.pluck(:filter_category_id).uniq)
         cat_filter.each do |cat_f|
           sub_filter =[]
@@ -82,7 +88,7 @@ module BxBlockCatalogue
           filter << {count: total_count(sub_filter), category: cat_f.name , sub_category_filter: sub_filter } 
         end
         data << {count: total_count(filter), food_drink_filter: ("packaged " + prd).titleize, category_filter: filter }
-      end
+      end if product.present?
       data = {count: total_count(data), sub_category: data}
     end
 
@@ -91,22 +97,30 @@ module BxBlockCatalogue
     end
   	
   	def find_product(params)
-      product =  BxBlockCatalogue::Product.all.pluck(:food_drink_filter).uniq
+      food_type = params[:food_type].map{|val| value(val)}
+      category = BxBlockCategories::Category.where(category_type: food_type)
+      product = BxBlockCatalogue::Product.where(category_id: category.ids) #.pluck(:food_drink_filter).uniq
   	end
 
-  	def niq_score(data)
-  		rating = BxBlockCatalogue::Product.all.order(product_rating: :asc).pluck(:product_rating).uniq.compact.delete_if(&:blank?)
+    def value(val)
+      val = val.include?(' ') ? val.downcase.tr!(" ", "_") : val.downcase
+    end
+
+  	def niq_score(params, data)
+      product = fav_product(params)
+  		rating = product.order(product_rating: :asc).pluck(:product_rating).uniq.compact.delete_if(&:blank?)
   		rating.each do |rat|
-  			data << {count: BxBlockCatalogue::Product.where(product_rating: rat).count, product_rating: rat }
-  		end
+  			data << {count: product.where(product_rating: rat).count, product_rating: rat }
+  		end if product.present?
   		data = {count: total_count(data), niq_score: data}
   	end
 
-  	def food_allergies(data)
+  	def food_allergies(params, data)
+      product = fav_product(params)
   		["dairy","egg","fish","shellfish","tree_nuts","peanuts","wheat","soyabean"].each do |alg|
         id_s = find_allergies(alg, 'yes')
-        data << {count: BxBlockCatalogue::Product.where(id: id_s).count, product_rating: alg.titleize }
-      end
+        data << {count: product.where(id: id_s).count, product_rating: alg.titleize }
+      end if product.present?
       data = {count: total_count(data), food_allergies: data}
   	end
 
@@ -114,12 +128,13 @@ module BxBlockCatalogue
       ingredients = BxBlockCatalogue::Ingredient.where("#{value} ILIKE ?", col).pluck(:product_id)
     end
 
-    def food_preference(data)
+    def food_preference(params, data)
+      product = fav_product(params)
       ['veg','nonveg','vegan_product','organic','gluteen_free','artificial_preservative','added_sugar','no_artificial_color'].each do |alg|
         id_s = find_food_pref(alg)
         alg = 'no_' + alg if alg == 'artificial_preservative' || alg == 'added_sugar' 
-        data << {count: BxBlockCatalogue::Product.where(id: id_s).count, product_rating: alg.titleize }
-      end
+        data << {count: product.where(id: id_s).count, product_rating: alg.titleize }
+      end if product.present?
       data = {count: total_count(data), food_preference: data}
     end
 
@@ -129,7 +144,8 @@ module BxBlockCatalogue
       find_allergies(value, c_val)
     end
 
-    def health_preference(data)
+    def health_preference(params, data)
+      product = fav_product(params)
       health = ['Immunity', 'Gut Health', 'Holistic Nutrition', 'weight loss', 'Weight gain','Diabetic','Low Cholesterol','Heart Friendly','Energy and Vitality','Physical growth','Cognitive health', 'Mental health\mood boosting foods']
       health.each do |h_pref|
         unless h_pref == 'Mental health\mood boosting foods'
@@ -138,12 +154,13 @@ module BxBlockCatalogue
         else
           data << {count: 0, health_preference: h_pref }
         end
-      end
+      end if product.present?
       data = {count: total_count(data), health_preference: data}
     end
 
-    def functional_preference(data)
-      product = BxBlockCatalogue::Product.where.not(positive_good: nil, negative_not_good: nil)
+    def functional_preference(params, data)
+      product = fav_product(params)
+      product = product.where.not(positive_good: nil, negative_not_good: nil)
       product = product.pluck(:positive_good, :negative_not_good, :id)
       ['energy','protein','fibre','vit_a','vit_c','total_sugar','trans_fat'].each do |f_p|
         fp_count = []
@@ -153,7 +170,7 @@ module BxBlockCatalogue
           end
         end
         data << {count: fp_count.uniq.count, functional_preference: f_p.titleize }
-      end
+      end if product.present?
       data = {count: total_count(data), functional_preference: data}
     end
 
@@ -161,6 +178,10 @@ module BxBlockCatalogue
       total = 0
       data.map{|count| total = total + count[:count] }
       total
+    end
+
+    def fav_serach(id)
+      BxBlockCatalogue::FavouriteSearch.find_by(id: id)
     end
 	end
 end
