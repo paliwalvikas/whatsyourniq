@@ -9,7 +9,7 @@ module BxBlockCatalogue
     before_create :inc_added_count, if: :check?
     after_create :update_product_count, if: :check?
     after_destroy :update_all_records
-    validate :check_dupicate, :on => :create
+    validate :check_dupicate, on: :create
 
     scope :product_category, ->(product_category) { where product_category: product_category }
     scope :product_sub_category, ->(product_sub_category) { where product_sub_category: product_sub_category }
@@ -18,51 +18,61 @@ module BxBlockCatalogue
     scope :food_preference, ->(food_preference) { where food_preference: food_preference }
     scope :favourite, ->(favourite) { where favourite: favourite }
     scope :functional_preference, ->(functional_preference) { where functional_preference: functional_preference }
-    
+
     def inc_added_count
-      self.added_count = account&.favourite_searches&.where(favourite: true).count+1
+      self.added_count = account&.favourite_searches&.where(favourite: true)&.count + 1
     end
 
     def check_dupicate
       fav_search = account.favourite_searches.where(favourite: true) if account.present?
-      if val_present?(fav_search)
-        fav = fav_search.where(niq_score: self.niq_score,food_allergies: self.food_allergies, health_preference: self.health_preference, food_type: self.food_type, account_id: self.account_id, food_preference: self.food_preference) if val_present?(self.account)
+      if fav_search.present?
+        fav = fav_search.where(niq_score: niq_score, food_allergies: food_allergies,
+                                                              health_preference: health_preference, food_type: food_type, account_id: account_id, food_preference: food_preference) if account.present?
 
         fav_ids = check_fav?(fav)
+        resp = for_json_fields(fav_search)
+        paire = conditions_for_duplicate(resp[:p_cat], resp[:p_s_cat], resp[:f_p])
+        final = paire & fav.ids
 
-        p_cat = fav_search.pluck(:product_category, :id).map{|i| i.last if i.include?(self.product_category)} if val_present?(self.product_category)
-        p_s_cat = fav_search.pluck(:product_sub_category, :id).map{|i| i.last if i.include?(self.product_sub_category)} if val_present?(self.product_sub_category)
-        f_p = fav_search.pluck(:functional_preference, :id).map{|i| i.last if i.include?(self.functional_preference)} if val_present?(self.functional_preference)
-
-        paire = conditions_for_duplicate(p_cat, p_s_cat, f_p)
-        final  = paire & fav.ids
-
-        if final.present? 
+        if final.present?
           error_msg
-        elsif fav.present? && fav_ids.present? && (self.niq_score.present? || self.food_allergies.present? || self.health_preference.present? || self.food_type.present? ||  self.account_id.present? ||  self.food_preference.present?) && !val_present?(self.product_category) && !val_present?(self.product_sub_category) && !val_present?(self.functional_preference)
+        elsif fav.present? && fav_ids.present? && (niq_score.present? || food_allergies.present? || health_preference.present? || food_type.present? || account_id.present? || food_preference.present?) && !product_category.present? && !product_sub_category.present? && !functional_preference.present?
           error_msg
         end
 
       end
     end
 
-    def check_fav?(fav)
-      ids = fav.pluck(:product_category, :product_sub_category, :functional_preference, :id).map{|a| a[3] if a[0].blank? && a[1].blank? && a[2].blank?}
+    def for_json_fields(fav_search)
+      has = {}
+      has[:p_cat] = fav_search.pluck(:product_category, :id).map { |i|
+         i.last if i.include?(product_category)} if product_category.present?
+      has[:p_s_cat] = fav_search.pluck(:product_sub_category, :id).map { |i|
+         i.last if i.include?(product_sub_category)} if product_sub_category.present?
+      has[:f_p] = fav_search.pluck(:functional_preference, :id).map { |i|
+         i.last if i.include?(functional_preference)} if functional_preference.present?
+      has
+    end
 
-      fav.where(id: ids,niq_score: self.niq_score,food_allergies: self.food_allergies, health_preference: self.health_preference, food_type: self.food_type, account_id: self.account_id, food_preference: self.food_preference)  
+    def check_fav?(fav)
+      ids = fav.pluck(:product_category, :product_sub_category, :functional_preference, :id).map { |a|
+           a[3] if a[0].blank? && a[1].blank? && a[2].blank?
+          }
+      fav.where(id: ids, niq_score: niq_score, food_allergies: food_allergies,
+                                health_preference: health_preference, food_type: food_type, account_id: account_id, food_preference: food_preference)
     end
 
     def error_msg
-      errors.add(:message, "please select uniq filters")
+      errors.add(:message, 'please select uniq filters')
     end
 
     def update_product_count
       prod = BxBlockCatalogue::SmartSearchService.new.smart_search(self)
-      prod.present? ? self.update(product_count: prod.count) : self.update(product_count: 0)
+      prod.present? ? update(product_count: prod.count) : update(product_count: 0)
     end
 
     def check?
-      self.account_id.present?
+      account_id.present?
     end
 
     def update_all_records
@@ -70,33 +80,29 @@ module BxBlockCatalogue
         favourite = account&.favourite_searches&.order(updated_at: :asc)
         count = favourite.count
         favourite.each do |i|
-          i.update(added_count: count) 
+          i.update(added_count: count)
           count = count - 1
         end
       end
     end
 
     def conditions_for_duplicate(p_cat, p_s_cat, f_p)
-      if val_present?(self.product_category) && val_present?(self.product_sub_category) && val_present?(self.functional_preference)
-         paire = p_cat & f_p & p_s_cat
-      elsif val_present?(self.product_category) && val_present?(self.functional_preference)
+      if product_category.present? && product_sub_category.present? && functional_preference.present?
+        paire = p_cat & f_p & p_s_cat
+      elsif product_category.present? && functional_preference.present?
         paire = p_cat & f_p
-      elsif val_present?(self.product_sub_category) && val_present?(self.functional_preference)
-        paire =  p_s_cat & f_p
-      elsif self.product_sub_category.present? && val_present?(self.product_category) 
+      elsif product_sub_category.present? && functional_preference.present?
+        paire = p_s_cat & f_p
+      elsif product_sub_category.present? && product_category.present?
         paire = p_s_cat & p_cat
-      elsif val_present?(self.product_sub_category)
+      elsif product_sub_category.present?
         paire = p_s_cat
-      elsif val_present?(self.product_category)
+      elsif product_category.present?
         paire = p_cat
-      elsif val_present?(self.functional_preference)
+      elsif functional_preference.present?
         paire = f_p
       end
       paire
-    end
-
-    def val_present?(val)
-      val.present?
     end
 
   end
