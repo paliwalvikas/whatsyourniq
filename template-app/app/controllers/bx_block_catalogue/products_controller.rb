@@ -42,11 +42,12 @@ module BxBlockCatalogue
     end
 
     def niq_score
-      if (prod = BxBlockCatalogue::Product.find_by(id: params[:product_id])) && (prod.product_type.present? && prod.category_id.present?)
-        product = case_for_product(prod.product_rating, prod.product_type, prod.category_id, prod.id)
-      end
+      products = BxBlockCatalogue::Product.all
+      product = products.find_by(id: params[:product_id])
       if product.present?
-        render json: ProductSerializer.new(product)
+        products = products.where(filter_sub_category_id: product.filter_sub_category_id)
+        products = case_for_product(product.product_rating, product.filter_sub_category_id, product.filter_category_id)
+        render json: ProductSerializer.new(products)
       else
         render json: { errors: 'Product not found' }
       end
@@ -119,7 +120,7 @@ module BxBlockCatalogue
 
     def compare_product
       prd_ids =  current_user.compare_products.where(selected: true)
-      if prd_ids.count > 1
+      if prd_ids.count >= 1
         data = cmp_product(prd_ids.pluck(:product_id))
         if data.present? 
           render json: {data: data} 
@@ -142,18 +143,18 @@ module BxBlockCatalogue
 
     private
 
-    def case_for_product(rating, type, category_id, id)
+    def case_for_product(rating, filter_sub_category_id, filter_category_id)
       case rating
       when 'A'
-        a = find_product(category_id, type, ['A'], id)
+        a = find_product("A", filter_sub_category_id, filter_category_id)
       when 'B'
-        a = find_product(category_id, type, %w[A B], id)
+        a = find_product("A", filter_sub_category_id, filter_category_id)
       when 'C'
-        a = find_product(category_id, type, %w[A B C], id)
+        a = find_product("A B", filter_sub_category_id, filter_category_id)
       when 'D'
-        a = find_product(category_id, type, %w[A B C D], id)
+        a = find_product("A B C", filter_sub_category_id, filter_category_id)
       when 'E'
-        a = find_product(category_id, type, %w[A B C D E], id)
+        a = find_product("A B C D", filter_sub_category_id, filter_category_id)
       end
       a
     end
@@ -170,10 +171,14 @@ module BxBlockCatalogue
       data
     end
 
-    def find_product(category_id, type, rating, p_id)
-      product = BxBlockCatalogue::Product.where(product_type: type, product_rating: rating,
-                                                category_id: category_id).where.not(id: p_id).order(product_rating: :asc)
-      product.first(5)
+    def find_product(rating, filter_sub_category_id,filter_category_id)
+      ratings = rating.split(' ')
+      products = []
+      ratings.each do |val|
+        product = BxBlockCatalogue::Product.where(product_rating: val, filter_sub_category_id: filter_sub_category_id, filter_category_id: filter_category_id)
+        products << product
+      end
+      products.first.limit(5)
     end
 
     def product_param
