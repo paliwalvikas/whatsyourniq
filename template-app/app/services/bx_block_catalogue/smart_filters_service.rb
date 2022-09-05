@@ -70,7 +70,7 @@ module BxBlockCatalogue
     def fav_product(params)
       if  params[:fav_search_id].present?
         fav = fav_serach(params[:fav_search_id]) 
-        product = BxBlockCatalogue::SmartSearchService.new.smart_search(fav) if fav[:food_type].present?
+        product = fav[:food_type].present? ? BxBlockCatalogue::SmartSearchService.new.smart_search(fav) : BxBlockCatalogue::Product.where(id:0)
       else
         product = BxBlockCatalogue::Product.all
       end
@@ -185,7 +185,8 @@ module BxBlockCatalogue
     end
 
     def fav_serach(id)
-      BxBlockCatalogue::FavouriteSearch.find_by(id: id)
+      data = BxBlockCatalogue::FavouriteSearch.find_by(id: id)
+      data.present? ? data : {}
     end
 	end
 end
