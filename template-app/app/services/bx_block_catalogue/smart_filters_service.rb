@@ -21,7 +21,6 @@ module BxBlockCatalogue
       when "health_preference"
         health_preference(params, data) 
       end
-      # data
   	end
 
   	private
@@ -37,7 +36,7 @@ module BxBlockCatalogue
 
   	def category(params, data)
       fav = fav_serach(params[:fav_search_id])
-      product = find_product(fav)
+      product = fav.present? && fav[:food_type].present? ? find_product(fav) : BxBlockCatalogue::Product.where(id:0)
     	product.pluck(:food_drink_filter).uniq.each do |prd|
   			filter = []
     		prod =  product.food_drink_filter(prd)
@@ -69,9 +68,9 @@ module BxBlockCatalogue
     end
 
     def fav_product(params)
-      fav = fav_serach(params[:fav_search_id]) 
-      if fav[:food_type].present?
-        product = BxBlockCatalogue::SmartSearchService.new.smart_search(fav)
+      if  params[:fav_search_id].present?
+        fav = fav_serach(params[:fav_search_id]) 
+        product = fav[:food_type].present? ? BxBlockCatalogue::SmartSearchService.new.smart_search(fav) : BxBlockCatalogue::Product.where(id:0)
       else
         product = BxBlockCatalogue::Product.all
       end
@@ -79,7 +78,7 @@ module BxBlockCatalogue
 
     def sub_category(params, data)
       fav = fav_serach(params[:fav_search_id])
-      product = BxBlockCatalogue::SmartSearchService.new.smart_search(fav)
+      product = fav.present? && fav[:food_type].present? ? BxBlockCatalogue::SmartSearchService.new.smart_search(fav) : BxBlockCatalogue::Product.where(id:0)
       product.pluck(:food_drink_filter).uniq.each do |prd|
         filter = []
         prod = product.where(food_drink_filter: prd)
@@ -186,7 +185,8 @@ module BxBlockCatalogue
     end
 
     def fav_serach(id)
-      BxBlockCatalogue::FavouriteSearch.find_by(id: id)
+      data = BxBlockCatalogue::FavouriteSearch.find_by(id: id)
+      data.present? ? data : {}
     end
 	end
 end
