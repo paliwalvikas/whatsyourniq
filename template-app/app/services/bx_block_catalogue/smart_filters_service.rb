@@ -69,12 +69,17 @@ module BxBlockCatalogue
     end
 
     def fav_product(params)
-      fav = fav_serach(params[:fav_search_id])
-      product = BxBlockCatalogue::SmartSearchService.new.smart_search(fav)
+      fav = fav_serach(params[:fav_search_id]) 
+      if fav[:food_type].present?
+        product = BxBlockCatalogue::SmartSearchService.new.smart_search(fav)
+      else
+        product = BxBlockCatalogue::Product.all
+      end
     end
 
     def sub_category(params, data)
-      product = fav_product(params)
+      fav = fav_serach(params[:fav_search_id])
+      product = BxBlockCatalogue::SmartSearchService.new.smart_search(fav)
       product.pluck(:food_drink_filter).uniq.each do |prd|
         filter = []
         prod = product.where(food_drink_filter: prd)
