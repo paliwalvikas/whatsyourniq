@@ -2,7 +2,7 @@ module BxBlockCatalogue
   class FavouriteSearchesController < ApplicationController
     before_action :find_favourite, only: [:update, :destroy]
     before_action :initilize_fav_search, only: [:create]
-    before_action :update_product_count, only: [:create, :update]
+    # before_action :update_product_count, only: [:create, :update]
     skip_before_action :validate_json_web_token, only: %i[create]
 
     def index
@@ -68,6 +68,7 @@ module BxBlockCatalogue
       @fav_search.food_allergies = eval(params[:food_allergies]) if params[:food_allergies].present?
       @fav_search.food_preference = eval(params[:food_preference]) if params[:food_preference].present?
       @fav_search.food_type = eval(params[:food_type]) if params[:food_type].present?
+      update_product_count(@fav_search)
     end
 
     def find_favourite
@@ -78,9 +79,9 @@ module BxBlockCatalogue
       params.permit(:food_type, :product_category, :product_sub_category, :niq_score, :food_allergies, :food_preference, :functional_preference, :health_preference, :favourite, :account_id, :added_count)
   	end
 
-    def update_product_count
-      prod = BxBlockCatalogue::SmartSearchService.new.smart_search(@fav_search)
-      @fav_search.product_count = prod.present? ? prod.count : 0
+    def update_product_count(fav_search)
+      prod = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_search)
+      fav_search.product_count = prod.present? ? prod.count : 0
     end
 
   end
