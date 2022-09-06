@@ -7,7 +7,7 @@ module BxBlockCatalogue
     serialize :product_sub_category
     serialize :functional_preference
     before_create :inc_added_count, if: :check?
-    after_create :update_product_count, if: :check?
+    # after_create :update_product_count, if: :check?
     after_destroy :update_all_records
     validate :check_dupicate, on: :create
 
@@ -64,11 +64,6 @@ module BxBlockCatalogue
 
     def error_msg
       errors.add(:message, 'please select uniq filters')
-    end
-
-    def update_product_count
-      prod = BxBlockCatalogue::SmartSearchService.new.smart_search(self)
-      prod.present? ? update(product_count: prod.count) : update(product_count: 0)
     end
 
     def check?
