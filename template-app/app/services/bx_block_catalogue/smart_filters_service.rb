@@ -84,10 +84,10 @@ module BxBlockCatalogue
 
   	def niq_score(params, data)
       product = fav_product(params, 'niq_score')
-  		rating = product.order(product_rating: :asc).pluck(:product_rating).uniq.compact.delete_if(&:blank?)
+  		rating = product.order(product_rating: :asc).pluck(:product_rating).uniq.compact.delete_if(&:blank?) if product.present?
   		rating.each do |rat|
   			data << {count: product.where(product_rating: rat).count, product_rating: rat }
-  		end if product.present?
+  		end if rating.present?
   		data = {count: total_count(data), niq_score: data}
   	end
 
@@ -126,8 +126,8 @@ module BxBlockCatalogue
 
     def functional_preference(params, data)
       product = fav_product(params, 'functional_preference')
-      product = product.where.not(positive_good: nil, negative_not_good: nil)
-      product = product.pluck(:positive_good, :negative_not_good, :id)
+      product = product.where.not(positive_good: nil, negative_not_good: nil) if product.present?
+      product = product.pluck(:positive_good, :negative_not_good, :id) if product.present?
       ['energy','protein','fibre','vit_a','vit_c','total_sugar','trans_fat'].each do |f_p|
         fp_count = []
         product.each do |val|
