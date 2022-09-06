@@ -11,8 +11,23 @@ module BxBlockCatalogue
         io.set_encoding('utf-8')
         io.read
       end
+      row_count = 0
+      product_import_status = BxBlockCatalogue::ProductImportStatus.create(job_id: "Job: #{Time.now}")
+      error_file = "error_file.csv"
+      CSV.open(error_file, 'w') do |writer|
+        writer << ["Row Number", "Product Name", "Status"]
+      end
+      # my_file = open(error_file) do |io|
+      #   io.set_encoding('utf-8')
+      #   io.read
+      # end
+      # csv_file = CSV.parse(my_file, headers: true)
+      # csv_file.each do |data|
+      #   byebug
+      # end
       csv = CSV.parse(csv_text, headers: true)
       csv.each.each do |product_data|
+        row_count += 1
         product_data = product_data.to_h.reject { |k, _v| k.blank? }
         product_data = product_data.transform_keys { |k| k&.gsub(/\P{ASCII}/, '') }
       
@@ -31,9 +46,31 @@ module BxBlockCatalogue
         product.filter_sub_category_id = filter_sub_category.id
         product.image_url = product_params["image"]
         ingredient = product.build_ingredient(ingredient_params)
-        product.save
+        # product.save
+        # ingredient.save
+        if product.save
+          CSV.open(error_file, 'w') do |writer|
+            writer << ["#{row_count}", "#{product.product_name}", "Success"]
+          end
+        else
+          CSV.open(error_file, 'w') do |writer|
+            writer << ["#{row_count}", "#{product.product_name}", "Failed"]
+          end
+        end
         ingredient.save
       end
+      # my_file = open(error_file) do |io|
+      #   io.set_encoding('utf-8')
+      #   io.read
+      # end
+      product_import_status.status = "Success"
+      # product_import_status.save
+      blob = ActiveStorage::Blob.create_after_upload!(
+        io: CSV.parse(error_file, headers: true),
+        filename: "error_file.csv",
+      )
+      product_import_status.error_file.attach(blob)
+      product_import_status.save
     end
   end
 end
