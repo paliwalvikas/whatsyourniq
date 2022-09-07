@@ -4,7 +4,8 @@ module BxBlockCatalogue
   class Product < BxBlockCatalogue::ApplicationRecord
     self.table_name = :products
     
-    validates :bar_code , uniqueness: true
+    validates :bar_code , :product_name ,uniqueness: true
+    validates :product_name, presence: true
 
     GOOD_INGREDIENTS = { protein: [54, 'g'], fibre: [32, 'g'], vit_a: [1000, 'mcg'], vit_c: [80, 'mg'], vit_d: [600, 'mcg'], iron: [19, 'mg'], calcium: [1000, 'mg'],
                          magnesium: [440, 'mg'], potassium: [3500, 'mg'] }.freeze

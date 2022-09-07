@@ -9,14 +9,11 @@ ActiveAdmin.register BxBlockCatalogue::ProductImportStatus, as: 'Product Import 
     id_column
     column :job_id
     column :status
-    column :error_file
-
     column :created_at
-    actions do |report|
-      link_to 'Download report', download_admin_product_import_status_path(report, format: :pdf), class: 'view_link member_link'
+    actions defaults: false do |report|
+      link_to 'Download report', download_admin_product_import_status_path(report, format: :csv) unless report.status == "In-Progress"
     end
   end
-
 
   member_action :download, method: :get do
     status = BxBlockCatalogue::ProductImportStatus.find_by(id: params[:id])
@@ -26,8 +23,7 @@ ActiveAdmin.register BxBlockCatalogue::ProductImportStatus, as: 'Product Import 
         csv << data
       end
     end
-    send_data csv_file.encode('Windows-1251'), type: 'text/csv; charset=windows-1251; header=present', disposition: "attachment; filename=accounting_report.csv"
+    send_data csv_file, type: 'text/csv; charset=utf-8; header=present', disposition: "attachment; filename=data_import_report.csv"
   end
-
 
 end
