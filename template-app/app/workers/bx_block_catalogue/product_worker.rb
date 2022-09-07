@@ -11,8 +11,18 @@ module BxBlockCatalogue
         io.set_encoding('utf-8')
         io.read
       end
+
+      row_count = 0
+      product_import_status = BxBlockCatalogue::ProductImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}")
+      report_file = "report_file.csv"
+      report_data = []
+      success_data = []
+      failer_data = []
+      csv_headers = ["Row Number", "Product Name", "Error Message", "Status"]
+
       csv = CSV.parse(csv_text, headers: true)
       csv.each.each do |product_data|
+        row_count += 1
         product_data = product_data.to_h.reject { |k, _v| k.blank? }
         product_data = product_data.transform_keys { |k| k&.gsub(/\P{ASCII}/, '') }
       
@@ -31,9 +41,30 @@ module BxBlockCatalogue
         product.filter_sub_category_id = filter_sub_category.id
         product.image_url = product_params["image"]
         ingredient = product.build_ingredient(ingredient_params)
-        product.save
-        ingredient.save
+        
+        if product.save
+          ingredient.save
+          success_data << ["#{row_count}", "#{product.product_name}", "", "Success"]
+        end
+
+        if product.errors.any?
+          failer_data << ["#{row_count}", "#{product.product_name}", "#{product.errors.messages.map {|key, value| key.to_s + " " + value.first.to_s}.join(",")}", "Failed"]
+          product_import_status.status = "Failed"  
+        end
+
       end
+
+      product_import_status.status = "Success" if failer_data.empty?
+
+      report_data = (success_data + failer_data).unshift(csv_headers)
+      CSV.open(report_file, 'w') do |csv|
+        report_data.each do |r_data|
+          csv << r_data
+        end
+      end
+
+      product_import_status.file_status = File.read("report_file.csv")
+      product_import_status.save
     end
   end
 end
