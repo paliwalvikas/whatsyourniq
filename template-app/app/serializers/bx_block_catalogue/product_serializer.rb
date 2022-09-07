@@ -13,7 +13,7 @@ module BxBlockCatalogue
     end
     
     attribute :category_type do |object|
-      object.category.category_type.titleize
+      object.category&.category_type&.titleize
     end
 
     attribute :product_rating do |object|
@@ -43,36 +43,14 @@ module BxBlockCatalogue
 
     attribute :positive_good do |object, _params|
       if _params[:good_ingredient].present?
-        _params[:good_ingredient].each do |val|
-          val.flatten.last[:percent] = 100 if val.flatten.last[:percent] > 100
-          object.positive_good.each do |column|
-            if column.include?(val.first.to_s)
-              val.flatten.last[:level] = column
-              break
-            else
-              val.flatten.last[:level] = nil
-            end
-          end
-        end
-        _params[:good_ingredient].merge(object.vitamins_and_minrals)
+        _params[:good_ingredient].reduce Hash.new, :merge
       end
     end
 
     attribute :negative_not_good do |object, _params|
       if _params[:not_so_good_ingredient].present?
-        _params[:not_so_good_ingredient].each do |val|
-          val.flatten.last[:percent] = 100 if val.flatten.last[:percent] > 100
-          object.negative_not_good.each do |column|
-            if column.include?(val.first.to_s)
-              val.flatten.last[:level] = column
-              break
-            else
-              val.flatten.last[:level] = nil
-            end
-          end
-        end 
+        _params[:not_so_good_ingredient].reduce Hash.new, :merge
       end
     end
-
   end
 end
