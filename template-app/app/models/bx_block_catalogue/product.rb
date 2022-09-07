@@ -332,13 +332,13 @@ module BxBlockCatalogue
       good_ingredient << protein_value
       good_ingredient << {Calories: calories_energy} if calories_energy.present?
       saturate_fat = product_sat_fat
-      good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
+      # good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
       not_so_good_ingredient << saturate_fat[0] if saturate_fat&.last == false 
       sugar = product_sugar_level
-      good_ingredient << sugar[0] if sugar&.last == true 
+      # good_ingredient << sugar[0] if sugar&.last == true 
       not_so_good_ingredient << sugar[0] if sugar&.last == false 
       sodium = product_sodium_level
-      good_ingredient << sodium[0] if sodium&.last == true 
+      # good_ingredient << sodium[0] if sodium&.last == true 
       not_so_good_ingredient << sodium[0] if sodium&.last == false 
       
       data = {
@@ -348,9 +348,9 @@ module BxBlockCatalogue
     end
 
 
-    # def compare_product_good_not_so_good
-    #   BxBlockCatalogue::ProductService.new(ingredient, product_type).calculation_for_rdas
-    # end
+    def compare_product_good_not_so_good
+      BxBlockCatalogue::ProductService.new(ingredient, product_type).calculation_for_rdas
+    end
 
     def vitamins_and_minrals
       good_ingredient = { vitamins: [percent: 0.0, upper_limit: 0.0, level: levels_for_vit_and_min(vitamin_columns), quantity: 0.0],

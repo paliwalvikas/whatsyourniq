@@ -166,7 +166,7 @@ module BxBlockCatalogue
       data = []
       products.each do |product|
         product.calculation
-        p_data = product.rda_calculation
+        p_data = product.compare_product_good_not_so_good
 
         data << ProductSerializer.new(product, params: {good_ingredient: p_data[:good_ingredient], not_so_good_ingredient: p_data[:not_so_good_ingredient]})
       end
