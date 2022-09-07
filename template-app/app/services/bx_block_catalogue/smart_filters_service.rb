@@ -146,7 +146,7 @@ module BxBlockCatalogue
 
     def fav_product(params, val)
       if  params[:fav_search_id].present?
-        fav = fav_serach(params[:fav_search_id]) 
+        fav = fav_serach(params[:fav_search_id])
         fav_value =  case val
                     when 'sub_category'
                       {food_type: fav.food_type, product_category: fav.product_category}
@@ -160,8 +160,8 @@ module BxBlockCatalogue
                       {food_type: fav.food_type, product_category: fav.product_category, product_sub_category: fav.product_sub_category, niq_score: fav.niq_score, food_allergies: fav.food_allergies, food_preference: fav.food_preference}
                     when 'health_preference'
                       {food_type: fav.food_type, product_category: fav.product_category, product_sub_category: fav.product_sub_category, niq_score: fav.niq_score, food_allergies: fav.food_allergies, food_preference: fav.food_preference, functional_preference: fav.functional_preference}
-                    end
-        product = fav[:food_type].present? ? BxBlockCatalogue::SmartSearchService.new.smart_search(fav_value) : BxBlockCatalogue::Product.where(id:0)
+                    end if fav.present?
+        product = fav.present? ? BxBlockCatalogue::SmartSearchService.new.smart_search(fav_value) : BxBlockCatalogue::Product.where(id:0)
       else
         product = BxBlockCatalogue::Product.all
       end
@@ -172,20 +172,18 @@ module BxBlockCatalogue
     end
   	
   	def find_product(params)
-      food_type = params[:food_type].map{|val| value(val)}
+      food_type = params[:food_type].map{|val| value_is(val)}
       category = BxBlockCategories::Category.where(category_type: food_type)
       product = BxBlockCatalogue::Product.where(category_id: category.ids) #.pluck(:food_drink_filter).uniq
   	end
 
-    def value(val)
+    def value_is(val)
       val = val.include?(' ') ? val.downcase.tr!(" ", "_") : val.downcase
     end
-
 
     def find_allergies(value, col)
       ingredients = BxBlockCatalogue::Ingredient.where("#{value} ILIKE ?", col).pluck(:product_id)
     end
-
 
     def find_food_pref(value)
       value = value == 'veg' || value =='nonveg' ? 'veg_and_nonveg' : value

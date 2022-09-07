@@ -56,7 +56,7 @@ module BxBlockCatalogue
       Product.all.each do |product|
         product.product_health_preference
       end
-      BxBlockCategories::FiltersCategory.where(name: "Children's Cereals").update(name: "Children Cereals")
+      BxBlockCategories::FilterSubCategory.where(name: "Children's Cereals").update(name: "Children Cereals")
     end
 
     def search
