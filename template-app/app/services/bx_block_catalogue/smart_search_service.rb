@@ -65,7 +65,7 @@ module BxBlockCatalogue
       ids = []
         params[:food_allergies].each do |f_all|
           f_all = f_all.include?(' ') ? f_all.downcase.tr!(" ", "_") : f_all.downcase
-          ing = allergies(f_all, ingredients, 'no')
+          ing = allergies(f_all, ingredients, 'yes')
           ids << ing.pluck(:product_id) if ing.present?
         end
       product.where.not(id: ids.flatten.compact.uniq) if ids.flatten.present?
