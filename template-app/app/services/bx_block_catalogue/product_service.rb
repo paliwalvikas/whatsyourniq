@@ -32,7 +32,7 @@ module BxBlockCatalogue
 	        value = checking_good_value(mp, clm, vit_min_level)
           vit_min << {"#{clm}": value} 
 	      else
-	        value = checking_good_value(mp, clm, 'Na')
+	        value = checking_good_value(mp, clm, 'N/A')
 	        vit_min << {"#{clm}": value} 
         end
       end
@@ -72,7 +72,7 @@ module BxBlockCatalogue
 	        # end
 	      end
 	    else 
-	    	fb << { Fibre: checking_good_value(pro, 'fibre', "NA")}
+	    	fb << { Fibre: checking_good_value(pro, 'fibre', "N/A")}
 	    end
       fb
     end
@@ -105,8 +105,8 @@ module BxBlockCatalogue
 	        value << { Protein: checking_good_value(pro, 'protein', protein_level)} 
 	        # end
 	       end
-	    else
-	    	pro = "NA"
+	    elsif ingredient.protein == nil
+	    	protein_level = "N/A"
 	    	value << { Protein: checking_good_value(pro, 'protein', protein_level)}
 	    end
     end
@@ -118,21 +118,21 @@ module BxBlockCatalogue
 	      energy_level = case product_type
           when 'solid'
             'low' if energy <= 40
-            'NA'  if energy > 40
+            'N/A'  if energy > 40
           when 'beverage'  
             'free' if energy <= 4
             'low'  if energy > 4 && energy <= 20
-            'NA'   if energy > 20 
+            'N/A'   if energy > 20 
           end
       elsif energy == nil 
-      	energy = "NA"
+      	energy = "N/A"
 	    end
       return checking_good_value(energy, 'calories', energy_level)
     end
 
     def product_sat_fat
       saturate_fat = ingredient.saturate.to_f
-      return "NA" if saturate_fat.zero?
+      return "N/A" if saturate_fat.zero?
       pro_sat_fat = case product_type
       when 'solid'
         if saturate_fat <= 0.1
@@ -178,7 +178,7 @@ module BxBlockCatalogue
 	        end
 	      end
 	    elsif ingredient.total_sugar == nil 
-	    	[{ Sugar: checking_not_so_good_value('NA', 'sugar', 'free')}, true]
+	    	[{ Sugar: checking_not_so_good_value('N/A', 'sugar', 'free')}, true]
 	    end
       pro_sugar_val || []
     end
@@ -186,7 +186,7 @@ module BxBlockCatalogue
     def product_sodium_level
       energy = ingredient.energy.to_f
       sodium = ingredient.sodium.to_f
-      return "NA" if sodium.zero?
+      return "N/A" if sodium.zero?
       case product_type
       when 'solid'
         if sodium < 0.5
@@ -209,8 +209,8 @@ module BxBlockCatalogue
     end
 
     def checking_good_value(ing_vlue, ing, level)
-    	GOOD_INGREDIENTS[:"#{ing}"] == nil || GOOD_INGREDIENTS[:"#{ing}"] == "NA" ? good_value = 0 :  good_value = GOOD_INGREDIENTS[:"#{ing}"]
-    	ing_vlue == nil || ing_vlue == "NA" ? ing_vlue = 0 : ing_vlue
+    	GOOD_INGREDIENTS[:"#{ing}"] == nil || GOOD_INGREDIENTS[:"#{ing}"] == "N/A" ? good_value = 0 :  good_value = GOOD_INGREDIENTS[:"#{ing}"]
+    	ing_vlue == nil || ing_vlue == "N/A" ? ing_vlue = 0 : ing_vlue
       if good_value.present?
         value_percent = ((ing_vlue / good_value[0]) * 100).round if good_value[0] > 0
         [percent: value_percent, upper_limit: good_value[0], level: level, quantity: "#{ing_vlue.round(2)} #{good_value[1]}"]
