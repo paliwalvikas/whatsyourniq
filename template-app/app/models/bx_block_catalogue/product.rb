@@ -7,7 +7,7 @@ module BxBlockCatalogue
     validates :bar_code , :product_name ,uniqueness: true
     validates :product_name, presence: true
 
-    GOOD_INGREDIENTS = { protein: [54, 'g'], fibre: [32, 'g'], vit_a: [1000, 'ug'], vit_c: [80, 'mg'], vit_d: [600, 'mcg'], iron: [19, 'mg'], calcium: [1000, 'mg'],
+    GOOD_INGREDIENTS = { protein: [54, 'g'], fibre: [32, 'g'], vit_a: [1000, 'ug'], vit_c: [80, 'mg'], vit_d: [15, 'iu'], iron: [19, 'mg'], calcium: [1000, 'mg'],
                          magnesium: [440, 'mg'], potassium: [3500, 'mg'], zinc: [17, 'mg'], iodine: [150, 'ug'], vit_b1: [1.4, 'mg'], vit_b2: [2.0, 'mg'], vit_b3: [1.4, 'mg'], vit_b6: [1.9, 'mg'], vit_b12: [2.2, 'ug'], vit_e: [10, 'mg'], vit_b7: [40, 'mcg'], vit_b5: [5, 'mg'], phosphorus: [1000, 'mg'], copper: [2, 'mg'], manganese: [4, 'mg'], chromium: [50, 'mca'], selenium: [40, 'mca'], chloride: [2050, 'mg'] }.freeze
 
     NOT_SO_GOOD_INGREDIENTS = { saturated: [22, 'g'], sugar: [90, 'mg'], sodium: [2000, 'mg'], calories: [0.0, 'kcal']}.freeze
@@ -333,13 +333,13 @@ module BxBlockCatalogue
       good_ingredient << protein_value
       good_ingredient << {Calories: calories_energy} if calories_energy.present?
       saturate_fat = product_sat_fat
-      good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
+      # good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
       not_so_good_ingredient << saturate_fat[0] if saturate_fat&.last == false 
       sugar = product_sugar_level
-      good_ingredient << sugar[0] if sugar&.last == true 
+      # good_ingredient << sugar[0] if sugar&.last == true 
       not_so_good_ingredient << sugar[0] if sugar&.last == false 
       sodium = product_sodium_level
-      good_ingredient << sodium[0] if sodium&.last == true 
+      # good_ingredient << sodium[0] if sodium&.last == true 
       not_so_good_ingredient << sodium[0] if sodium&.last == false 
       
       data = {
@@ -349,9 +349,9 @@ module BxBlockCatalogue
     end
 
 
-    # def compare_product_good_not_so_good
-    #   BxBlockCatalogue::ProductService.new(ingredient, product_type).calculation_for_rdas
-    # end
+    def compare_product_good_not_so_good
+      BxBlockCatalogue::ProductService.new(ingredient, product_type).calculation_for_rdas
+    end
 
     def vitamins_and_minrals
       good_ingredient = { vitamins: [percent: 0.0, upper_limit: 0.0, level: levels_for_vit_and_min(vitamin_columns), quantity: 0.0],
