@@ -26,13 +26,17 @@ module BxBlockCatalogue
         product_data = product_data.to_h.reject { |k, _v| k.blank? }
         product_data = product_data.transform_keys { |k| k&.gsub(/\P{ASCII}/, '') }
       
-        product_params = product_data.except('id', 'product_id', 'energy', 'saturate', 'total_sugar', 'sodium','ratio_fatty_acid_lipids', 'fruit_veg', 'fibre', 'protein', 'vit_a','vit_c','vit_d','vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1','vit_b5','vit_b7','calcium','iron','magnesium','zinc','iodine','potassium','phosphorus','manganese','copper','selenium','chloride','chromium','carbohydrate', 'total_fat', 'monosaturated_fat', 'polyunsaturated_fat', 'fatty_acid', 'mono_unsaturated_fat', 'veg_and_nonveg', 'gluteen_free', 'added_sugar', 'artificial_preservative', 'organic', 'vegan_product', 'egg', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soyabean','cholestrol', 'trans_fat')
+        product_params = product_data.except('id', 'product_id', 'energy', 'saturate', 'total_sugar', 'sodium','ratio_fatty_acid_lipids', 'fruit_veg', 'fibre', 'protein', 'vit_a','vit_c','vit_d','vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1','vit_b5','vit_b7','calcium','iron','magnesium','zinc','iodine','potassium','phosphorus','manganese','copper','selenium','chloride','chromium','carbohydrate', 'total_fat', 'monosaturated_fat', 'polyunsaturated_fat', 'fatty_acid', 'mono_unsaturated_fat', 'veg_and_nonveg', 'gluteen_free', 'added_sugar', 'artificial_preservative', 'organic', 'vegan_product', 'egg', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soyabean','cholestrol', 'trans_fat', 'nutritional', 'fat')
 
-        ingredient_params = product_data.except('id', 'product_name', 'product_type','weight','price_mrp','price_post_discount','brand_name','category_id','image','bar_code','data_check','description','ingredient_list','food_drink_filter','category_filter','category_type_filter')
+        ingredient_params = product_data.except('id', 'product_name', 'product_type','weight','price_mrp','price_post_discount','brand_name','category_id','image','bar_code','data_check','description','ingredient_list','food_drink_filter','category_filter','category_type_filter', 'website', 'nutritional', 'fat')
 
-        next if BxBlockCatalogue::Product.find_by(bar_code: product_params['bar_code'])
+        # next if BxBlockCatalogue::Product.find_by(bar_code: product_params['bar_code'])
         filter_category = BxBlockCategories::FilterCategory.find_or_create_by(name: product_params["category_filter"])
         filter_sub_category = BxBlockCategories::FilterSubCategory.find_or_create_by(name: product_params['category_type_filter'], filter_category_id: filter_category.id)
+
+        if product_params["product_type"] == "Oil" || product_params["product_type"] == "Cheese"
+          product_params["product_type"] = "cheese_and_oil"
+        end
 
         product = BxBlockCatalogue::Product.new(product_params)
         product.category_id = BxBlockCategories::Category.new.find_category_type(product_params['category_id'])
