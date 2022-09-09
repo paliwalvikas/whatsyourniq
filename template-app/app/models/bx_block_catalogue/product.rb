@@ -294,19 +294,17 @@ module BxBlockCatalogue
           'low'
         elsif pro >= 3.0 && pro < 6.0
           'medium'
-        elsif pro < 6.0
+        elsif pro > 6.0
           'high'
         end
         # fibre_level = (pro >= 3.0 && pro < 6.0 ? 'medium' : 'high')
         fb << { Fibre: checking_good_value(pro, 'fibre', fibre_level)} 
         # end
       when 'beverage'
-        # if pro < 1.5
-        #   'low in fibre'
-        # else
-        fibre_level = (pro >= 1.5 && pro < 3.0 ? 'medium' : 'high')
+        fibre_level = 'low' if  pro < 1.5
+        fibre_level = 'medium' if pro >= 1.5 && pro < 3.0
+        fibre_level = 'high' if pro > 3.0
         fb << { Fibre: checking_good_value(pro, 'fibre', fibre_level)}
-        # end
       end
       fb
     end
