@@ -93,7 +93,7 @@ module BxBlockCatalogue
 
   	def food_allergies(params, data)
       product = fav_filter_product(params, 'food_allergies')
-  		["dairy","egg","fish", "shellfish","tree_nuts","peanuts","wheat","soyabean"].each do |alg|
+  		["dairy","egg","fish","shellfish","tree_nuts","peanuts","wheat","soyabean"].each do |alg|
         id_s = find_allergies(alg, 'yes')
         data << {count: product.where(id: id_s).count, product_rating: alg.titleize }
       end

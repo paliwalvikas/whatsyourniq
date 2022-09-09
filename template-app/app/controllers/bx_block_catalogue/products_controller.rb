@@ -12,7 +12,7 @@ module BxBlockCatalogue
         product.calculation
         data = product.rda_calculation
         begin
-          return render json: ProductSerializer.new(product,
+          return render json: ProductCompareSerializer.new(product,
                                              params: { good_ingredient: data[:good_ingredient],
                                                        not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
         rescue AbstractController::DoubleRenderError
@@ -166,8 +166,7 @@ module BxBlockCatalogue
       data = []
       products.each do |product|
         product.calculation
-        p_data = product.rda_calculation
-
+        p_data = product.compare_product_good_not_so_good
         data << ProductSerializer.new(product, params: {good_ingredient: p_data[:good_ingredient], not_so_good_ingredient: p_data[:not_so_good_ingredient]})
       end
       data
