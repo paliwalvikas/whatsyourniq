@@ -226,7 +226,7 @@ module BxBlockCatalogue
           protein_level =  'high'
         end
         data = checking_good_value(pro, 'protein', protein_level)
-        value << checking_good_value(pro, 'protein', protein_level) if protein_level != 'low'
+        value << checking_good_value(pro, 'protein', protein_level) 
       when 'beverage'
         if pro < 2.7
           protein_level =  'low'
@@ -236,7 +236,7 @@ module BxBlockCatalogue
           protein_level = 'high'
         end
         data = checking_good_value(pro, 'protein', protein_level)
-        value << checking_good_value(pro, 'protein', protein_level) if protein_level != 'low'
+        value << checking_good_value(pro, 'protein', protein_level) 
       end
     end
 
@@ -294,7 +294,7 @@ module BxBlockCatalogue
           'high'
         end
         value = checking_good_value(pro, 'fibre', fibre_level)
-        fb << value if value.present?
+        fb << value if value.present? 
       when 'beverage'
         fibre_level = 'low' if  pro < 1.5
         fibre_level = 'medium' if pro >= 1.5 && pro < 3.0
@@ -322,9 +322,9 @@ module BxBlockCatalogue
     def rda_calculation
       good_ingredient = []
       not_so_good_ingredient = []
-      good_ingredient << vit_min_value
-      good_ingredient << dietary_fibre
-      good_ingredient << protein_value
+      good_ingredient << vit_min_value 
+      good_ingredient << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'low'
+      good_ingredient << protein_value if protein_value.present? && protein_value.first[:level] != 'low'
       good_ingredient << {Calories: calories_energy} if calories_energy.present?
       saturate_fat = product_sat_fat
       good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
