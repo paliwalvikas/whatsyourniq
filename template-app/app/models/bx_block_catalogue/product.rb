@@ -223,7 +223,7 @@ module BxBlockCatalogue
         elsif pro >= 5.4 && pro <= 10.8
           protein_level =  'Medium'
         elsif pro > 10.8
-          protein_level =  'high'
+          protein_level =  'High'
         end
         data = checking_good_value(pro, 'protein', protein_level)
         value << checking_good_value(pro, 'protein', protein_level) 
@@ -360,7 +360,7 @@ module BxBlockCatalogue
                'Low' if energy <= 40
              when 'beverage'
                if energy <= 4
-                 'free'
+                 'Free'
                elsif energy <= 20
                  'Low'
                end
@@ -395,7 +395,7 @@ module BxBlockCatalogue
 
     #   when 'beverage'
     #     if trans_fat < 0.5
-    #       positive_good << 'trans_fat free'
+    #       positive_good << 'trans_fat Free'
     #     elsif trans_fat >= 0.5 && trans_fat < 2.5
     #       positive_good << 'Low trans_fat'
     #     elsif if energy.positive? && trans_fat > 0.09 || energy.between?(0,
@@ -423,7 +423,7 @@ module BxBlockCatalogue
       pro_sugar_val = case product_type
       when 'solid'
         if sugar < 0.5
-          [checking_not_so_good_value(sugar, 'sugar', 'free'), true]
+          [checking_not_so_good_value(sugar, 'sugar', 'Free'), true]
         elsif sugar >= 0.5 && sugar < 5.0
           [checking_not_so_good_value(sugar, 'sugar', 'Low'), true]
         elsif energy.between?(0,80) && sugar > 4.5 || energy.between?(80,160) && sugar > 9 || energy.between?(160,240) && sugar > 13.5 || energy.between?(240,320) && sugar > 18 || energy.between?(320,400) && sugar > 22.5 || energy.between?(400,480) && sugar > 27 || energy.between?(480,560) && sugar > 31 || energy.between?(560,640) && sugar > 36 || energy.between?(640, 720) && sugar > 40 || energy.between?(720, 800) && sugar > 45
@@ -431,9 +431,9 @@ module BxBlockCatalogue
         end
       when 'beverage'
         if sugar < 0.5
-          [checking_not_so_good_value(sugar, 'sugar', 'free'), true]
+          [checking_not_so_good_value(sugar, 'sugar', 'Free'), true]
         elsif sugar >= 0.5 && sugar < 2.5
-          [checking_not_so_good_value(sugar, 'sugar', 'free'), true]
+          [checking_not_so_good_value(sugar, 'sugar', 'Free'), true]
         elsif energy.positive? && sugar.positive? || energy.between?(0,7) && sugar > 1.5 || energy.between?(7,14) && sugar > 3 || energy.between?(14,22) && sugar > 4.5 || energy.between?(22,29) && sugar > 6 || energy.between?(29,36) && sugar > 7.5 || energy.between?(36,43) && sugar > 9 || energy.between?(43,50) && sugar > 10.5 || energy.between?(50, 57) && sugar > 12 || energy.between?(57, 64) && sugar > 13.5
           [checking_not_so_good_value(sugar, 'sugar', 'High'), false]
 
@@ -453,7 +453,7 @@ module BxBlockCatalogue
       case product_type
       when 'solid'
         if sodium < 0.5
-          return [checking_not_so_good_value(sodium, 'sodium', 'free'), true]
+          return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
         elsif sodium >= 0.5 && sodium < 5.0
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
         elsif energy.between?(0,80) && sodium > 90 || energy.between?(80,160) && sodium > 180 || energy.between?(160,240) && sodium > 270 || energy.between?(240,320) && sodium > 360 || energy.between?(320,400) && sodium > 450 || energy.between?(400,480) && sodium > 540 || energy.between?(480,560) && sodium > 630 || energy.between?(560,640) && sodium > 720 || energy.between?(640, 720) && sodium > 810 || energy.between?(720, 800) && sodium > 900
@@ -461,7 +461,7 @@ module BxBlockCatalogue
         end
       when 'beverage'
         if sodium < 0.5
-          return [checking_not_so_good_value(sodium, 'sodium', 'free'), true]
+          return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
         elsif sodium >= 0.5 && sodium < 2.5
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
         elsif energy.positive? && sodium > 90 || energy.between?(0,7) && sodium > 180 || energy.between?(7,14) && sodium > 270 || energy.between?(14,22) && sodium > 360 || energy.between?(22,29) && sodium > 450 || energy.between?(29,36) && sodium > 540 || energy.between?(36,43) && sodium > 630 || energy.between?(43,50) && sodium > 720 || energy.between?(50, 57) && sodium > 810 || energy.between?(57, 64) && sodium > 900
@@ -481,7 +481,7 @@ module BxBlockCatalogue
       pro_sat_fat = case product_type
       when 'solid'
         if saturate_fat <= 0.1
-          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'free'), true]
+          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
         elsif saturate_fat > 0.1 && saturate_fat <= (1.5 + energy_from_saturated_fat)
           [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
         elsif saturate_fat >= 10.8
@@ -489,7 +489,7 @@ module BxBlockCatalogue
         end
       when 'beverage'
         if saturate_fat <= 0.1
-          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'free'), true]
+          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
 
         elsif saturate_fat > 0.1 && saturate_fat <= (0.75 + energy_from_saturated_fat)
           [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
