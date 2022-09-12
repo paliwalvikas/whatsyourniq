@@ -93,28 +93,26 @@ module BxBlockCatalogue
           ing_value = ing.send(clm)
           pp << check_value('positive_value', clm, ing_value) if ing_value.present?
         end
-
         mp = micro_calculation(ing).sum
         p_point = np.sum - pp.sum
-        p_rating = if p_point <= (-1)
-                     'A'
-                   elsif p_point.between?(0, 2)
-                     'B'
-                   elsif p_point.between?(3, 10)
-                     'C'
-                   elsif p_point.between?(11, 18)
-                     'D'
-                   else
-                     'E'
-                   end
-        if np.blank? && pp.blank?
+        if p_point.zero? || np.blank? && pp.blank?
           self.product_rating = nil
           self.product_point = nil
         else
-          self.product_rating = p_rating
-          self.product_point = p_point
-        end
-      # end
+          p_rating = if p_point <= (-1)
+                       'A'
+                     elsif p_point.between?(0, 2)
+                       'B'
+                     elsif p_point.between?(3, 10)
+                       'C'
+                     elsif p_point.between?(11, 18)
+                       'D'
+                     else
+                       'E'
+                     end
+            self.product_rating = p_rating
+            self.product_point = p_point
+          end
       
       if product_rating.present?
         pr = if mp.to_f.between?(0, 4)

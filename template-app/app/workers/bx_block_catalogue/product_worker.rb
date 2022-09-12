@@ -36,6 +36,7 @@ module BxBlockCatalogue
           ingredient = product.build_ingredient(ingredient_params)
           product.save
           ingredient.save
+          product.calculation
           # count+=1
         rescue Exception => e
           count+=1
