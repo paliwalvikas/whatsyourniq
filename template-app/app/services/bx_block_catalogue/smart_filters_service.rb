@@ -42,7 +42,7 @@ module BxBlockCatalogue
     		prod =  product.food_drink_filter(prd)
     		uniq_p = filter_category_p(prod.pluck(:filter_category_id).uniq)
     		uniq_p.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
-      	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter }
+      	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter } 
 			end if product.present?
       c_ao = product.product_type("cheese_and_oil")
       c_prod = filter_category_p(c_ao.pluck(:filter_category_id).uniq)
@@ -77,7 +77,7 @@ module BxBlockCatalogue
           }
           filter << {count: total_count(sub_filter), category: cat_f.name , sub_category_filter: sub_filter } 
         end
-        data << {count: total_count(filter), food_drink_filter: ("packaged " + prd).titleize, category_filter: filter }
+        data << {count: total_count(filter), food_drink_filter: ("packaged " + prd).titleize, category_filter: filter } unless total_count(filter) == 0
       end 
       data = {count: total_count(data), sub_category: data}
     end
