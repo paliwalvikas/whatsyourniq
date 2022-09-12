@@ -35,7 +35,6 @@ module BxBlockCatalogue
     end
 
   	def category(params, data)
-      byebug
       fav = fav_serach(params[:fav_search_id])
       product = fav.present? && fav[:food_type].present? ? find_product(fav) : BxBlockCatalogue::Product.where(id:0)
     	product.pluck(:food_drink_filter).uniq.each do |prd|
