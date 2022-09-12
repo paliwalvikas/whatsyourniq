@@ -84,7 +84,7 @@ module BxBlockCatalogue
 
   	def niq_score(params, data)
       product = fav_filter_product(params, 'niq_score')
-  		rating = product.order(product_rating: :asc).pluck(:product_rating).uniq.compact.delete_if(&:blank?) if product.present?
+  		rating = BxBlockCatalogue::Product.order(product_rating: :asc).pluck(:product_rating).uniq.compact.delete_if(&:blank?) 
   		rating.each do |rat|
   			data << {count: product.where(product_rating: rat).count, product_rating: rat }
   		end 
