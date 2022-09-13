@@ -80,11 +80,9 @@ module BxBlockCatalogue
         val = f_all == 'no_artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
         f_all = 'added_sugar' if f_all == 'no_added_sugar'
         f_all = 'artificial_preservative' if f_all == 'no_artificial_preservative' 
-        ing = allergies(f_all.downcase, ingredients, val)
-        ids << ing.pluck(:product_id) if ing.present?
+        ingredients = allergies(f_all.downcase, ingredients, val)
       end
-      product.where(id: ids.flatten.compact.uniq) if ids.flatten.present?
-      # ingredient_to_product(ingredients, product)
+      product.where(id: ingredients.pluck(:product_id)) if ingredients.present?
     end
 
     def p_sub_category(product, params)
@@ -146,6 +144,13 @@ module BxBlockCatalogue
     end
 
     def allergies(val, ingredients, col)
+      col = if val == 'veg' 
+              'veg'
+            elsif val == 'nonveg'
+              'nonveg'
+            else
+              col
+            end
       val = val == 'veg' || val == 'nonveg' ? 'veg_and_nonveg' : val
       ingredients.where("#{val} ILIKE ?", col) 
     end

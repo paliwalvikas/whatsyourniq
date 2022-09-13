@@ -80,8 +80,12 @@ module BxBlockCatalogue
   	end
 
     def update_product_count(fav_search)
-      prod = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_search)
-      fav_search.product_count = prod.present? ? prod.count : 0
+      if fav_search.favourite
+        prod = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_search)
+        fav_search.product_count = prod.present? ? prod.count : 0
+      else
+        fav_search.product_count = 0
+      end
     end
 
   end
