@@ -12,6 +12,10 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     link_to('Download Sample CSV', download_admin_products_path)
   end
 
+  action_item :product_import_status, only: :index do
+    link_to 'Product Import Status', '/admin/product_import_statuses'
+  end
+  
   collection_action :download, method: :get do
     file_name = "#{Rails.root}/lib/product_importable_file_format.csv"
     send_file file_name, type: 'application/csv'
