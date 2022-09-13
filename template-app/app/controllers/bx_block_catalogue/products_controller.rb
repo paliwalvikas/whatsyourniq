@@ -5,7 +5,7 @@ require 'json'
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
-    skip_before_action :validate_json_web_token, only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data delete_all_products]
+    skip_before_action :validate_json_web_token, only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data delete_all_products product_calculation]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
@@ -145,6 +145,16 @@ module BxBlockCatalogue
         
     def delete_all_products
       BxBlockCatalogue::Product.destroy_all
+    end
+
+    def product_calculation
+      count = 0
+      BxBlockCatalogue::Product.find_in_batches do |products|
+        products.each do |product|
+          product.calculation
+          count += 1
+        end
+      end
     end
 
     private

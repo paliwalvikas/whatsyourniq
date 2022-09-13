@@ -6,11 +6,15 @@ Rails.application.routes.draw do
   get '/healthcheck', to: proc { [200, {}, ['Ok']] }
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self) rescue ActiveAdmin::DatabaseHitDuringLoad
+  require 'sidekiq/web'
+  require 'sidekiq/cron/web'
+  mount Sidekiq::Web => '/sidekiq'
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :bx_block_catalogue do
     get 'search', to: 'products#search'
     get 'regenerate_master_data', to: 'products#regenerate_master_data'
+    # get 'delete_all_products', to: 'products#delete_all_products'
     resources :products do
       collection do
         get :niq_score
@@ -19,6 +23,8 @@ Rails.application.routes.draw do
         get :product_smart_search
         get :compare_product
         post :prod_health_preference
+        get :delete_all_products
+        get :product_calculation
       end
     end
     resources :compare_products

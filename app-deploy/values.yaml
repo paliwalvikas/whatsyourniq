@@ -74,7 +74,7 @@ railsSidekiq:
     # maxReplicas must not exceed the max node count
     maxReplicas: 3
     targetCPU: 50
-    targetMemory: 80 
+    targetMemory: 80  
 
 serviceAccount:
   # Specifies whether a service account should be created
