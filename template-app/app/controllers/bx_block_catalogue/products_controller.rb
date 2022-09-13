@@ -148,11 +148,9 @@ module BxBlockCatalogue
     end
 
     def product_calculation
-      count = 0
       BxBlockCatalogue::Product.find_in_batches do |products|
         products.each do |product|
-          product.calculation
-          count += 1
+          product.calculation if product.bar_code.present?
         end
       end
     end
