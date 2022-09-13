@@ -2,9 +2,9 @@
 require 'csv'
 
 module BxBlockCatalogue
-  class ProductWorker
-    include Sidekiq::Worker
-    sidekiq_options retry: false
+  class ProductWorker 
+    # include Sidekiq::Worker
+    # sidekiq_options retry: false
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
 
     def product_data_import(file)
@@ -15,7 +15,7 @@ module BxBlockCatalogue
 
       row_count = 0
       product_import_status = BxBlockCatalogue::ProductImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}")
-      report_file = "report_file.csv"
+      # report_file = "report_file.csv"
       report_data = []
       success_data = []
       failer_data = []
@@ -63,13 +63,20 @@ module BxBlockCatalogue
       product_import_status.status = "Success" if failer_data.empty?
 
       report_data = (success_data + failer_data).unshift(csv_headers)
-      CSV.open(report_file, 'w') do |csv|
+      # CSV.open(report_file, 'w') do |csv|
+      #   report_data.each do |r_data|
+      #     csv << r_data
+      #   end
+      # end
+
+      # product_import_status.file_status = File.read("report_file.csv")
+      product_import_status.file_status = CSV.generate do |csv|
         report_data.each do |r_data|
           csv << r_data
         end
+        csv
       end
 
-      product_import_status.file_status = File.read("report_file.csv")
       product_import_status.save
     end
   end
