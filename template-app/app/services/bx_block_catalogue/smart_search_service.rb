@@ -37,9 +37,9 @@ module BxBlockCatalogue
         elsif key.to_s == 'Calories'
           key = 'energy'
         end
-       pr_ids << positive_negative(product, key.downcase, value)
+       product = positive_negative(product, key.downcase, value)
       end
-      product.where(id: pr_ids.flatten.compact.uniq) if pr_ids.flatten.present?
+      product.present? ? product : nil
     end
 
     def positive_negative(product, key, value)
@@ -52,7 +52,7 @@ module BxBlockCatalogue
           p_ids << prd.id if nng.include?("#{val} in #{key}") || nng.include?("#{key} #{val}") || pg.include?("#{val} in #{key}") || pg.include?("#{key} #{val}") 
         end
       end
-      p_ids
+      product.where(id: p_ids) if p_ids.present? && product.present?
     end
 
     def food_type(params, product)
@@ -77,8 +77,9 @@ module BxBlockCatalogue
       ids = []
       params[:food_preference].each do |f_all|
         f_all = f_all.include?(' ') ? f_all.downcase.tr!(" ", "_") : f_all.downcase
-        val = f_all == 'artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
+        val = f_all == 'no_artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
         f_all = 'added_sugar' if f_all == 'no_added_sugar'
+        f_all = 'artificial_preservative' if f_all == 'no_artificial_preservative' 
         ing = allergies(f_all.downcase, ingredients, val)
         ids << ing.pluck(:product_id) if ing.present?
       end

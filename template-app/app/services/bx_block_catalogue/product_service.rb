@@ -20,11 +20,11 @@ module BxBlockCatalogue
         mp = ing.send(clm).to_f
         unless mp.zero?
 	        if (mp < 0.6)
-	          vit_min_level = 'low'
+	          vit_min_level = 'Low'
 	        elsif (mp >= 0.6 && mp < 1.0)
-	        	vit_min_level = 'medium'
+	        	vit_min_level = 'Medium'
 	        elsif (mp >= 1.0)
-	        	vit_min_level = 'high'
+	        	vit_min_level = 'High'
 	        end
 	        value = checking_good_value(mp, clm, vit_min_level)
           vit_min << {"#{clm}": value} 
@@ -48,20 +48,20 @@ module BxBlockCatalogue
 	      case product_type
 	      when 'solid'
 	        if pro < 3.0
-	         fibre_level  = 'low'
+	         fibre_level  = 'Low'
 	        elsif pro >= 3.0 && pro < 6.0
-	        	fibre_level = 'medium'
+	        	fibre_level = 'Medium'
 	        elsif pro >= 6.0
-	        	fibre_level ='high'
+	        	fibre_level ='High'
 	        end
 	        fb << { Fibre: checking_good_value(pro, 'fibre', fibre_level)}
 	      when 'beverage'
 	        if pro < 1.5
-	         fibre_level  = 'low'
+	         fibre_level  = 'Low'
 	        elsif pro >= 1.5 && pro < 3.0
-	        	fibre_level = 'medium'
+	        	fibre_level = 'Medium'
 	        elsif pro >= 3.0
-	        	fibre_level ='high'
+	        	fibre_level ='High'
 	        end
 	        fb << { Fibre: checking_good_value(pro, 'fibre', fibre_level)}
 	      end
@@ -78,24 +78,24 @@ module BxBlockCatalogue
 	      case product_type
 	      when 'solid'
 	        if pro < 5.4
-	          protein_level =  'low'
+	          protein_level =  'Low'
 	        elsif pro >= 5.4 && pro <= 10.8
-	          protein_level =  'medium'
+	          protein_level =  'Medium'
 	        elsif pro > 10.8
-	          protein_level =  'high'
+	          protein_level =  'High'
 	        end
-	        # protein_level = (pro >= 5.4 && pro < 10.8 ? 'medium' : 'high')
+	        # protein_level = (pro >= 5.4 && pro < 10.8 ? 'Medium' : 'High')
 	        value << { Protein: checking_good_value(pro, 'protein', protein_level)} 
 	        # end
 	      when 'beverage'
 	        if pro < 2.7
-	          protein_level =  'low'
+	          protein_level =  'Low'
 	        elsif pro >= 2.7 && pro < 5.4
-	          protein_level =  'medium'
+	          protein_level =  'Medium'
 	        elsif pro >= 5.4
-	          protein_level = 'high'
+	          protein_level = 'High'
 	        end
-	        # protein_level = (pro >= 2.7 && pro < 5.4 ? 'medium' : 'high ')
+	        # protein_level = (pro >= 2.7 && pro < 5.4 ? 'Medium' : 'High ')
 	        value << { Protein: checking_good_value(pro, 'protein', protein_level)} 
 	        # end
 	       end
