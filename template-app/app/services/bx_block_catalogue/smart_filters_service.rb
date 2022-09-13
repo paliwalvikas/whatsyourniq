@@ -188,11 +188,18 @@ module BxBlockCatalogue
     end
 
     def find_allergies(value, col)
+      col = if value == 'veg'
+              'veg'
+            elsif value == 'nonveg'
+              'nonveg'
+            else
+              col
+            end                    
+      value = value == 'veg' || value =='nonveg' ? 'veg_and_nonveg' : value
       ingredients = BxBlockCatalogue::Ingredient.where("#{value} ILIKE ?", col).pluck(:product_id)
     end
 
     def find_food_pref(value)
-      value = value == 'veg' || value =='nonveg' ? 'veg_and_nonveg' : value
       c_val = value == 'artificial_preservative' || value == 'added_sugar' || value == 'no_artificial_color' ? 'no' : 'yes'
       find_allergies(value, c_val)
     end
