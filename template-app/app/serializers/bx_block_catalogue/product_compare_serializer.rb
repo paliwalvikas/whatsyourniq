@@ -1,5 +1,5 @@
 module BxBlockCatalogue
-  class ProductSerializer < BuilderBase::BaseSerializer
+  class ProductCompareSerializer < BuilderBase::BaseSerializer
     attributes :id, :product_name, :product_type, :product_rating, :product_point, :positive_good, :negative_not_good, :bar_code, :data_check, :food_drink_filter, :image, :category_type, :filter_category, :filter_sub_category, :description, :ingredient_list, :created_at, :updated_at
     
     attribute :image do |object, _params|
@@ -43,13 +43,13 @@ module BxBlockCatalogue
 
     attribute :positive_good do |object, _params|
       if _params[:good_ingredient].present? 
-        _params[:good_ingredient].reduce Hash.new, :merge
+        _params[:good_ingredient]
       end
     end
 
     attribute :negative_not_good do |object, _params|
       if _params[:not_so_good_ingredient].present?
-        _params[:not_so_good_ingredient].reduce Hash.new, :merge
+        _params[:not_so_good_ingredient]
       end
     end
   end

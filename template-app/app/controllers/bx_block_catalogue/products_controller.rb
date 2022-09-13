@@ -5,14 +5,14 @@ require 'json'
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
-    skip_before_action :validate_json_web_token, only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data]
+    skip_before_action :validate_json_web_token, only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data delete_all_products]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
         product.calculation
         data = product.rda_calculation
         begin
-          return render json: ProductSerializer.new(product,
+          return render json: ProductCompareSerializer.new(product,
                                              params: { good_ingredient: data[:good_ingredient],
                                                        not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
         rescue AbstractController::DoubleRenderError
@@ -141,6 +141,12 @@ module BxBlockCatalogue
       end
     end
 
+
+        
+    def delete_all_products
+      BxBlockCatalogue::Product.destroy_all
+    end
+
     private
 
     def case_for_product(product)
@@ -167,7 +173,6 @@ module BxBlockCatalogue
       products.each do |product|
         product.calculation
         p_data = product.compare_product_good_not_so_good
-
         data << ProductSerializer.new(product, params: {good_ingredient: p_data[:good_ingredient], not_so_good_ingredient: p_data[:not_so_good_ingredient]})
       end
       data
@@ -185,6 +190,5 @@ module BxBlockCatalogue
     def product_found
       @product = BxBlockCatalogue::Product.find_by(id: params[:id])
     end
-    
   end
 end

@@ -24,7 +24,7 @@ module BxBlockCatalogue
     end
 
     def check_dupicate
-      fav_search = account.favourite_searches.where(favourite: true) if account.present?
+      fav_search = account.favourite_searches.where(favourite: true) if account.present? && favourite
       if fav_search.present?
         fav = fav_search.where(niq_score: niq_score, food_allergies: food_allergies,
                                                               health_preference: health_preference, food_type: food_type, account_id: account_id, food_preference: food_preference) if account.present?

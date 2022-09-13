@@ -37,9 +37,9 @@ module BxBlockCatalogue
         elsif key.to_s == 'Calories'
           key = 'energy'
         end
-       pr_ids << positive_negative(product, key.downcase, value)
+       product = positive_negative(product, key.downcase, value)
       end
-      product.where(id: pr_ids.flatten.compact.uniq) if pr_ids.flatten.present?
+      product.present? ? product : nil
     end
 
     def positive_negative(product, key, value)
@@ -52,7 +52,7 @@ module BxBlockCatalogue
           p_ids << prd.id if nng.include?("#{val} in #{key}") || nng.include?("#{key} #{val}") || pg.include?("#{val} in #{key}") || pg.include?("#{key} #{val}") 
         end
       end
-      p_ids
+      product.where(id: p_ids) if p_ids.present? && product.present?
     end
 
     def food_type(params, product)
@@ -77,8 +77,9 @@ module BxBlockCatalogue
       ids = []
       params[:food_preference].each do |f_all|
         f_all = f_all.include?(' ') ? f_all.downcase.tr!(" ", "_") : f_all.downcase
-        val = f_all == 'artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
+        val = f_all == 'no_artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
         f_all = 'added_sugar' if f_all == 'no_added_sugar'
+        f_all = 'artificial_preservative' if f_all == 'no_artificial_preservative' 
         ing = allergies(f_all.downcase, ingredients, val)
         ids << ing.pluck(:product_id) if ing.present?
       end
@@ -103,7 +104,7 @@ module BxBlockCatalogue
       cao = eval(params[:product_category]) 
       p_ids = []
       p_ids << cheese_and_oil(product, cao[:"Packaged Cheese And Oil"]).pluck(:id) if check?(cao[:"Packaged Cheese And Oil"]) && check?(product)
-      p_ids << food_drink_filter(product, cao).pluck(:id) if (check?(cao[:"Packaged Food"]) || check?(cao[:"Packaged Drink"])) && check?(product)
+      p_ids << food_drink_filter(product, cao) if (check?(cao[:"Packaged Food"]) || check?(cao[:"Packaged Drink"])) && check?(product)
       p_ids << raw_and_cooked(product, cao).pluck(:id) if (check?(cao[:raw_food]) || check?([:cooked_food])) && check?(product)
       product.where(id: p_ids.flatten.compact.uniq) if check?(p_ids)
     end
@@ -122,14 +123,14 @@ module BxBlockCatalogue
       drink_ids << BxBlockCategories::FilterCategory.where(name: cao[:"Packaged Drink"]).pluck(:id) if check?(cao[:"Packaged Drink"])
       if cao[:"Packaged Food"].present? && cao[:"Packaged Drink"].present?
         f_product, d_product = [], []
-        f_product = product.food.where(filter_category_id: food_ids.flatten.compact.uniq).pluck(:id) if check?(food_ids.flatten)
-        d_product = product.drink.where(filter_category_id: drink_ids.flatten.compact.uniq).pluck(:id) if check?(drink_ids.flatten)
+        f_product = product.food.where(filter_category_id: food_ids.flatten.compact.uniq).ids if check?(food_ids.flatten)
+        d_product = product.drink.where(filter_category_id: drink_ids.flatten.compact.uniq).ids if check?(drink_ids.flatten)
         ids = f_product + d_product
-        product = product.where(id: ids.flatten.uniq)
+        product = ids.flatten.uniq
       elsif cao[:"Packaged Drink"].present?
-        product = product.drink.where(filter_category_id: drink_ids.flatten.compact.uniq) 
+        product = product.drink.where(filter_category_id: drink_ids.flatten.compact.uniq).ids 
       elsif cao[:"Packaged Food"].present?
-        product = product.food.where(filter_category_id: food_ids.flatten.compact.uniq) 
+        product = product.food.where(filter_category_id: food_ids.flatten.compact.uniq).ids
       end
       check?(product) ? product : product.where(id: 0)
     end

@@ -5,6 +5,7 @@ module BxBlockCatalogue
   class ProductWorker
     include Sidekiq::Worker
     sidekiq_options retry: false
+    ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
 
     def product_data_import(file)
       csv_text = open(file) do |io|
@@ -21,6 +22,7 @@ module BxBlockCatalogue
       csv_headers = ["Row Number", "Product Name", "Error Message", "Status"]
 
       csv = CSV.parse(csv_text, headers: true)
+      count = 0
       csv.each.each do |product_data|
         row_count += 1
         product_data = product_data.to_h.reject { |k, _v| k.blank? }
