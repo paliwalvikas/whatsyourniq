@@ -25,6 +25,7 @@ Rails.application.routes.draw do
         post :prod_health_preference
         get :delete_all_products
         get :product_calculation
+        delete :delete_health_preference
       end
     end
     resources :compare_products

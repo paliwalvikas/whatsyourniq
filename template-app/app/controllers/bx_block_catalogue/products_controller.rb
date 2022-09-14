@@ -57,6 +57,13 @@ module BxBlockCatalogue
         product.product_health_preference
       end
       BxBlockCategories::FilterSubCategory.where(name: "Children's Cereals").update(name: "Children Cereals")
+      render json: { errors: 'updated' }
+
+    end
+
+    def delete_health_preference
+      BxBlockCatalogue::HealthPreference.destroy_all
+      render json: { errors: 'Deleted' }
     end
 
     def search
