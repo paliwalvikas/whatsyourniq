@@ -15,13 +15,14 @@ module BxBlockCatalogue
 
       row_count = 0
       product_import_status = BxBlockCatalogue::ProductImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}")
-      # report_file = "report_file.csv"
+
       report_data = []
       success_data = []
       failer_data = []
       csv_headers = ["Row Number", "Product Name", "Error Message", "Status"]
 
       csv = CSV.parse(csv_text, headers: true)
+      product_import_status.record_file_contain = csv&.count
       count = 0
       csv.each.each do |product_data|
         row_count += 1
@@ -51,32 +52,28 @@ module BxBlockCatalogue
         if product.save
           ingredient.save
           success_data << ["#{row_count}", "#{product.product_name}", "", "Success"]
+          product_import_status.record_uploaded = success_data.count
         end
 
         if product.errors.any?
           failer_data << ["#{row_count}", "#{product.product_name}", "#{product.errors.messages.map {|key, value| key.to_s + " " + value.first.to_s}.join(",")}", "Failed"]
-          product_import_status.status = "Failed"  
+          product_import_status.record_failed = failer_data.count
         end
 
+        report_data = (success_data + failer_data).unshift(csv_headers)
+
+        product_import_status.file_status = CSV.generate do |csv|
+          report_data.each do |r_data|
+            csv << r_data
+          end
+          csv
+        end
+
+        product_import_status.save
       end
 
+      product_import_status.status = "Failed" unless failer_data.empty?
       product_import_status.status = "Success" if failer_data.empty?
-
-      report_data = (success_data + failer_data).unshift(csv_headers)
-      # CSV.open(report_file, 'w') do |csv|
-      #   report_data.each do |r_data|
-      #     csv << r_data
-      #   end
-      # end
-
-      # product_import_status.file_status = File.read("report_file.csv")
-      product_import_status.file_status = CSV.generate do |csv|
-        report_data.each do |r_data|
-          csv << r_data
-        end
-        csv
-      end
-
       product_import_status.save
     end
   end
