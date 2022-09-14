@@ -148,18 +148,14 @@ module BxBlockCatalogue
       end
     end
 
-
-        
-    def delete_all_products
-      BxBlockCatalogue::Product.destroy_all
-    end
-
     def product_calculation
       BxBlockCatalogue::Product.find_in_batches do |products|
         products.each do |product|
           product.calculation if product.bar_code.present?
         end
       end
+      flash[:success] = "product calculation successfully"
+      redirect_to "/admin"
     end
 
     private
