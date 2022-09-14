@@ -14,7 +14,6 @@ Rails.application.routes.draw do
   namespace :bx_block_catalogue do
     get 'search', to: 'products#search'
     get 'regenerate_master_data', to: 'products#regenerate_master_data'
-    # get 'delete_all_products', to: 'products#delete_all_products'
     resources :products do
       collection do
         get :niq_score
@@ -23,7 +22,6 @@ Rails.application.routes.draw do
         get :product_smart_search
         get :compare_product
         post :prod_health_preference
-        get :delete_all_products
         get :product_calculation
         delete :delete_health_preference
       end
