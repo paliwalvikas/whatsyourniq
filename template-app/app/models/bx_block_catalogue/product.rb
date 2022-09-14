@@ -42,7 +42,7 @@ module BxBlockCatalogue
 
     def product_health_preference
       unless self.health_preference.present?
-        health = {"Immunity": nil ,"Gut Health": nil,"Holistic Nutrition": nil, "weight loss": nil,"Weight gain": nil,"Diabetic": nil,"Low Cholesterol": nil,"Heart Friendly": nil,"Energy and Vitality": nil,"Physical growth": nil,"Cognitive health": nil,"High Protein": nil,"Low Sugar": nil}
+        health = {"Immunity": nil ,"Gut Health": nil,"Holistic Nutrition": nil, "Weight loss": nil,"Weight gain": nil,"Diabetic": nil,"Low Cholesterol": nil,"Heart Friendly": nil,"Energy and Vitality": nil,"Physical growth": nil,"Cognitive health": nil,"High Protein": nil,"Low Sugar": nil}
         hsh = {}
         health.each do |key, value|
            value = BxBlockCatalogue::ProductHealthPreferenceService.new.health_preference(self, key.to_s)
