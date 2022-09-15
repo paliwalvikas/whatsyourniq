@@ -46,6 +46,7 @@ module BxBlockCatalogue
       product = products.find_by(id: params[:product_id])
       if product.present?
         products = case_for_product(product)
+        products = products.order("products.product_rating ASC")
         render json: ProductSerializer.new(products)
       else
         render json: { errors: 'Product not found' }
@@ -173,7 +174,7 @@ module BxBlockCatalogue
       when 'D'
         a = find_filter_products(["A", "B" ,"C"], filter_sub_category_id, filter_category_id, product.id)
       when 'E'
-        a = find_filter_products(["A", "B" ,"C", "D"], filter_sub_category_id, filter_category_id, product.id)
+        a = find_filter_products(["A", "B" ,"C"], filter_sub_category_id, filter_category_id, product.id)
       end
       a
     end
