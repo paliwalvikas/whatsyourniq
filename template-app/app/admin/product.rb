@@ -141,7 +141,8 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     end
 
     def do_import
-      Thread.new { BxBlockCatalogue::ProductWorker.new.product_data_import(params[:active_admin_import_model][:file]) }
+      file_path = params[:active_admin_import_model][:file].path
+      BxBlockCatalogue::BulkProductImport.perform_later(file_path)
 
       redirect_to collection_path flash[:notice] = 'Data import processing'
     end
