@@ -113,8 +113,8 @@ module BxBlockCatalogue
                      end
             self.product_rating = p_rating
             self.product_point = p_point
-          end
-      
+        end
+      end
       if product_rating.present?
         pr = if mp.to_f.between?(0, 4)
                product_rating
