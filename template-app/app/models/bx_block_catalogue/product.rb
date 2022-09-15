@@ -78,7 +78,7 @@ module BxBlockCatalogue
       np = []
       pp = []
 
-      # unless product_point.present?
+      unless product_point.present?
         ing = ingredient
         neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
 
@@ -474,30 +474,58 @@ module BxBlockCatalogue
       energy.between?(energy_range) && sodium > max_sodium
     end
 
+
     def product_sat_fat
       saturate_fat = ingredient.saturate.to_f
+      energy = ingredient.energy.to_f
       return if saturate_fat.zero?
       pro_sat_fat = case product_type
       when 'solid'
         if saturate_fat <= 0.1
-          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
         elsif saturate_fat > 0.1 && saturate_fat <= (1.5 + energy_from_saturated_fat)
-          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat >= 10.8
-          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
+        elsif saturate_fat.between?(1.5, 10) && energy.between?(0,800) || saturate_fat.between?(1, 10) && energy > 800
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
         end
+
       when 'beverage'
         if saturate_fat <= 0.1
-          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
-
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
         elsif saturate_fat > 0.1 && saturate_fat <= (0.75 + energy_from_saturated_fat)
-          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat >= 5.4
-          [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
+        elsif saturate_fat.between?(0.76, 10) && energy.between?(0,800) || saturate_fat.between?(1, 10) && energy > 800
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
         end
       end
-      pro_sat_fat || []
+
     end
+
+    # def product_sat_fat
+    #   saturate_fat = ingredient.saturate.to_f
+    #   return if saturate_fat.zero?
+    #   pro_sat_fat = case product_type
+    #   when 'solid'
+    #     if saturate_fat <= 0.1
+    #       [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
+
+    #     elsif saturate_fat > 0.1 && saturate_fat <= (1.5 + energy_from_saturated_fat)
+    #       [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
+    #     elsif saturate_fat >= 10.8
+    #       [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+    #     end
+    #   when 'beverage'
+    #     if saturate_fat <= 0.1
+    #       [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
+
+    #     elsif saturate_fat > 0.1 && saturate_fat <= (0.75 + energy_from_saturated_fat)
+    #       [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
+    #     elsif saturate_fat >= 5.4
+    #       [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+    #     end
+    #   end
+    #   pro_sat_fat || []
+    # end
 
     def energy_from_saturated_fat
       saturate_fat = ingredient.saturate.to_f
