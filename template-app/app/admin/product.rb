@@ -21,6 +21,11 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     send_file file_name, type: 'application/csv'
   end
 
+  scope :green
+  scope :red
+  scope :n_a
+  scope :n_c
+
   filter :product_name
   filter :product_type, as: :select, collection: BxBlockCatalogue::Product.product_types
   filter :brand_name
