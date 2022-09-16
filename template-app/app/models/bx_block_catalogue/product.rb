@@ -34,6 +34,10 @@ module BxBlockCatalogue
 
     accepts_nested_attributes_for :ingredient, allow_destroy: true
     after_create :product_health_preference
+    scope :green, -> { where(data_check: 'green') }
+    scope :red, -> { where(data_check: 'red') }
+    scope :n_a, -> { where(data_check: 'na') }
+    scope :n_c, -> { where(data_check: 'nc') }
     scope :product_type, ->(product_type) { where product_type: product_type }
     scope :product_rating, ->(product_rating) { where product_rating: product_rating }
     scope :food_drink_filter, ->(food_drink_filter) {where food_drink_filter: food_drink_filter}
