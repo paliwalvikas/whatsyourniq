@@ -37,13 +37,14 @@ module BxBlockCatalogue
   	def category(params, data)
       fav = fav_serach(params[:fav_search_id])
       product = fav.present? && fav[:food_type].present? ? find_product(fav) : BxBlockCatalogue::Product.where(id:0)
-    	product.pluck(:food_drink_filter).uniq.each do |prd|
+      food_drink = product.pluck(:food_drink_filter).uniq.compact
+    	food_drink.each do |prd|
   			filter = []
     		prod =  product.food_drink_filter(prd)
     		uniq_p = filter_category_p(prod.pluck(:filter_category_id).uniq)
     		uniq_p.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
       	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter } 
-			end if product.present?
+			end if product.present? && food_drink.present?
       c_ao = product.product_type("cheese_and_oil")
       c_prod = filter_category_p(c_ao.pluck(:filter_category_id).uniq)
       cao_filter = []
