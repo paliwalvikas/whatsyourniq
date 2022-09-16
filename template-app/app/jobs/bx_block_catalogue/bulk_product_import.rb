@@ -3,7 +3,7 @@ require 'csv'
 
 module BxBlockCatalogue
   class BulkProductImport < BuilderBase::ApplicationJob
-    queue_as :default
+    queue_as :low_priority
     # include Sidekiq::Worker
     # sidekiq_options retry: false
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
