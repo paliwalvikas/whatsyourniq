@@ -103,7 +103,7 @@ module BxBlockCatalogue
       if fav_s.present?
         products = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)&.order('product_rating ASC')
         options = serialization_options.deep_dup
-        params[:per] = 15
+        params[:per] = 10
         products_array = products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(params[:per]) : []
 
         serializer = valid_user.present? ? ProductSerializer.new(products_array, params: {user: valid_user}) : ProductSerializer.new(products_array, options)
