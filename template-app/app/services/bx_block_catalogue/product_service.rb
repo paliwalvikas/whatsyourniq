@@ -11,27 +11,50 @@ module BxBlockCatalogue
 			@product_type = product_type
 		end
 
-
 		def vit_min_value 
       ing = ingredient
       vit_min = []
-      micro_columns.each do |clm|
-        good_value = GOOD_INGREDIENTS[:"#{clm}"]
-        mp = ing.send(clm).to_f
-        unless mp.zero?
-	        if (mp < 0.6)
-	          vit_min_level = 'Low'
-	        elsif (mp >= 0.6 && mp < 1.0)
-	        	vit_min_level = 'Medium'
-	        elsif (mp >= 1.0)
-	        	vit_min_level = 'High'
+      val = 0
+      if self.product_type == "solid"
+        micro_columns.each do |clm|
+          good_value = GOOD_INGREDIENTS[:"#{clm}"]
+          mp = ing.send(clm).to_f
+          val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_solid(clm, mp).to_f
+	        unless mp.zero?
+		        if (val < 0.6)
+		          vit_min_level = 'Low'
+		        elsif (val >= 0.6 && val < 1.0)
+		        	vit_min_level = 'Medium'
+		        elsif (val >= 1.0)
+		        	vit_min_level = 'High'
+		        end
+		        value = checking_good_value(mp, clm, vit_min_level)
+	          vit_min << {"#{clm}": value} 
+		      else
+		        value = checking_good_value(mp, clm, 'N/A')
+		        vit_min << {"#{clm}": value} 
 	        end
-	        value = checking_good_value(mp, clm, vit_min_level)
-          vit_min << {"#{clm}": value} 
-	      else
-	        value = checking_good_value(mp, clm, 'N/A')
-	        vit_min << {"#{clm}": value} 
-        end
+	      end
+	    elsif self.product_type == "beverage" || self.product_type == "cheese_and_oil"
+        micro_columns.each do |clm|
+          good_value = GOOD_INGREDIENTS[:"#{clm}"]
+          mp = ing.send(clm).to_f
+          val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_beaverage(clm, mp).to_f
+          unless mp.zero?
+		        if (val < 0.6)
+		          vit_min_level = 'Low'
+		        elsif (val >= 0.6 && val < 1.0)
+		        	vit_min_level = 'Medium'
+		        elsif (val >= 1.0)
+		        	vit_min_level = 'High'
+		        end
+		        value = checking_good_value(mp, clm, vit_min_level)
+	          vit_min << {"#{clm}": value} 
+		      else
+		        value = checking_good_value(mp, clm, 'N/A')
+		        vit_min << {"#{clm}": value} 
+	        end
+	      end
       end
       vit_min
     end
