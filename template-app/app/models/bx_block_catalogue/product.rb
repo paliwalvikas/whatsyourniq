@@ -262,7 +262,7 @@ module BxBlockCatalogue
         micro_columns.each do |clm|
           good_value = GOOD_INGREDIENTS[:"#{clm}"]
           mp = ing.send(clm).to_f
-          val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_solid(clm, mp).to_f
+          val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_beaverage(clm, mp).to_f
           next if mp.zero? || good_value.nil?
           vit_min_level = (val >= 0.6 && val < 1.0 ? 'Medium' : 'High')
           value = checking_good_value(mp, clm, vit_min_level)
