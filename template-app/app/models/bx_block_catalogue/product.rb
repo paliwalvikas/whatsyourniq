@@ -7,8 +7,8 @@ module BxBlockCatalogue
     validates :bar_code , uniqueness: true
     validates :bar_code, presence: true
 
-    GOOD_INGREDIENTS = { protein: [54, 'g'], fibre: [32, 'g'], vit_a: [1000, 'ug'], vit_c: [80, 'mg'], vit_d: [15, 'mcg'], iron: [19, 'mg'], calcium: [1000, 'mg'],
-                         magnesium: [440, 'mg'], potassium: [3500, 'mg'], zinc: [17, 'mg'], iodine: [150, 'ug'], vit_b1: [1.4, 'mg'], vit_b2: [2.0, 'mg'], vit_b3: [1.4, 'mg'], vit_b6: [1.9, 'mg'], vit_b12: [2.2, 'ug'], vit_e: [10, 'mg'], vit_b7: [40, 'mcg'], vit_b5: [5, 'mg'], phosphorus: [1000, 'mg'], copper: [2, 'mg'], manganese: [4, 'mg'], chromium: [50, 'mca'], selenium: [40, 'mca'], chloride: [2050, 'mg'] }.freeze
+    GOOD_INGREDIENTS = { protein: [54, 'g'], fibre: [32, 'g'], vit_a: [1000, 'mcg'], vit_c: [80, 'mg'], vit_d: [15, 'mcg'], iron: [19, 'mg'], calcium: [1000, 'mg'],
+                         magnesium: [440, 'mg'], potassium: [3500, 'mg'], zinc: [17, 'mg'], iodine: [150, 'ug'], vit_b1: [1.4, 'mg'], vit_b2: [2.0, 'mg'], vit_b3: [1.4, 'mg'], vit_b6: [1.9, 'mg'], vit_b12: [2.2, 'ug'], vit_e: [10, 'mcg'], vit_b7: [40, 'mcg'], vit_b5: [5, 'mg'], phosphorus: [1000, 'mg'], copper: [2, 'mg'], manganese: [4, 'mg'], chromium: [50, 'mca'], selenium: [40, 'mca'], chloride: [2050, 'mg'] }.freeze
 
     NOT_SO_GOOD_INGREDIENTS = { saturated_fat: [22, 'g'], sugar: [90, 'g'], sodium: [2000, 'mg'], calories: [0.0, 'kcal']}.freeze
 
@@ -26,8 +26,8 @@ module BxBlockCatalogue
     belongs_to :filter_category, class_name: 'BxBlockCategories::FilterCategory', foreign_key: 'filter_category_id'
     belongs_to :filter_sub_category, class_name: 'BxBlockCategories::FilterSubCategory', foreign_key: 'filter_sub_category_id'
 
-    has_one :favourite_product, class_name: 'BxBlockCatalogue::FavouriteProduct', dependent: :destroy
-    has_one :compare_product, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
+    has_many :favourite_product, class_name: 'BxBlockCatalogue::FavouriteProduct', dependent: :destroy
+    has_many :compare_product, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
 
     enum product_type: %i[cheese_and_oil beverage solid]
     enum food_drink_filter: %i[food drink]
