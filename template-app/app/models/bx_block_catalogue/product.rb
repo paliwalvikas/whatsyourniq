@@ -224,7 +224,7 @@ module BxBlockCatalogue
       when 'solid'
         if pro < 5.4
           protein_level =  'Low'
-        elsif pro >= 5.4 && pro <= 10.8
+        elsif pro >= 5.4 && pro < 10.8
           protein_level =  'Medium'
         elsif pro >= 10.8
           protein_level = 'High'
@@ -504,7 +504,6 @@ module BxBlockCatalogue
       energy.between?(energy_range) && sodium > max_sodium
     end
 
-
     def product_sat_fat
       saturate_fat = ingredient.saturate.to_f
       energy = ingredient.energy.to_f
@@ -513,18 +512,22 @@ module BxBlockCatalogue
       when 'solid'
         if saturate_fat <= 0.1
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
-        elsif saturate_fat > 0.1 && saturate_fat <= 1.5 && energy_from_saturated_fat
+        elsif saturate_fat > 0.1 && saturate_fat <= 1.5 
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat.between?(1.5, 10) && energy.between?(0,800) || saturate_fat.between?(1, 10) && energy > 800
+        elsif saturate_fat > 1.5 && energy_from_saturated_fat
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+        elsif saturate_fat > 1.5 || energy_from_saturated_fat
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), false]
         end
       when 'beverage'
         if saturate_fat <= 0.1
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
-        elsif saturate_fat > 0.1 && saturate_fat <= 0.75 && energy_from_saturated_fat
+        elsif saturate_fat > 0.1 && saturate_fat <= 0.75 
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat.between?(0.76, 10) && energy.between?(0,800) || saturate_fat.between?(1, 10) && energy > 800
+        elsif saturate_fat > 0.75 && energy_from_saturated_fat
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+        elsif saturate_fat > 0.75 || energy_from_saturated_fat
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), false]
         end
       end
     end
@@ -534,9 +537,9 @@ module BxBlockCatalogue
       energy_from = saturate_fat * 9
       percent =  (energy_from / ingredient.energy.to_f) * 100
       value = if percent < 10
-                 true
-              else
                  false
+              else
+                 true
               end
     end
   end
