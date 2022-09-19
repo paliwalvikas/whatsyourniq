@@ -5,7 +5,7 @@ require 'json'
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
-    skip_before_action :validate_json_web_token, only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data delete_all_products]
+    skip_before_action :validate_json_web_token, only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data delete_all_products product_calculation]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
@@ -46,6 +46,7 @@ module BxBlockCatalogue
       product = products.find_by(id: params[:product_id])
       if product.present?
         products = case_for_product(product)
+        products = products.order("products.product_rating ASC")
         render json: ProductSerializer.new(products)
       else
         render json: { errors: 'Product not found' }
@@ -57,6 +58,13 @@ module BxBlockCatalogue
         product.product_health_preference
       end
       BxBlockCategories::FilterSubCategory.where(name: "Children's Cereals").update(name: "Children Cereals")
+      render json: { errors: 'updated' }
+
+    end
+
+    def delete_health_preference
+      BxBlockCatalogue::HealthPreference.destroy_all
+      render json: { errors: 'Deleted' }
     end
 
     def search
@@ -94,9 +102,9 @@ module BxBlockCatalogue
     def product_smart_search
       fav_s = BxBlockCatalogue::FavouriteSearch.find_by(id: params[:fav_search_id])
       if fav_s.present?
-        products = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)&.order('product_name ASC')
+        products = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)&.order('product_rating ASC')
         options = serialization_options.deep_dup
-        params[:per] = 15
+        params[:per] = 10
         products_array = products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(params[:per]) : []
 
         serializer = valid_user.present? ? ProductSerializer.new(products_array, params: {user: valid_user}) : ProductSerializer.new(products_array, options)
@@ -141,10 +149,14 @@ module BxBlockCatalogue
       end
     end
 
-
-        
-    def delete_all_products
-      BxBlockCatalogue::Product.destroy_all
+    def product_calculation
+      BxBlockCatalogue::Product.find_in_batches do |products|
+        products.each do |product|
+          product.calculation if product.bar_code.present?
+        end
+      end
+      flash[:success] = "product calculation successfully"
+      redirect_to "/admin"
     end
 
     private
@@ -162,7 +174,7 @@ module BxBlockCatalogue
       when 'D'
         a = find_filter_products(["A", "B" ,"C"], filter_sub_category_id, filter_category_id, product.id)
       when 'E'
-        a = find_filter_products(["A", "B" ,"C", "D"], filter_sub_category_id, filter_category_id, product.id)
+        a = find_filter_products(["A", "B" ,"C"], filter_sub_category_id, filter_category_id, product.id)
       end
       a
     end

@@ -33,7 +33,7 @@ module BxBlockCatalogue
   	    	gut_health(ingredient, ash[:gut_h])
         when 'Holistic Nutrition'    
   	    	holistic_nutrition(ingredient,ash)
-        when 'weight loss'
+        when 'Weight loss'
   	    	weight_loss(ingredient, ash)
         when 'Weight gain'
   	    	weight_gain(ingredient, ash)
@@ -92,7 +92,7 @@ module BxBlockCatalogue
     	end
 
     	def diabetes(ing, val, fibre)
-    		check_less?(ing[:sugar], val[:sugar]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:fibre], fibre) && diab_ingredient_list(ing)
+    		check_less?(ing[:total_sugar], val[:sugar]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:fibre], fibre) && diab_ingredient_list(ing)
     	end
 
     	def low_colesterol(ing, val)

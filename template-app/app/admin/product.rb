@@ -21,6 +21,11 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     send_file file_name, type: 'application/csv'
   end
 
+  scope :green
+  scope :red
+  scope :n_a
+  scope :n_c
+
   filter :product_name
   filter :product_type, as: :select, collection: BxBlockCatalogue::Product.product_types
   filter :brand_name
@@ -76,25 +81,10 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     column :category_id do |obj|
       obj&.category&.category_type
     end
-    column :product_point do |obj|
-      obj.product_point.present? ? obj.product_point : "NA"
-    end
-    column :product_rating do |obj|
-      obj.product_rating.present? ? obj.product_rating : "NA"
-    end
     column :brand_name
-    column :positive_good, &:positive_good
-    column :negative_not_good
-    column :image do |obj|
-      link_to obj.image&.service_url&.split('?')&.first if obj.image.present?
-    end
     column :bar_code
-    column :data_check
     column :weight
     column :price_mrp
-    column :description
-    column :ingredient_list
-    column :food_drink_filter
     column :price_post_discount
     actions do |resource|
       link_to 'calculate_rating', '#', onclick: "calculateRating(#{resource.id});"
@@ -115,13 +105,15 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       row :weight
       row :image
       row :image do |obj|
-        link_to obj.image&.service_url&.split('?')&.first if obj.image.attached?
+        link_to image_tag(obj.image&.service_url&.split('?')&.first, size: "150x200"), obj.image&.service_url&.split('?')&.first if obj.image.attached?
       end
       row :bar_code
       row :data_check
       row :positive_good, &:positive_good
       row :negative_not_good
       row :price_mrp
+      row :description
+      row :ingredient_list
       row :price_post_discount
       row :category_id do |obj|
         obj&.category&.category_type
@@ -141,8 +133,10 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     end
 
     def do_import
-      Thread.new { BxBlockCatalogue::ProductWorker.new.product_data_import(params[:active_admin_import_model][:file]) }
-
+      redirect_to import_admin_products_path, flash: {error: "Please select file!"} and return if params[:active_admin_import_model].nil?
+      redirect_to import_admin_products_path, flash: {error: "File format not valid!"} and return unless params[:active_admin_import_model][:file].content_type.include?("csv")
+      file_path = params[:active_admin_import_model][:file].path
+      BxBlockCatalogue::BulkProductImport.perform_later(file_path)
       redirect_to collection_path flash[:notice] = 'Data import processing'
     end
   end
