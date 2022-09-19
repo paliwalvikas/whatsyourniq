@@ -254,8 +254,14 @@ module BxBlockCatalogue
           mp = ing.send(clm).to_f
           val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_solid(clm, mp).to_f
           next if mp.zero? || good_value.nil?
-          vit_min_level = (val >= 0.6 && val < 1.0 ? 'Medium' : 'High')
-          value = checking_good_value(mp, clm, vit_min_level)
+          if val <= 0.5 
+            vit_min_level = 'low'
+          elsif val >= 0.6 && val < 1
+            vit_min_level = 'Medium'
+          elsif val >= 1
+            vit_min_level = 'High'
+          end
+          value = checking_good_value(mp, clm, vit_min_level) if  vit_min_level != "low"
           vit_min << value if value.present?
         end
       elsif self.product_type == "beverage" || self.product_type == "cheese_and_oil"
@@ -264,8 +270,14 @@ module BxBlockCatalogue
           mp = ing.send(clm).to_f
           val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_beaverage(clm, mp).to_f
           next if mp.zero? || good_value.nil?
-          vit_min_level = (val >= 0.6 && val < 1.0 ? 'Medium' : 'High')
-          value = checking_good_value(mp, clm, vit_min_level)
+          if val <= 0.5 
+            vit_min_level = 'low'
+          elsif val >= 0.6 && val < 1
+            vit_min_level = 'Medium'
+          elsif val >= 1
+            vit_min_level = 'High'
+          end
+          value = checking_good_value(mp, clm, vit_min_level) if  vit_min_level != "low"
           vit_min << value if value.present?
         end
       end
@@ -308,7 +320,7 @@ module BxBlockCatalogue
           'Low'
         elsif pro >= 3.0 && pro < 6.0
           'Medium'
-        elsif pro > 6.0
+        elsif pro >= 6.0
           'High'
         end
         value = checking_good_value(pro, 'fibre', fibre_level)
@@ -316,7 +328,7 @@ module BxBlockCatalogue
       when 'beverage'
         fibre_level = 'Low' if  pro < 1.5
         fibre_level = 'Medium' if pro >= 1.5 && pro < 3.0
-        fibre_level = 'High' if pro > 3.0
+        fibre_level = 'High' if pro >= 3.0
         value = checking_good_value(pro, 'fibre', fibre_level)
         fb << value if value.present?
       end
