@@ -27,7 +27,7 @@ module BxBlockCatalogue
     belongs_to :filter_sub_category, class_name: 'BxBlockCategories::FilterSubCategory', foreign_key: 'filter_sub_category_id'
 
     has_one :favourite_product, class_name: 'BxBlockCatalogue::FavouriteProduct', dependent: :destroy
-    has_one :compare_product, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
+    has_many :compare_products, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
 
     enum product_type: %i[cheese_and_oil beverage solid]
     enum food_drink_filter: %i[food drink]
