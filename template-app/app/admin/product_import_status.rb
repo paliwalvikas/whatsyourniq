@@ -4,6 +4,11 @@ ActiveAdmin.register BxBlockCatalogue::ProductImportStatus, as: 'Product Import 
 
   actions :all, except: [:edit, :new, :show]
 
+  action_item :product_import_status, only: :index do
+    link_to 'Refresh', '',class: 'refresh-button', onclick: "reload;"
+  end
+
+
   index do
     selectable_column
     id_column
