@@ -5,8 +5,14 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
                 :price_post_discount, :price_mrp, :category_id, :positive_good, :negative_not_good, :image, :bar_code, :data_check, :description, :ingredient_list, :food_drink_filter, :filter_category_id, :filter_sub_category_id
 
   active_admin_import
+  config.batch_actions = true
 
   before_action :set_product # , only: [:show, :edit, :update, :destroy]
+
+  batch_action :product_calculation do |selection|
+    BxBlockCatalogue::ProductCalculation.perform_later
+    redirect_to collection_path flash[:notice] = 'Calculation on product is processing.'
+  end
 
   action_item only: :index do
     link_to('Download Sample CSV', download_admin_products_path)
@@ -69,6 +75,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   end
 
   index title: 'product' do
+    selectable_column
     id_column
     column :product_name
     column :product_type
