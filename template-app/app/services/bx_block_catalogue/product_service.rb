@@ -22,7 +22,7 @@ module BxBlockCatalogue
           val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_solid(clm, mp)
           # next if mp.zero? || good_value.nil?
           if val <= 0.5 
-            vit_min_level = 'low'
+            vit_min_level = 'Low'
           elsif val >= 0.6 && val < 1
             vit_min_level = 'Medium'
           elsif val >= 1
@@ -38,7 +38,7 @@ module BxBlockCatalogue
           val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_beaverage(clm, mp).to_f
           # next if mp.zero? || good_value.nil?
           if val <= 0.5 
-            vit_min_level = 'low'
+            vit_min_level = 'Low'
           elsif val >= 0.6 && val < 1
             vit_min_level = 'Medium'
           elsif val >= 1
