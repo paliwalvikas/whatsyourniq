@@ -224,7 +224,7 @@ module BxBlockCatalogue
       when 'solid'
         if pro < 5.4
           protein_level =  'Low'
-        elsif pro >= 5.4 && pro <= 10.8
+        elsif pro >= 5.4 && pro < 10.8
           protein_level =  'Medium'
         elsif pro >= 10.8
           protein_level = 'High'
@@ -485,16 +485,18 @@ module BxBlockCatalogue
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
         elsif sodium >= 0.5 && sodium <= 5.0
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
-        elsif energy.between?(0,80) && sodium > 90 || energy.between?(80,160) && sodium > 180 || energy.between?(160,240) && sodium > 270 || energy.between?(240,320) && sodium > 360 || energy.between?(320,400) && sodium > 450 || energy.between?(400,480) && sodium > 540 || energy.between?(480,560) && sodium > 630 || energy.between?(560,640) && sodium > 720 || energy.between?(640, 720) && sodium > 810 || energy.between?(720, 800) && sodium > 900
-          return [checking_not_so_good_value(sodium, 'sodium', 'High'), false]
+        elsif sodium > 5.0
+          value = BxBlockCatalogue::VitaminValueService.new().sodium_level_clc(sodium, energy)
+          return [checking_not_so_good_value(sodium, 'sodium', value), false] if value != 'Low'  
         end
       when 'beverage'
         if sodium < 0.5
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
         elsif sodium >= 0.5 && sodium <= 2.5
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
-        elsif energy.positive? && sodium > 90 || energy.between?(0,7) && sodium > 180 || energy.between?(7,14) && sodium > 270 || energy.between?(14,22) && sodium > 360 || energy.between?(22,29) && sodium > 450 || energy.between?(29,36) && sodium > 540 || energy.between?(36,43) && sodium > 630 || energy.between?(43,50) && sodium > 720 || energy.between?(50, 57) && sodium > 810 || energy.between?(57, 64) && sodium > 900
-          return [checking_not_so_good_value(sodium, 'sodium', 'High'), false]
+        elsif sodium > 2.5
+          value = BxBlockCatalogue::VitaminValueService.new().sodium_level_clc(sodium, energy)
+          return [checking_not_so_good_value(sodium, 'sodium', value), false] if value != 'Low'  
         end
       end
       []
@@ -504,7 +506,6 @@ module BxBlockCatalogue
       energy.between?(energy_range) && sodium > max_sodium
     end
 
-
     def product_sat_fat
       saturate_fat = ingredient.saturate.to_f
       energy = ingredient.energy.to_f
@@ -513,18 +514,26 @@ module BxBlockCatalogue
       when 'solid'
         if saturate_fat <= 0.1
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
-        elsif saturate_fat > 0.1 && saturate_fat <= 1.5 && energy_from_saturated_fat
+        elsif saturate_fat > 0.1 && saturate_fat <= 1.5 
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat.between?(1.5, 10) && energy.between?(0,800) || saturate_fat.between?(1, 10) && energy > 800
+        elsif saturate_fat > 1.5 && energy_from_saturated_fat
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+        elsif saturate_fat >= 2
+          value = BxBlockCatalogue::VitaminValueService.new().saturated_fat_clc(saturate_fat, energy)
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', value), false] if value != 'Low'
         end
       when 'beverage'
         if saturate_fat <= 0.1
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
-        elsif saturate_fat > 0.1 && saturate_fat <= 0.75 && energy_from_saturated_fat
+        elsif saturate_fat > 0.1 && saturate_fat <= 0.75 
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat.between?(0.76, 10) && energy.between?(0,800) || saturate_fat.between?(1, 10) && energy > 800
+        elsif saturate_fat > 0.75 && energy_from_saturated_fat
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+        elsif saturate_fat > 0.75 || energy_from_saturated_fat
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), false]
+        elsif saturate_fat >= 2
+          value = BxBlockCatalogue::VitaminValueService.new().saturated_fat_clc(saturate_fat, energy)
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', value), false] if value != 'Low'
         end
       end
     end
@@ -534,9 +543,9 @@ module BxBlockCatalogue
       energy_from = saturate_fat * 9
       percent =  (energy_from / ingredient.energy.to_f) * 100
       value = if percent < 10
-                 true
-              else
                  false
+              else
+                 true
               end
     end
   end
