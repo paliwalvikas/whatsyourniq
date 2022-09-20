@@ -17,6 +17,7 @@ ActiveAdmin.register BxBlockCatalogue::ProductImportStatus, as: 'Product Import 
     column :record_file_contain
     column :record_uploaded
     column :record_failed
+    column :calculation_status
     column :created_at
     actions defaults: false do |report|
       link_to 'Download report', download_admin_product_import_status_path(report, format: :csv)
