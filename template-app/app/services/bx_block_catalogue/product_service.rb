@@ -29,7 +29,7 @@ module BxBlockCatalogue
             vit_min_level = 'High'
           end
           value = checking_good_value(mp, clm, vit_min_level)
-          vit_min << value 
+          vit_min << {"#{clm}": value} 
         end
       elsif product_type == "beverage" || product_type == "cheese_and_oil"
         micro_columns.each do |clm|
@@ -46,7 +46,7 @@ module BxBlockCatalogue
            elsif val
           end
           value = checking_good_value(mp, clm, vit_min_level)
-          vit_min << value 
+          vit_min << {"#{clm.titleize}": value} 
         end
       end
       vit_min
@@ -70,7 +70,7 @@ module BxBlockCatalogue
 	        elsif pro >= 6.0
 	        	fibre_level ='High'
 	        end
-	        fb << checking_good_value(pro, 'fibre', fibre_level)
+	         fb << { Fibre: checking_good_value(pro, 'fibre', fibre_level)}
 	      when 'beverage'
 	        if pro < 1.5
 	         fibre_level  = 'Low'
@@ -79,10 +79,10 @@ module BxBlockCatalogue
 	        elsif pro >= 3.0
 	        	fibre_level ='High'
 	        end
-	        fb << checking_good_value(pro, 'fibre', fibre_level)
+	         fb << { Fibre: checking_good_value(pro, 'fibre', fibre_level)}
 	      end
 	    else 
-	    	fb << checking_good_value(pro, 'fibre', "N/A")
+	    	fb << { Fibre: checking_good_value(pro, 'fibre', "N/A")}
 	    end
       fb
     end
@@ -100,7 +100,7 @@ module BxBlockCatalogue
 	        elsif pro > 10.8
 	          protein_level =  'High'
 	        end
-	        value << checking_good_value(pro, 'protein', protein_level) 
+	        value << { Protein: checking_good_value(pro, 'protein', protein_level)} 
 	      when 'beverage'
 	        if pro < 2.7
 	          protein_level =  'Low'
@@ -109,11 +109,11 @@ module BxBlockCatalogue
 	        elsif pro >= 5.4
 	          protein_level = 'High'
 	        end
-	        value << checking_good_value(pro, 'protein', protein_level) 
+	        value << { Protein: checking_good_value(pro, 'protein', protein_level)} 
 	       end
 	    elsif ingredient.protein == nil
 	    	protein_level = "N/A"
-	    	value << checking_good_value(pro, 'protein', protein_level)
+	    	value << { Protein: checking_good_value(pro, 'protein', protein_level)}
 	    end
     end
 
