@@ -95,10 +95,10 @@ module BxBlockCatalogue
 	      when 'solid'
 	        if pro < 5.4
 	          protein_level =  'Low'
-	        elsif pro >= 5.4 && pro <= 10.8
+	        elsif pro >= 5.4 && pro < 10.8
 	          protein_level =  'Medium'
-	        elsif pro > 10.8
-	          protein_level =  'High'
+	        elsif pro >= 10.8
+	          protein_level = 'High'
 	        end
 	        value << { Protein: checking_good_value(pro, 'protein', protein_level)} 
 	      when 'beverage'
