@@ -518,6 +518,8 @@ module BxBlockCatalogue
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
         elsif saturate_fat > 1.5 && energy_from_saturated_fat
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+        elsif saturate_fat > 1.5 || energy_from_saturated_fat
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), false]  
         elsif saturate_fat >= 2
           value = BxBlockCatalogue::VitaminValueService.new().saturated_fat_clc(saturate_fat, energy)
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', value), false] if value != 'Low'
@@ -529,6 +531,8 @@ module BxBlockCatalogue
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
         elsif saturate_fat > 0.75 && energy_from_saturated_fat
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
+        elsif saturate_fat > 0.75 || energy_from_saturated_fat
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), false]
         elsif saturate_fat > 0.75 || energy_from_saturated_fat
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), false]
         elsif saturate_fat >= 2
