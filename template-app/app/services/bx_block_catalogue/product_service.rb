@@ -46,7 +46,7 @@ module BxBlockCatalogue
            elsif val
           end
           value = checking_good_value(mp, clm, vit_min_level)
-          vit_min << {"#{clm.titleize}": value} 
+          vit_min << {"#{clm}": value} 
         end
       end
       vit_min
