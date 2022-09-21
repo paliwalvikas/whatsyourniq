@@ -1,6 +1,7 @@
 module BxBlockCatalogue
   class CompareProductsController < ApplicationController
     before_action :load_product, only: [:update, :destroy]
+    skip_before_action :verify_authenticity_token, only: [:destroy_all]
 
     def index
       list_of_product = current_user.compare_products.where(selected: true)
@@ -23,6 +24,7 @@ module BxBlockCatalogue
         render json: ErrorSerializer.new(product).serializable_hash,
                status: :unprocessable_entity
       end
+          
     end
 
     def update
@@ -48,6 +50,11 @@ module BxBlockCatalogue
         render json: ErrorSerializer.new(@product).serializable_hash,
                status: :unprocessable_entity
       end
+    end
+
+    def destroy_all
+      compare_products = BxBlockCatalogue::CompareProduct.destroy_all
+      render json: { message: "record deleted", product: compare_products }
     end
 
     private
