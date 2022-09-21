@@ -106,6 +106,7 @@ module BxBlockCatalogue
       ['veg','nonveg','vegan_product','organic','gluteen_free','artificial_preservative','added_sugar','no_artificial_color'].each do |alg|
         id_s = find_food_pref(alg)
         alg = 'no_' + alg if alg == 'artificial_preservative' || alg == 'added_sugar' 
+        alg = 'gluten_free' if alg == 'gluteen_free'
         data << {count: product.where(id: id_s).count, product_rating: alg.titleize }
       end 
       data = {count: total_count(data), food_preference: data}
@@ -128,6 +129,7 @@ module BxBlockCatalogue
     def functional_preference(params, data)
       product = fav_filter_product(params, 'functional_preference')
       product = product.where.not(positive_good: nil, negative_not_good: nil).pluck(:positive_good, :negative_not_good, :id) if product.present?
+      
       ['energy','protein','fibre','vit_a','vit_c','total_sugar','trans_fat'].each do |f_p|
         fp_count = []
         if product.present? 

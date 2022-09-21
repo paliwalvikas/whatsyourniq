@@ -11,6 +11,7 @@ module BxBlockCatalogue
                          magnesium: [440, 'mg'], potassium: [3500, 'mg'], zinc: [17, 'mg'], iodine: [150, 'ug'], vit_b1: [1.4, 'mg'], vit_b2: [2.0, 'mg'], vit_b3: [1.4, 'mg'], vit_b6: [1.9, 'mg'], vit_b12: [2.2, 'ug'], vit_e: [10, 'mcg'], vit_b7: [40, 'mcg'], vit_b5: [5, 'mg'], phosphorus: [1000, 'mg'], copper: [2, 'mg'], manganese: [4, 'mg'], chromium: [50, 'mca'], selenium: [40, 'mca'], chloride: [2050, 'mg'] }.freeze
 
     NOT_SO_GOOD_INGREDIENTS = { saturated_fat: [22, 'g'], sugar: [90, 'g'], sodium: [2000, 'mg'], calories: [0.0, 'kcal']}.freeze
+    attr_accessor :image_url, :category_filter, :category_type_filter
 
     before_save :image_process, if: :image_url
     has_one_attached :image
@@ -19,7 +20,6 @@ module BxBlockCatalogue
 
     has_one :ingredient, class_name: 'BxBlockCatalogue::Ingredient', dependent: :destroy
     has_many :order_items, class_name: 'BxBlockCatalogue::OrderItem', dependent: :destroy
-    attr_accessor :image_url, :category_filter, :category_type_filter
 
     belongs_to :category, class_name: 'BxBlockCategories::Category', foreign_key: 'category_id'
 
@@ -370,24 +370,25 @@ module BxBlockCatalogue
     end
 
     def negative_and_positive
-      positive_good << vit_min_value 
-      positive_good << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
-      positive_good << protein_value if protein_value.present? && protein_value.first[:level] != 'Low'
-      positive_good << {Calories: calories_energy} if calories_energy.present?
+      p_good, neg_n_good = [], []
+      p_good << vit_min_value 
+      p_good << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
+      p_good << protein_value if protein_value.present? && protein_value.first[:level] != 'Low'
+      p_good << {Calories: calories_energy} if calories_energy.present?
       saturate_fat = product_sat_fat
-      positive_good << saturate_fat[0] if saturate_fat&.last == true 
-      negative_not_good << saturate_fat[0] if saturate_fat&.last == false 
+      p_good << saturate_fat[0] if saturate_fat&.last == true 
+      neg_n_good << saturate_fat[0] if saturate_fat&.last == false 
       sugar = product_sugar_level
-      positive_good << sugar[0] if sugar&.last == true 
-      negative_not_good << sugar[0] if sugar&.last == false 
+      p_good << sugar[0] if sugar&.last == true 
+      neg_n_good << sugar[0] if sugar&.last == false 
       sodium = product_sodium_level
-      positive_good << sodium[0] if sodium&.last == true 
-      negative_not_good << sodium[0] if sodium&.last == false 
-      negative_not_good << cholesterol_value 
-      negative_not_good << fat_value
-      negative_not_good << trans_fat_value
-      negative_not_good = negative_not_good.flatten if negative_not_good.present?
-      positive_good = positive_good.flatten if positive_good.present?
+      p_good << sodium[0] if sodium&.last == true 
+      neg_n_good << sodium[0] if sodium&.last == false 
+      neg_n_good << cholesterol_value 
+      neg_n_good << fat_value
+      neg_n_good << trans_fat_value
+      negative_not_so_good = neg_n_good.flatten if neg_n_good.present?
+      positive_good = p_good.flatten if p_good.present?
     end
 
     def cholesterol_value
@@ -397,15 +398,15 @@ module BxBlockCatalogue
       fb = []
       case product_type
       when 'solid'
-      cho_level = if pro < 5 && sat_fat < 1.5 && sat_fat <= energy_from_saturated_fat 
+      cho_level = if pro < 5 && sat_fat < 1.5 && energy_from_saturated_fat 
           'Free'
-        elsif pro < 20 && sat_fat < 1.5 && sat_fat <= energy_from_saturated_fat
+        elsif pro < 20 && sat_fat < 1.5 && energy_from_saturated_fat
           'Low'
         end
         value = [level: cho_level, name: "Cholesterol"] if cho_level.present? 
       when 'beverage'
-        cho_level = 'Free' if  pro < 5 && sat_fat < 0.75 && sat_fat <= energy_from_saturated_fat 
-        cho_level = 'Low' if  pro < 10 && sat_fat < 0.75 && sat_fat <= energy_from_saturated_fat
+        cho_level = 'Free' if  pro < 5 && sat_fat < 0.75 && energy_from_saturated_fat 
+        cho_level = 'Low' if  pro < 10 && sat_fat < 0.75 && energy_from_saturated_fat
         value = [level: cho_level, name: "Cholesterol"] if cho_level.present?
       end
       value
@@ -461,6 +462,7 @@ module BxBlockCatalogue
     def trans_fat_value
       return unless ingredient.trans_fat.present?
       pro = ingredient.trans_fat.to_f
+      energy = ingredient.energy.to_f
       fb = []
       case product_type
       when 'solid', 'beverage','cheese_and_oil'
