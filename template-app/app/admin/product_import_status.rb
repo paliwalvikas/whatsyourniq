@@ -4,6 +4,11 @@ ActiveAdmin.register BxBlockCatalogue::ProductImportStatus, as: 'Product Import 
 
   actions :all, except: [:edit, :new, :show]
 
+  action_item :product_import_status, only: :index do
+    link_to 'Refresh', '',class: 'refresh-button', onclick: "reload;"
+  end
+
+
   index do
     selectable_column
     id_column
@@ -12,6 +17,7 @@ ActiveAdmin.register BxBlockCatalogue::ProductImportStatus, as: 'Product Import 
     column :record_file_contain
     column :record_uploaded
     column :record_failed
+    column :calculation_status
     column :created_at
     actions defaults: false do |report|
       link_to 'Download report', download_admin_product_import_status_path(report, format: :csv)

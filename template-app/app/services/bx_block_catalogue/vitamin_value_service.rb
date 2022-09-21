@@ -378,5 +378,22 @@ module BxBlockCatalogue
         end   
       end                                       
     end 
+    
+
+    def saturated_fat_clc(saturate_fat, energy)
+      if saturate_fat.between?(2,3) && energy.between?(160, 320) || saturate_fat.between?(2,4) && energy.between?(160, 400) || saturate_fat.between?(2,5) && energy.between?(160, 480) || saturate_fat.between?(2,6) && energy.between?(160, 560) || saturate_fat.between?(2,7) && energy.between?(160, 640) || saturate_fat.between?(2,8) && energy.between?(160, 720) || saturate_fat.between?(2,9) && energy.between?(160, 800) || saturate_fat.between?(2,10) && energy.between?(160, 800) || saturate_fat > 10 && energy > 800
+        return 'High'
+      else
+        return 'Low'
+      end 
+    end
+
+    def sodium_level_clc(sodium, energy)
+      if sodium <= 90 && energy <= 80 || sodium.between?(90,180) && energy.between?(80, 160) || sodium.between?(90,270) && energy.between?(80, 240) || sodium.between?(90, 360) && energy.between?(80, 320) || sodium.between?(90, 450) && energy.between?(80, 400) || sodium.between?(90,540) && energy.between?(80, 480) || sodium.between?(90,630) && energy.between?(80, 560) || sodium.between?(90,720) && energy.between?(80, 640) || sodium.between?(90,810) && energy.between?(80, 720) || sodium.between?(90,900) && energy.between?(80, 800) || sodium > 900 && energy > 800
+        return 'High'
+      else
+        return 'Low'
+      end 
+    end
   end
 end

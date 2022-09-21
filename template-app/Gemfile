@@ -55,6 +55,7 @@ gem 'bx_block_notifications-a22eb801', '0.0.3', require: 'bx_block_notifications
 gem 'builder_base', '0.0.43'
 gem 'sassc-rails'
 gem 'activeadmin'
+gem 'jquery-rails'
 gem 'active_admin_role'
 gem 'activeadmin_json_editor'
 gem 'active_admin_datetimepicker'
