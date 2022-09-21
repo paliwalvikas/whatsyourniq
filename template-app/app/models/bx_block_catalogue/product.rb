@@ -26,8 +26,8 @@ module BxBlockCatalogue
     belongs_to :filter_category, class_name: 'BxBlockCategories::FilterCategory', foreign_key: 'filter_category_id'
     belongs_to :filter_sub_category, class_name: 'BxBlockCategories::FilterSubCategory', foreign_key: 'filter_sub_category_id'
 
-    has_many :favourite_product, class_name: 'BxBlockCatalogue::FavouriteProduct', dependent: :destroy
-    has_many :compare_product, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
+    has_many :favourite_products, class_name: 'BxBlockCatalogue::FavouriteProduct', dependent: :destroy
+    has_many :compare_products, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
 
     enum product_type: %i[cheese_and_oil beverage solid]
     enum food_drink_filter: %i[food drink]
@@ -347,8 +347,6 @@ module BxBlockCatalogue
       [percent: value_percent, upper_limit: not_so_good_value[0], level: level, quantity: "#{ing_vlue.round(2)} #{not_so_good_value[1]}", name: ing]
     end
 
-
-
     def rda_calculation
       good_ingredient = []
       not_so_good_ingredient = []
@@ -371,6 +369,47 @@ module BxBlockCatalogue
       }
     end
 
+    def negative_and_positive
+      positive_good << vit_min_value 
+      positive_good << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
+      positive_good << protein_value if protein_value.present? && protein_value.first[:level] != 'Low'
+      positive_good << {Calories: calories_energy} if calories_energy.present?
+      saturate_fat = product_sat_fat
+      positive_good << saturate_fat[0] if saturate_fat&.last == true 
+      negative_not_good << saturate_fat[0] if saturate_fat&.last == false 
+      sugar = product_sugar_level
+      positive_good << sugar[0] if sugar&.last == true 
+      negative_not_good << sugar[0] if sugar&.last == false 
+      sodium = product_sodium_level
+      positive_good << sodium[0] if sodium&.last == true 
+      negative_not_good << sodium[0] if sodium&.last == false 
+      negative_not_good << cholesterol_value 
+      negative_not_good << fat_value
+      negative_not_good << trans_fat_value
+      negative_not_good = negative_not_good.flatten if negative_not_good.present?
+      positive_good = positive_good.flatten if positive_good.present?
+    end
+
+    def cholesterol_value
+      return unless ingredient.cholestrol.present?
+      pro = ingredient.cholestrol.to_f
+      sat_fat = ingredient.saturate.to_f
+      fb = []
+      case product_type
+      when 'solid'
+      cho_level = if pro < 5 && sat_fat < 1.5 && sat_fat <= energy_from_saturated_fat 
+          'Free'
+        elsif pro < 20 && sat_fat < 1.5 && sat_fat <= energy_from_saturated_fat
+          'Low'
+        end
+        value = [level: cho_level, name: "Cholesterol"] if cho_level.present? 
+      when 'beverage'
+        cho_level = 'Free' if  pro < 5 && sat_fat < 0.75 && sat_fat <= energy_from_saturated_fat 
+        cho_level = 'Low' if  pro < 10 && sat_fat < 0.75 && sat_fat <= energy_from_saturated_fat
+        value = [level: cho_level, name: "Cholesterol"] if cho_level.present?
+      end
+      value
+    end
 
     def compare_product_good_not_so_good
       BxBlockCatalogue::ProductService.new(ingredient, product_type).calculation_for_rdas
@@ -397,6 +436,42 @@ module BxBlockCatalogue
 
       return checking_good_value(energy, 'calories', energy_level) if energy_level.present?
       []
+    end
+
+    def fat_value
+      return unless ingredient.fat.present?
+      pro = ingredient.fat.to_f
+      fb = []
+      case product_type
+      when 'solid'
+      fat_level = if pro < 0.5 
+          'Free'
+        elsif pro < 3
+          'Low'
+        end
+        value = [level: fat_level, name: "Fat"] if fat_level.present? 
+      when 'beverage'
+        fat_level = 'Free' if  pro < 0.5 
+        fat_level = 'Low' if  pro < 1.5
+        value = [level: fat_level, name: "Fat"] if fat_level.present?
+      end
+      value
+    end
+
+    def trans_fat_value
+      return unless ingredient.trans_fat.present?
+      pro = ingredient.trans_fat.to_f
+      fb = []
+      case product_type
+      when 'solid', 'beverage','cheese_and_oil'
+      t_fat_level = if pro < 0.2
+          'Low'
+        elsif energy.positive? && pro > 0.09 || energy.between?(0, 7) && pro > 0.18 || energy.between?(7,14) && pro > 0.27 || energy.between?(14,22) && pro > 0.36 || energy.between?(22, 29) && pro > 0.44 || energy.between?(29,36) && pro > 0.53 || energy.between?(36,43) && pro > 0.62 || energy.between?(43, 50) && pro > 0.71 || energy.between?(50, 57) && pro > 0.8 || energy.between?(57, 64) && pro > 0.89
+          'High'
+        end
+        value = [level: t_fat_level, name: "Trans Fat"] if t_fat_level.present? 
+      end
+      value
     end
 
     # def trans_fat
