@@ -387,8 +387,9 @@ module BxBlockCatalogue
       neg_n_good << cholesterol_value 
       neg_n_good << fat_value
       neg_n_good << trans_fat_value
-      negative_not_so_good = neg_n_good.flatten if neg_n_good.present?
-      positive_good = p_good.flatten if p_good.present?
+      self.negative_not_good = neg_n_good.flatten.compact if neg_n_good.present?
+      self.positive_good = p_good.flatten.compact if p_good.present?
+      self.save!
     end
 
     def cholesterol_value
