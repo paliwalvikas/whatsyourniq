@@ -261,7 +261,7 @@ module BxBlockCatalogue
           elsif val >= 1
             vit_min_level = 'High'
           end
-          value = checking_good_value(mp, clm, vit_min_level) if  vit_min_level != "low"
+          value = checking_good_value(mp, clm, vit_min_level) if  vit_min_level != 'Low'
           vit_min << value if value.present?
         end
       elsif self.product_type == "beverage" || self.product_type == "cheese_and_oil"
@@ -277,7 +277,7 @@ module BxBlockCatalogue
           elsif val >= 1
             vit_min_level = 'High'
           end
-          value = checking_good_value(mp, clm, vit_min_level) if  vit_min_level != "low"
+          value = checking_good_value(mp, clm, vit_min_level) if  vit_min_level != 'Low'
           vit_min << value if value.present?
         end
       end
