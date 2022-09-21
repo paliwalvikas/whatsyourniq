@@ -386,6 +386,7 @@ module BxBlockCatalogue
       negative_not_good << sodium[0] if sodium&.last == false 
       negative_not_good << cholesterol_value 
       negative_not_good << fat_value
+      negative_not_good << trans_fat_value
       negative_not_good = negative_not_good.flatten if negative_not_good.present?
       positive_good = positive_good.flatten if positive_good.present?
     end
@@ -459,21 +460,17 @@ module BxBlockCatalogue
     end
 
     def trans_fat_value
-      return unless ingredient.fat.present?
+      return unless ingredient.trans_fat.present?
       pro = ingredient.trans_fat.to_f
       fb = []
       case product_type
-      when 'solid'
-      t_fat_level = if trans_fat < 0.2
-          positive_good << [level: 'Low', name: "Trans Fat"]
-        elsif pro < 3
+      when 'solid', 'beverage','cheese_and_oil'
+      t_fat_level = if pro < 0.2
           'Low'
+        elsif energy.positive? && pro > 0.09 || energy.between?(0, 7) && pro > 0.18 || energy.between?(7,14) && pro > 0.27 || energy.between?(14,22) && pro > 0.36 || energy.between?(22, 29) && pro > 0.44 || energy.between?(29,36) && pro > 0.53 || energy.between?(36,43) && pro > 0.62 || energy.between?(43, 50) && pro > 0.71 || energy.between?(50, 57) && pro > 0.8 || energy.between?(57, 64) && pro > 0.89
+          'High'
         end
         value = [level: t_fat_level, name: "Trans Fat"] if t_fat_level.present? 
-      when 'beverage'
-        t_fat_level = 'Free' if  pro < 0.5 
-        t_fat_level = 'Low' if  pro < 1.5
-        value = [level: t_fat_level, name: "Trans Fat"] if t_fat_level.present?
       end
       value
     end
