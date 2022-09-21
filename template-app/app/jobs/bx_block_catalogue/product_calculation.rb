@@ -12,6 +12,7 @@ module BxBlockCatalogue
       if products.present?
         products.each do |product|
           status = product.calculation if product.bar_code.present?
+          product.negative_and_positive if product.bar_code.present?
           csv_row << ["#{product.id}", "#{product.product_name}", "Success"] if status
           product_import_status.file_status = CSV.generate do |csv|
             csv_row.each do |r_data|
