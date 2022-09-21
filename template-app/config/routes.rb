@@ -65,4 +65,5 @@ Rails.application.routes.draw do
 
   post 'sms_otp', to: 'account_block/accounts/send_otps#create'
   post '/accounts/sms_confirmation', to: 'account_block/accounts/sms_confirmations#create'
+  delete '/destroy_all', to: 'bx_block_catalogue/compare_products#destroy_all'
 end
