@@ -129,20 +129,15 @@ module BxBlockCatalogue
     def functional_preference(params, data)
       # product = fav_filter_product(params, 'functional_preference')
       data = []
-      ['negative_not_good','positive_good'].each do |neg_pos|
+      ["Not So Good Ingredients","Good Ingredients"].each do |neg_pos|
           filter = []
-          filter << {vitamins: []} if neg_pos == 'positive_good'
-          filter << {minerals: []} if neg_pos == 'positive_good'
-
-          values = neg_pos == 'negative_not_good' ? prd_negative_not_good : prd_positive_good
-          values.each do |ing|
-            if mineral_columns.include?(ing) && neg_pos == 'positive_good'
-              filter[1][:minerals] << {title: ing.titleize}
-            elsif vitamin_columns.include?(ing) && neg_pos == 'positive_good'
-               filter[0][:vitamins] << {title: ing.titleize}
-            else
-              filter << {title: ing.titleize}
-            end 
+          case neg_pos
+          when "Good Ingredients"
+              filter << {title: ["Protein","Fibre","Total Sugar","Probiotic"]}
+              filter << {"Vitamins": {title: vitamin_columns.map{|ing| ing.titleize}} }
+              filter << {"Minerals": {title: mineral_columns.map{|ing| ing.titleize} }}
+          when "Not So Good Ingredients"
+            filter << {title: prd_negative_not_good.map{|ing| ing.titleize}}
           end 
           data <<  {functional_preference: neg_pos.titleize, data: filter }
       end
