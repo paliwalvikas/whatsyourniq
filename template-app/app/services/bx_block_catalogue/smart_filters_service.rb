@@ -127,21 +127,42 @@ module BxBlockCatalogue
     end
 
     def functional_preference(params, data)
-      product = fav_filter_product(params, 'functional_preference')
-      product = product.where.not(positive_good: nil, negative_not_good: nil).pluck(:positive_good, :negative_not_good, :id) if product.present?
-      
-      ['energy','protein','fibre','vit_a','vit_c','total_sugar','trans_fat'].each do |f_p|
-        fp_count = []
-        if product.present? 
-          product.each do |val|
-          ['high','low','medium'].each do |value| 
-            fp_count << val[2] if val[0].include?("#{value} in #{f_p}") || val[1].include?("#{f_p} #{value}") || val[0].include?("#{value} in #{f_p}") || val[1].include?("#{f_p} #{value}") 
+      # product = fav_filter_product(params, 'functional_preference')
+      data = []
+      ['negative_not_good','positive_good'].each do |neg_pos|
+          filter = []
+          filter << {vitamins: []} if neg_pos == 'positive_good'
+          filter << {minerals: []} if neg_pos == 'positive_good'
+
+          values = neg_pos == 'negative_not_good' ? prd_negative_not_good : prd_positive_good
+          values.each do |ing|
+            if mineral_columns.include?(ing) && neg_pos == 'positive_good'
+              filter[1][:minerals] << {title: ing.titleize}
+            elsif vitamin_columns.include?(ing) && neg_pos == 'positive_good'
+               filter[0][:vitamins] << {title: ing.titleize}
+            else
+              filter << {title: ing.titleize}
+            end 
           end 
-        end
-        end
-        data << {count: fp_count.uniq.count, functional_preference: f_p.titleize }
-      end 
-      data = {count: total_count(data), functional_preference: data}
+          data <<  {functional_preference: neg_pos.titleize, data: filter }
+      end
+      data
+    end
+
+    def prd_negative_not_good
+      ['energy', 'fat', 'saturated_fat','cholesterol','trans_fat','sodium','sugar']
+    end
+
+    def prd_positive_good  
+      ['protein','fibre','vit_a','vit_c','vit_d', 'vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1', 'vit_b5', 'vit_b7','calcium','iron','magnesium','zinc','iodine', 'potassium','phosphorus','manganese','copper','selenium','chloride','chromium','total_sugar','probiotic']
+    end
+
+    def mineral_columns
+      ['calcium', 'iron', 'magnesium', 'zinc', 'iodine', 'potassium', 'phosphorus', 'manganese', 'copper', 'selenium', 'chloride', 'chromium']
+    end
+
+    def vitamin_columns
+      ['vit_a','vit_c','vit_d','vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1','vit_b5','vit_b7']
     end
 
     def fav_filter_product(params, val)

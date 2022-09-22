@@ -383,6 +383,7 @@ module BxBlockCatalogue
       neg_n_good << sugar[0] if sugar&.last == false 
       sodium = product_sodium_level
       p_good << sodium[0] if sodium&.last == true 
+      p_good << probiotic_value
       neg_n_good << sodium[0] if sodium&.last == false 
       neg_n_good << cholesterol_value 
       neg_n_good << fat_value
@@ -390,6 +391,17 @@ module BxBlockCatalogue
       self.negative_not_good = neg_n_good.flatten.compact if neg_n_good.present?
       self.positive_good = p_good.flatten.compact if p_good.present?
       self.save!
+    end
+
+    def probiotic_value
+      return unless ingredient.probiotic.present?
+      pro = ingredient.probiotic.to_f
+      level = if pro < 10**8  
+          'Low'
+        elsif pro > 10**8  
+          'Medium'
+        end
+      value = [level: level, name: "probiotic"] if level.present?
     end
 
     def cholesterol_value
