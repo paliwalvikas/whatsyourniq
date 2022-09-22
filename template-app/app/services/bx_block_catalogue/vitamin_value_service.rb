@@ -389,7 +389,7 @@ module BxBlockCatalogue
     end
 
     def sodium_level_clc(sodium, energy)
-      if sodium <= 90 && energy <= 80 || sodium.between?(90,180) && energy.between?(80, 160) || sodium.between?(90,270) && energy.between?(80, 240) || sodium.between?(90, 360) && energy.between?(80, 320) || sodium.between?(90, 450) && energy.between?(80, 400) || sodium.between?(90,540) && energy.between?(80, 480) || sodium.between?(90,630) && energy.between?(80, 560) || sodium.between?(90,720) && energy.between?(80, 640) || sodium.between?(90,810) && energy.between?(80, 720) || sodium.between?(90,900) && energy.between?(80, 800) || sodium > 900 && energy > 800
+      if sodium <= 90 && energy <= 80 || sodium.between?(90,180) && energy.between?(80, 160) || sodium.between?(180,270) && energy.between?(80, 240) || sodium.between?(270, 360) && energy.between?(80, 320) || sodium.between?(360, 450) && energy.between?(80, 400) || sodium.between?(450,540) && energy.between?(80, 480) || sodium.between?(540,630) && energy.between?(80, 560) || sodium.between?(560,720) && energy.between?(80, 640) || sodium.between?(720,810) && energy.between?(80, 720) || sodium.between?(810,900) && energy.between?(80, 800) || sodium > 900 && energy.between?(80, 800) 
         return 'High'
       else
         return 'Low'
