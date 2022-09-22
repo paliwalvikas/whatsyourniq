@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_08_122314) do
+ActiveRecord::Schema.define(version: 2022_09_22_071835) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,12 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.string "stripe_id"
     t.string "stripe_subscription_id"
     t.datetime "stripe_subscription_date"
+    t.string "full_name"
+    t.boolean "flag", default: false, null: false
+    t.string "gender"
+    t.integer "age"
+    t.boolean "register", default: false, null: false
+    t.boolean "additional_details", default: false
   end
 
   create_table "action_mailbox_inbound_emails", force: :cascade do |t|
@@ -167,6 +173,55 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "beverage_micro_ingredients", force: :cascade do |t|
+    t.float "point"
+    t.json "vit_a", default: "{}"
+    t.json "vit_c", default: "{}"
+    t.json "vit_d", default: "{}"
+    t.json "vit_b6", default: "{}"
+    t.json "vit_b12", default: "{}"
+    t.json "vit_b9", default: "{}"
+    t.json "vit_b2", default: "{}"
+    t.json "vit_b3", default: "{}"
+    t.json "vit_b1", default: "{}"
+    t.json "vit_b5", default: "{}"
+    t.json "vit_b7", default: "{}"
+    t.json "calcium", default: "{}"
+    t.json "iron", default: "{}"
+    t.json "magnesium", default: "{}"
+    t.json "zinc", default: "{}"
+    t.json "iodine", default: "{}"
+    t.json "potassium", default: "{}"
+    t.json "phosphorus", default: "{}"
+    t.json "manganese", default: "{}"
+    t.json "copper", default: "{}"
+    t.json "selenium", default: "{}"
+    t.json "chloride", default: "{}"
+    t.json "chromium", default: "{}"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "beverage_negeative_ingredients", force: :cascade do |t|
+    t.float "point"
+    t.json "energy", default: "{}"
+    t.json "total_sugar", default: "{}"
+    t.json "saturate", default: "{}"
+    t.json "sodium", default: "{}"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.float "trans_fat"
+  end
+
+  create_table "beverage_positive_ingredients", force: :cascade do |t|
+    t.float "point"
+    t.json "fruit_veg", default: "{}"
+    t.json "fibre", default: "{}"
+    t.json "protein", default: "{}"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "black_list_users", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -268,15 +323,7 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "admin_user_id"
-    t.integer "rank"
-    t.string "light_icon"
-    t.string "light_icon_active"
-    t.string "light_icon_inactive"
-    t.string "dark_icon"
-    t.string "dark_icon_active"
-    t.string "dark_icon_inactive"
-    t.integer "identifier"
+    t.integer "category_type"
   end
 
   create_table "categories_sub_categories", force: :cascade do |t|
@@ -284,6 +331,14 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.bigint "sub_category_id", null: false
     t.index ["category_id"], name: "index_categories_sub_categories_on_category_id"
     t.index ["sub_category_id"], name: "index_categories_sub_categories_on_sub_category_id"
+  end
+
+  create_table "compare_products", force: :cascade do |t|
+    t.boolean "selected", default: false
+    t.integer "account_id"
+    t.integer "product_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "content_texts", force: :cascade do |t|
@@ -402,6 +457,45 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "favourite_products", force: :cascade do |t|
+    t.integer "account_id"
+    t.integer "product_id"
+    t.boolean "favourite", default: false
+    t.boolean "boolean", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "favourite_searches", force: :cascade do |t|
+    t.json "product_category"
+    t.json "product_sub_category"
+    t.string "niq_score", default: [], array: true
+    t.string "food_allergies", default: [], array: true
+    t.string "food_preference", default: [], array: true
+    t.json "functional_preference"
+    t.string "health_preference"
+    t.boolean "favourite", default: false
+    t.integer "account_id"
+    t.integer "product_count"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "added_count", default: 0
+    t.string "food_type", default: [], array: true
+  end
+
+  create_table "filter_categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "filter_sub_categories", force: :cascade do |t|
+    t.string "name"
+    t.integer "filter_category_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "follows", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -409,6 +503,25 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.bigint "current_user_id"
     t.index ["account_id"], name: "index_follows_on_account_id"
     t.index ["current_user_id"], name: "index_follows_on_current_user_id"
+  end
+
+  create_table "health_preferences", force: :cascade do |t|
+    t.boolean "immunity", default: false
+    t.boolean "gut_health", default: false
+    t.boolean "holistic_nutrition", default: false
+    t.boolean "weight_loss", default: false
+    t.boolean "weight_gain", default: false
+    t.boolean "diabetic", default: false
+    t.boolean "low_cholesterol", default: false
+    t.boolean "heart_friendly", default: false
+    t.boolean "energy_and_vitality", default: false
+    t.boolean "physical_growth", default: false
+    t.boolean "cognitive_health", default: false
+    t.boolean "high_protein", default: false
+    t.boolean "low_sugar", default: false
+    t.integer "product_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "images", force: :cascade do |t|
@@ -419,6 +532,85 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["attached_item_id"], name: "index_images_on_attached_item_id"
     t.index ["attached_item_type"], name: "index_images_on_attached_item_type"
+  end
+
+  create_table "import_statuses", force: :cascade do |t|
+    t.string "job_id"
+    t.string "status", default: "In-Progress"
+    t.text "file_status"
+    t.string "calculation_status"
+    t.string "file_name"
+    t.integer "record_file_contain"
+    t.integer "record_uploaded"
+    t.integer "record_failed"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "ingredients", force: :cascade do |t|
+    t.integer "product_id"
+    t.string "energy"
+    t.string "saturate"
+    t.string "total_sugar"
+    t.string "sodium"
+    t.string "ratio_fatty_acid_lipids"
+    t.string "fruit_veg"
+    t.string "fibre"
+    t.string "protein"
+    t.string "vit_a"
+    t.string "vit_c"
+    t.string "vit_d"
+    t.string "vit_b6"
+    t.string "vit_b12"
+    t.string "vit_b9"
+    t.string "vit_b2"
+    t.string "vit_b3"
+    t.string "vit_b1"
+    t.string "vit_b5"
+    t.string "vit_b7"
+    t.string "calcium"
+    t.string "iron"
+    t.string "magnesium"
+    t.string "zinc"
+    t.string "iodine"
+    t.string "potassium"
+    t.string "phosphorus"
+    t.string "manganese"
+    t.string "copper"
+    t.string "selenium"
+    t.string "chloride"
+    t.string "chromium"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.float "trans_fat"
+    t.float "probiotic"
+    t.string "carbohydrate"
+    t.string "total_fat"
+    t.string "monosaturated_fat"
+    t.string "polyunsaturated_fat"
+    t.string "fatty_acid"
+    t.string "mono_unsaturated_fat"
+    t.string "veg_and_nonveg"
+    t.string "gluteen_free"
+    t.string "added_sugar"
+    t.string "artificial_preservative"
+    t.string "organic"
+    t.string "vegan_product"
+    t.string "egg"
+    t.string "fish"
+    t.string "shellfish"
+    t.string "tree_nuts"
+    t.string "peanuts"
+    t.string "wheat"
+    t.string "soyabean"
+    t.string "cholestrol"
+    t.string "dairy"
+    t.string "vit_e"
+    t.string "omega_3"
+    t.string "d_h_a"
+    t.string "no_artificial_color"
+    t.string "folate"
+    t.string "fat"
   end
 
   create_table "languages", force: :cascade do |t|
@@ -448,6 +640,47 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.string "category"
   end
 
+  create_table "micro_ingredients", force: :cascade do |t|
+    t.float "point"
+    t.json "vit_a", default: "{}"
+    t.json "vit_c", default: "{}"
+    t.json "vit_d", default: "{}"
+    t.json "vit_b6", default: "{}"
+    t.json "vit_b12", default: "{}"
+    t.json "vit_b9", default: "{}"
+    t.json "vit_b2", default: "{}"
+    t.json "vit_b3", default: "{}"
+    t.json "vit_b1", default: "{}"
+    t.json "vit_b5", default: "{}"
+    t.json "vit_b7", default: "{}"
+    t.json "calcium", default: "{}"
+    t.json "iron", default: "{}"
+    t.json "magnesium", default: "{}"
+    t.json "zinc", default: "{}"
+    t.json "iodine", default: "{}"
+    t.json "potassium", default: "{}"
+    t.json "phosphorus", default: "{}"
+    t.json "manganese", default: "{}"
+    t.json "copper", default: "{}"
+    t.json "selenium", default: "{}"
+    t.json "chloride", default: "{}"
+    t.json "chromium", default: "{}"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "negative_ingredients", force: :cascade do |t|
+    t.float "point"
+    t.json "energy", default: "{}"
+    t.json "total_sugar", default: "{}"
+    t.json "saturate", default: "{}"
+    t.json "sodium", default: "{}"
+    t.json "ratio_fatty_acid_lipids", default: "{}"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.float "trans_fat"
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.integer "created_by"
     t.string "headings"
@@ -461,6 +694,21 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.index ["account_id"], name: "index_notifications_on_account_id"
   end
 
+  create_table "order_items", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "product_id"
+    t.integer "status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "account_id"
+    t.string "order_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "pdfs", force: :cascade do |t|
     t.integer "attached_item_id"
     t.string "attached_item_type"
@@ -469,6 +717,55 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["attached_item_id"], name: "index_pdfs_on_attached_item_id"
     t.index ["attached_item_type"], name: "index_pdfs_on_attached_item_type"
+  end
+
+  create_table "positive_ingredients", force: :cascade do |t|
+    t.float "point"
+    t.json "fruit_veg", default: "{}"
+    t.json "fibre", default: "{}"
+    t.json "protein", default: "{}"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "product_import_statuses", force: :cascade do |t|
+    t.string "job_id"
+    t.string "status", default: "In-Progress"
+    t.text "file_status"
+    t.string "calculation_status"
+    t.string "file_name"
+    t.integer "record_file_contain"
+    t.integer "record_uploaded"
+    t.integer "record_failed"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "product_name"
+    t.integer "product_type"
+    t.float "product_point"
+    t.string "product_rating"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "weight"
+    t.integer "price_mrp"
+    t.integer "price_post_discount"
+    t.string "brand_name"
+    t.integer "category_id"
+    t.text "positive_good", default: [], array: true
+    t.text "negative_not_good", default: [], array: true
+    t.string "bar_code"
+    t.string "data_check"
+    t.text "description"
+    t.text "ingredient_list"
+    t.integer "filter_category_id"
+    t.integer "filter_sub_category_id"
+    t.integer "food_drink_filter"
+    t.string "website"
+    t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["filter_category_id"], name: "index_products_on_filter_category_id"
+    t.index ["filter_sub_category_id"], name: "index_products_on_filter_sub_category_id"
   end
 
   create_table "push_notifications", force: :cascade do |t|
@@ -516,6 +813,7 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
     t.datetime "valid_until"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "hash_key"
   end
 
   create_table "sub_categories", force: :cascade do |t|
@@ -541,8 +839,8 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
   end
 
   create_table "user_categories", force: :cascade do |t|
-    t.bigint "account_id", null: false
-    t.bigint "category_id", null: false
+    t.integer "account_id", null: false
+    t.integer "category_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_user_categories_on_account_id"
@@ -550,12 +848,10 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
   end
 
   create_table "user_sub_categories", force: :cascade do |t|
-    t.bigint "account_id", null: false
-    t.bigint "sub_category_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["account_id"], name: "index_user_sub_categories_on_account_id"
-    t.index ["sub_category_id"], name: "index_user_sub_categories_on_sub_category_id"
+    t.integer "account_id"
+    t.integer "sub_category_id"
   end
 
   create_table "videos", force: :cascade do |t|
@@ -594,6 +890,4 @@ ActiveRecord::Schema.define(version: 2021_12_08_122314) do
   add_foreign_key "seller_accounts", "accounts"
   add_foreign_key "user_categories", "accounts"
   add_foreign_key "user_categories", "categories"
-  add_foreign_key "user_sub_categories", "accounts"
-  add_foreign_key "user_sub_categories", "sub_categories"
 end

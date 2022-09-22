@@ -1,10 +1,10 @@
-ActiveAdmin.register BxBlockCatalogue::ProductImportStatus, as: 'Product Import Status' do
+ActiveAdmin.register BxBlockCatalogue::ImportStatus, as: 'Import Status' do
   permit_params :id, :job_id, :status, :error_file
   menu false
 
   actions :all, except: [:edit, :new, :show]
 
-  action_item :product_import_status, only: :index do
+  action_item :import_status, only: :index do
     link_to 'Refresh', '',class: 'refresh-button', onclick: "reload;"
   end
 
@@ -20,12 +20,12 @@ ActiveAdmin.register BxBlockCatalogue::ProductImportStatus, as: 'Product Import 
     column :calculation_status
     column :created_at
     actions defaults: false do |report|
-      link_to 'Download report', download_admin_product_import_status_path(report, format: :csv)
+      link_to 'Download report', download_admin_import_status_path(report, format: :csv)
     end
   end
 
   member_action :download, method: :get do
-    status = BxBlockCatalogue::ProductImportStatus.find_by(id: params[:id])
+    status = BxBlockCatalogue::ImportStatus.find_by(id: params[:id])
     csv_data = CSV.parse(status.file_status)
     csv_file = CSV.generate( encoding: 'utf-8' ) do |csv|
       csv_data.each do |data|

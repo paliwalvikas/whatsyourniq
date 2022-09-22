@@ -15,7 +15,7 @@ module BxBlockCatalogue
       end
       
       row_count = 0
-      product_import_status = BxBlockCatalogue::ProductImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}")
+      product_import_status = BxBlockCatalogue::ImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}")
 
       report_data = []
       success_data = []
@@ -53,7 +53,7 @@ module BxBlockCatalogue
         if product.save
           ingredient.save
           success_data << ["#{row_count}", "#{product.product_name}", "", "Success"]
-          product_import_status.record_uploaded = success_data.count
+          product_import_status.record_uploaded = success_data.count  
         end
 
         if product.errors.any?

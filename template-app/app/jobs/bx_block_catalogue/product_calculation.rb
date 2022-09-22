@@ -3,7 +3,7 @@ module BxBlockCatalogue
     queue_as :low_priority
 
     def perform
-      product_import_status = BxBlockCatalogue::ProductImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}", calculation_status: "Pending")
+      product_import_status = BxBlockCatalogue::ImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}", calculation_status: "Pending")
       csv_headers = ["Pruduct ID", "Product Name", "Calculation Status"]
       csv_row = []  
       csv_row << csv_headers
