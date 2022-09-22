@@ -20,5 +20,5 @@ function calculateRating(product_id) {
 }
 
 function reload() {
-  (window.location = "/admin/product_import_statuses").reload(true);
+  (window.location = "/admin/import_statuses").reload(true);
 }

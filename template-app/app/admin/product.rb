@@ -19,7 +19,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   end
 
   action_item :product_import_status, only: :index do
-    link_to 'Product Import Status', '/admin/product_import_statuses'
+    link_to 'Import Status', '/admin/import_statuses'
   end
   
   collection_action :download, method: :get do
