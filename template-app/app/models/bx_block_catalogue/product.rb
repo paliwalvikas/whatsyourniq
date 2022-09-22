@@ -223,9 +223,9 @@ module BxBlockCatalogue
       case product_type
       when 'solid'
         if pro < 5.4
-          protein_level =  'Low'
+          protein_level = 'Low'
         elsif pro >= 5.4 && pro < 10.8
-          protein_level =  'Medium'
+          protein_level = 'Medium'
         elsif pro >= 10.8
           protein_level = 'High'
         end
@@ -233,7 +233,7 @@ module BxBlockCatalogue
         value << checking_good_value(pro, 'protein', protein_level) 
       when 'beverage'
         if pro < 2.7
-          protein_level =  'Low'
+          protein_level = 'Low'
         elsif pro >= 2.7 && pro < 5.4
           protein_level =  'Medium'
         elsif pro >= 5.4
@@ -350,9 +350,9 @@ module BxBlockCatalogue
     def rda_calculation
       good_ingredient = []
       not_so_good_ingredient = []
-      good_ingredient << vit_min_value 
-      good_ingredient << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
       good_ingredient << protein_value if protein_value.present? && protein_value.first[:level] != 'Low'
+      good_ingredient << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
+      good_ingredient << vit_min_value 
       good_ingredient << {Calories: calories_energy} if calories_energy.present?
       saturate_fat = product_sat_fat
       good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
