@@ -381,7 +381,7 @@ module BxBlockCatalogue
     
 
     def saturated_fat_clc(saturate_fat, energy)
-      if saturate_fat.between?(2,3) && energy.between?(160, 320) || saturate_fat.between?(2,4) && energy.between?(160, 400) || saturate_fat.between?(2,5) && energy.between?(160, 480) || saturate_fat.between?(2,6) && energy.between?(160, 560) || saturate_fat.between?(2,7) && energy.between?(160, 640) || saturate_fat.between?(2,8) && energy.between?(160, 720) || saturate_fat.between?(2,9) && energy.between?(160, 800) || saturate_fat.between?(2,10) && energy.between?(160, 800) || saturate_fat > 10 && energy > 800
+      if saturate_fat.between?(2,3) && energy.between?(160, 320) || saturate_fat.between?(3,4) && energy.between?(160, 400) || saturate_fat.between?(4,5) && energy.between?(160, 480) || saturate_fat.between?(5,6) && energy.between?(160, 560) || saturate_fat.between?(6,7) && energy.between?(160, 640) || saturate_fat.between?(7,8) && energy.between?(160, 720) || saturate_fat.between?(8,9) && energy.between?(160, 800) || saturate_fat.between?(9,10) && energy.between?(160, 800) || saturate_fat > 10 && energy > 800
         return 'High'
       else
         return 'Low'
@@ -395,5 +395,32 @@ module BxBlockCatalogue
         return 'Low'
       end 
     end
+
+    def trans_fat_clc(trans_fat, energy)
+      if trans_fat == 0.09 && energy.between?(0,80) || trans_fat == 0.09 && energy.between?(0,160) || trans_fat == 0.018 && energy.between?(0,240) || trans_fat == 0.27 && energy.between?(0,320) || trans_fat == 0.36 && energy.between?(0,400) || trans_fat == 0.44 && energy.between?(0,480) || trans_fat == 0.53 && energy.between?(0,560) || trans_fat == 0.62 && energy.between?(0,640) || trans_fat == 0.71 && energy.between?(0,720) || trans_fat == 0.8 && energy.between?(0,800) || trans_fat == 0.89 && energy > 800 
+        return 'High'
+      else
+        return 'Low' 
+      end
+    end
+
+
+    def suger_clc(product_type, sugar, energy)
+      case product_type 
+        when 'solid'
+          if sugar <= 4.5 && energy.between?(0,80) || sugar.between?(4.5, 9) && energy.between?(0,160) || sugar.between?(9, 13.5) && energy.between?(0,240) || sugar.between?(13.5, 18)  && energy.between?(0,320) || sugar.between?(18, 22.5) && energy.between?(0,400) || sugar.between?(22.5, 27) && energy.between?(0,480) || sugar.between?(27, 31) && energy.between?(0,560) || sugar.between?(31, 36) && energy.between?(0,640) || sugar.between?(36, 40) && energy.between?(0,720) || sugar.between?(40, 45) && energy.between?(0,800) || sugar > 45 && energy > 800 
+            return 'High'
+          else
+            return 'Low' 
+          end
+        when 'beverage'
+          if sugar <= 0 && energy <= 0 || sugar <= 1.5 && energy <= 7 || sugar <= 3 && energy <= 14 || sugar <= 4.5 && energy <= 22 || sugar <= 6 && energy <= 29 || sugar <= 7.5 && energy <= 36 || sugar <= 9 && energy <= 43 || sugar <= 10.5 && energy <= 50 || sugar <= 12 && energy <= 57 || sugar <= 13.5 && energy <= 64 || sugar > 13.5 && energy > 64 
+            return 'High'
+          else 
+            return 'Low'
+          end
+        end
+    end
+
   end
 end

@@ -100,7 +100,7 @@ module BxBlockCatalogue
         end
         mp = micro_calculation(ing).sum
         p_point = np.sum - pp.sum
-        if p_point.zero? || np.blank? && pp.blank?
+        if np.blank? && pp.blank?
           self.product_rating = nil
           self.product_point = nil
         else
@@ -128,6 +128,9 @@ module BxBlockCatalogue
              elsif mp.to_f > (8) && product_rating != 'A'
                product_rating == 'D' || product_rating == 'E' ? (product_rating.ord - 1).chr : (product_rating.ord - 2).chr
              end
+          if pr == "@" || pr == "?" 
+            pr = "A"
+          end
         self.product_rating = pr
       end
       self.save!
@@ -545,17 +548,18 @@ module BxBlockCatalogue
           [checking_not_so_good_value(sugar, 'sugar', 'Free'), true]
         elsif sugar >= 0.5 && sugar <= 5.0
           [checking_not_so_good_value(sugar, 'sugar', 'Low'), true]
-        elsif energy.between?(0,80) && sugar > 4.5 || energy.between?(80,160) && sugar > 9 || energy.between?(160,240) && sugar > 13.5 || energy.between?(240,320) && sugar > 18 || energy.between?(320,400) && sugar > 22.5 || energy.between?(400,480) && sugar > 27 || energy.between?(480,560) && sugar > 31 || energy.between?(560,640) && sugar > 36 || energy.between?(640, 720) && sugar > 40 || energy.between?(720, 800) && sugar > 45
-          [checking_not_so_good_value(sugar, 'sugar', 'High'), false]
+        elsif sugar > 5.0
+          value = BxBlockCatalogue::VitaminValueService.new().suger_clc(product_type, sugar, energy)
+          [checking_not_so_good_value(sugar, 'sugar', 'High'), false] if value != 'Low'
         end
       when 'beverage'
         if sugar < 0.5
           [checking_not_so_good_value(sugar, 'sugar', 'Free'), true]
         elsif sugar >= 0.5 && sugar <= 2.5
           [checking_not_so_good_value(sugar, 'sugar', 'Free'), true]
-        elsif energy.positive? && sugar.positive? || energy.between?(0,7) && sugar > 1.5 || energy.between?(7,14) && sugar > 3 || energy.between?(14,22) && sugar > 4.5 || energy.between?(22,29) && sugar > 6 || energy.between?(29,36) && sugar > 7.5 || energy.between?(36,43) && sugar > 9 || energy.between?(43,50) && sugar > 10.5 || energy.between?(50, 57) && sugar > 12 || energy.between?(57, 64) && sugar > 13.5
-          [checking_not_so_good_value(sugar, 'sugar', 'High'), false]
-
+        elsif sugar > 2.5
+          value = BxBlockCatalogue::VitaminValueService.new().suger_clc(product_type, sugar, energy)
+          [checking_not_so_good_value(sugar, 'sugar', 'High'), false] if value != 'Low'
         end
       end
       pro_sugar_val || []
