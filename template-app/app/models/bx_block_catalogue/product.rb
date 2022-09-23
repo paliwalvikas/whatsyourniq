@@ -82,7 +82,7 @@ module BxBlockCatalogue
       np = []
       pp = []
 
-      unless product_point.present?
+    # unless product_point.present?
         ing = ingredient
         neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
 
@@ -118,7 +118,7 @@ module BxBlockCatalogue
             self.product_rating = p_rating
             self.product_point = p_point
           end
-        end
+        #end
       
       if product_rating.present?
         pr = if mp.to_f.between?(0, 4)
