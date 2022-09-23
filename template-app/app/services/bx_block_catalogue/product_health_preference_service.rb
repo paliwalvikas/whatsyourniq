@@ -57,7 +57,7 @@ module BxBlockCatalogue
     	end
 
     	def immunity(ingredient, val)
-    		(ingredient[:vit_a].to_f >= val[:vit_a] || ingredient[:vit_d].to_f >= val[:vit_d] ||ingredient[:vit_c].to_f >= val[:vit_c] ||	ingredient[:vit_e].to_f >= val[:vit_e] ||ingredient[:vit_b6].to_f >= val[:vit_b6] || ingredient[:vit_b12].to_f >= val[:vit_b12] || ingredient[:iron].to_f >= val[:iron] || ingredient[:zinc].to_f >= val[:zinc] ||ingredient[:selenium].to_f >= val[:selenium] || ingredient[:copper].to_f >= val[:copper]) && check_greater?(ingredient[:protein], val[:protein]) && (check_greater?(ingredient[:fibre], val[:fibre]) ||  check_greater?(ingredient[:probiotic], 10**8) )
+    		(check_greater?(ingredient[:vit_a], val[:vit_a]) || check_greater?(ingredient[:vit_d], val[:vit_d]) || check_greater?(ingredient[:vit_c], val[:vit_c]) ||	check_greater?(ingredient[:vit_e], val[:vit_e]) || check_greater?(ingredient[:vit_b6], val[:vit_b6]) || check_greater?(ingredient[:vit_b12], val[:vit_b12]) || check_greater?(ingredient[:iron], val[:iron]) || check_greater?(ingredient[:zinc], val[:zinc]) || check_greater?(ingredient[:selenium], val[:selenium]) || check_greater?(ingredient[:copper], val[:copper])) && check_greater?(ingredient[:protein], val[:protein]) && (check_greater?(ingredient[:fibre], val[:fibre]) ||  check_greater?(ingredient[:probiotic], 10**8) )
     	end
 
     	def gut_health(ing, fibre)
