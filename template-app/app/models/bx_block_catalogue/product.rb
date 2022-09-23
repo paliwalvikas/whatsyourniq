@@ -100,7 +100,7 @@ module BxBlockCatalogue
         end
         mp = micro_calculation(ing).sum
         p_point = np.sum - pp.sum
-        if p_point.zero? || np.blank? && pp.blank?
+        if np.blank? && pp.blank?
           self.product_rating = nil
           self.product_point = nil
         else
@@ -128,6 +128,9 @@ module BxBlockCatalogue
              elsif mp.to_f > (8) && product_rating != 'A'
                product_rating == 'D' || product_rating == 'E' ? (product_rating.ord - 1).chr : (product_rating.ord - 2).chr
              end
+          if pr == "@" || pr == "?" 
+            pr = "A"
+          end
         self.product_rating = pr
       end
       self.save!
