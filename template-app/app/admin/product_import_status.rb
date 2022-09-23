@@ -20,7 +20,7 @@ ActiveAdmin.register BxBlockCatalogue::ImportStatus, as: 'Import Status' do
     column :calculation_status
     column :created_at
     actions defaults: false do |report|
-      link_to 'Download report', download_admin_import_status_path(report, format: :csv)
+      link_to 'Download report', download_admin_import_status_path(report, format: :csv) unless report&.file_status.nil?
     end
   end
 
