@@ -133,6 +133,7 @@ module BxBlockCatalogue
           end
         self.product_rating = pr
       end
+      self.calculated = true
       self.save!
     end
 
@@ -393,6 +394,7 @@ module BxBlockCatalogue
       neg_n_good << trans_fat_value
       self.negative_not_good = neg_n_good.flatten.compact if neg_n_good.present?
       self.positive_good = p_good.flatten.compact if p_good.present?
+      self.np_calculated = true
       self.save!
     end
 

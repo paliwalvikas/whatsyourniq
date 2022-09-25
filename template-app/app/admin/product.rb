@@ -9,8 +9,16 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
 
   before_action :set_product # , only: [:show, :edit, :update, :destroy]
 
-  batch_action :product_calculation do |selection|
-    BxBlockCatalogue::ProductCalculation.perform_later
+  action_item :only => :index do
+    link_to "Calculate Ratings", calculate_ratings_admin_products_path(:calculation_type => "calculate_ratings")
+  end
+
+  action_item :only => :index do
+    link_to "Calculate NP", calculate_ratings_admin_products_path(:calculation_type => "calculate_np")
+  end
+
+  collection_action :calculate_ratings do
+    BxBlockCatalogue::ProductCalculation.perform_later(params[:calculation_type])
     redirect_to collection_path flash[:notice] = 'Calculation on product is processing.'
   end
 
