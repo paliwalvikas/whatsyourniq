@@ -29,34 +29,31 @@ module BxBlockCatalogue
     def functional_preference(product, f_p)
       fun = eval(f_p[:functional_preference])
       pr_ids =[]
+      positive = product.select(:id, :positive_good)
+      negative = product.select(:id, :negative_not_good)
       fun.each do |key, value|
-        if key.to_s == 'Vit C' 
-          key = 'vit_c'
-        elsif key.to_s == 'Vit A'
-          key = 'vit_a'
-        elsif key.to_s == 'Calories'
-          key = 'energy'
+        products = key.to_s == "Good Ingredients" ? positive : negative 
+        value.each do |p_key, p_value|
+          p_key = p_key.to_s.include?(' ') ? p_key.to_s.downcase.tr!(" ", "_") : p_key.to_s.downcase
+          products = positive_negative(products, p_key.downcase, p_value, key.to_s)
         end
-       product = positive_negative(product, key.downcase, value)
-      end
-      product.present? ? product : nil
+        pr_ids << products.pluck(:id) if products.present?
+      end 
+      product.present? ? product.where(id: pr_ids.flatten.uniq) : nil
     end
 
-    def positive_negative(product, key, value)
+    def positive_negative(product, key, value, check)
       p_ids =[]
       product.each do |prd|
-        nng = prd.negative_not_good
-        pg = prd.positive_good
-        value.each do |val| 
-        val = val.downcase 
-          p_ids << prd.id if nng.include?("#{val} in #{key}") || nng.include?("#{key} #{val}") || pg.include?("#{val} in #{key}") || pg.include?("#{key} #{val}") 
-        end
+        data = check == "Good Ingredients" ? prd.positive_good : prd.negative_not_good
+        data = data.map{|i| eval(i)}
+        data.map{|dt| p_ids << prd.id if dt[:name] == key && value.include?(dt[:level])}
       end
-      product.where(id: p_ids) if p_ids.present? && product.present?
+      product.where(id: p_ids.compact) if p_ids.present? && product.present?
     end
 
     def food_type(params, product)
-      cat_ids= BxBlockCategories::Category.where(category_type: params[:food_type].map{|i| i.downcase.tr!(" ", "_")}).pluck(:id)
+      cat_ids = BxBlockCategories::Category.where(category_type: params[:food_type].map{|i| i.downcase.tr!(" ", "_")}).pluck(:id)
       product.where(category_id: cat_ids)
     end
 
