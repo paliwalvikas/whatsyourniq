@@ -77,7 +77,7 @@ module BxBlockCatalogue
         val = f_all == 'no_artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
         f_all = 'added_sugar' if f_all == 'no_added_sugar'
         f_all = 'artificial_preservative' if f_all == 'no_artificial_preservative'
-        f_all = 'gluteen_free' if f_all = 'gluten_free' 
+        f_all = 'gluteen_free' if f_all == 'gluten_free' 
         ingredients = allergies(f_all.downcase, ingredients, val)
       end
       product.where(id: ingredients.pluck(:product_id)) if ingredients.present?
