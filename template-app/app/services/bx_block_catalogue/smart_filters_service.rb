@@ -133,7 +133,7 @@ module BxBlockCatalogue
           filter = []
           case neg_pos
           when "Good Ingredients"
-              filter << {title: ["Protein","Fibre","Total Sugar","Probiotic"]}
+              filter << {title: ["Protein","Fibre","Probiotic"]}
               filter << {"Vitamins": {title: vitamin_columns.map{|ing| ing.titleize}} }
               filter << {"Minerals": {title: mineral_columns.map{|ing| ing.titleize} }}
           when "Not So Good Ingredients"
@@ -145,7 +145,7 @@ module BxBlockCatalogue
     end
 
     def prd_negative_not_good
-      ['energy', 'fat', 'saturated_fat','cholesterol','trans_fat','sodium','sugar']
+      ['energy', 'fat', 'saturated_fat','cholesterol','trans_fat','sodium','Total sugar']
     end
 
     def prd_positive_good  
