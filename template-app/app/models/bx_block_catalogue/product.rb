@@ -589,7 +589,7 @@ module BxBlockCatalogue
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
         elsif sodium > 5.0
           value = BxBlockCatalogue::VitaminValueService.new().sodium_level_clc(sodium, energy)
-          return [checking_not_so_good_value(sodium, 'sodium', value), false] if value != 'Low'  
+          return [checking_not_so_good_value(sodium, 'sodium', value), false]  
         end
       when 'beverage'
         if sodium < 0.5
@@ -598,7 +598,7 @@ module BxBlockCatalogue
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
         elsif sodium > 2.5
           value = BxBlockCatalogue::VitaminValueService.new().sodium_level_clc(sodium, energy)
-          return [checking_not_so_good_value(sodium, 'sodium', value), false] if value != 'Low'  
+          return [checking_not_so_good_value(sodium, 'sodium', value), false]  
         end
       end
       []
