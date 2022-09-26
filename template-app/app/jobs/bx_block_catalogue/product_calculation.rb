@@ -1,6 +1,7 @@
 module BxBlockCatalogue
   class ProductCalculation < BuilderBase::ApplicationJob
-    queue_as :low_priority
+    queue_as :default
+    sidekiq_options retry: 3
 
     def perform(calculation_type)
       product_import_status = BxBlockCatalogue::ImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}", calculation_status: "Pending")

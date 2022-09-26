@@ -13,7 +13,7 @@ module BxBlockCatalogue
     NOT_SO_GOOD_INGREDIENTS = { saturated_fat: [22, 'g'], sugar: [90, 'g'], sodium: [2000, 'mg'], calories: [0.0, 'kcal']}.freeze
     attr_accessor :image_url, :category_filter, :category_type_filter
 
-    before_save :image_process, if: :image_url
+    # before_save :image_process, if: :image_url
     has_one_attached :image
 
     has_one :health_preference, class_name: 'BxBlockCatalogue::HealthPreference', dependent: :destroy
