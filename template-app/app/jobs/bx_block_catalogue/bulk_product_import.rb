@@ -3,7 +3,8 @@ require 'csv'
 
 module BxBlockCatalogue
   class BulkProductImport < BuilderBase::ApplicationJob
-    queue_as :low_priority
+    queue_as :default
+    sidekiq_options retry: 3
     # include Sidekiq::Worker
     # sidekiq_options retry: false
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
@@ -34,7 +35,6 @@ module BxBlockCatalogue
 
         ingredient_params = product_data.except('id', 'product_name', 'product_type','weight','price_mrp','price_post_discount','brand_name','category_id','image','bar_code','data_check','description','ingredient_list','food_drink_filter','category_filter','category_type_filter', 'website', 'nutritional', 'fat')
 
-        # next if BxBlockCatalogue::Product.find_by(bar_code: product_params['bar_code'])
         filter_category = BxBlockCategories::FilterCategory.find_or_create_by(name: product_params["category_filter"])
         filter_sub_category = BxBlockCategories::FilterSubCategory.find_or_create_by(name: product_params['category_type_filter'], filter_category_id: filter_category.id)
 
@@ -42,16 +42,29 @@ module BxBlockCatalogue
           product_params["product_type"] = "cheese_and_oil"
         end
 
-        product = BxBlockCatalogue::Product.new(product_params)
+        product = BxBlockCatalogue::Product.find_or_initialize_by(bar_code: product_params['bar_code'])
+        product.attributes = product_params.except('bar_code', 'filter_category', 'category_id', 'category_type_filter','image')
         product.category_id = BxBlockCategories::Category.new.find_category_type(product_params['category_id'])
       
         product.filter_category_id = filter_category.id
         product.filter_sub_category_id = filter_sub_category.id
-        product.image_url = product_params["image"]
-        ingredient = product.build_ingredient(ingredient_params)
-        
-        if product.save
-          ingredient.save
+        ingredient = product.ingredient ||= product.build_ingredient
+        product.calculated = false
+        product.np_calculated = false
+
+      if product.save!
+          file_url = URI.parse(product_params["image"]) rescue nil
+          if file_url
+            file = open(product_params["image"].strip) rescue nil
+            product.image.attach(
+              io: file,
+              filename: "#{product&.product_name&.split&.first}.#{file.content_type_parse.first.split("/").last}",
+              content_type: file.content_type_parse.first
+            ) if file
+          end
+
+          ingredient.update(ingredient_params)
+
           success_data << ["#{row_count}", "#{product.product_name}", "", "Success"]
           product_import_status.record_uploaded = success_data.count  
         end
@@ -74,6 +87,7 @@ module BxBlockCatalogue
       end
 
       product_import_status.status = "Failed" unless failer_data.empty?
+      product_import_status.status = "Success" if failer_data.empty?
       product_import_status.status = "Success" if failer_data.empty?
       product_import_status.save
     end
