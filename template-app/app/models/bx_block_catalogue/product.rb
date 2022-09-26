@@ -13,7 +13,7 @@ module BxBlockCatalogue
     NOT_SO_GOOD_INGREDIENTS = { saturated_fat: [22, 'g'], sugar: [90, 'g'], sodium: [2000, 'mg'], calories: [0.0, 'kcal']}.freeze
     attr_accessor :image_url, :category_filter, :category_type_filter
 
-    before_save :image_process, if: :image_url
+    # before_save :image_process, if: :image_url
     has_one_attached :image
 
     has_one :health_preference, class_name: 'BxBlockCatalogue::HealthPreference', dependent: :destroy
@@ -133,6 +133,7 @@ module BxBlockCatalogue
           end
         self.product_rating = pr
       end
+      self.calculated = true
       self.save!
     end
 
@@ -393,6 +394,7 @@ module BxBlockCatalogue
       neg_n_good << trans_fat_value
       self.negative_not_good = neg_n_good.flatten.compact if neg_n_good.present?
       self.positive_good = p_good.flatten.compact if p_good.present?
+      self.np_calculated = true
       self.save!
     end
 
