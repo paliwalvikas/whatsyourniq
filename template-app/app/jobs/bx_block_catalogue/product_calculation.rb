@@ -1,7 +1,6 @@
 module BxBlockCatalogue
   class ProductCalculation < BuilderBase::ApplicationJob
     queue_as :default
-    sidekiq_options retry: 3
 
     def perform(calculation_type)
       product_import_status = BxBlockCatalogue::ImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}", calculation_status: "Pending")
@@ -9,8 +8,9 @@ module BxBlockCatalogue
       csv_row = []  
       csv_row << csv_headers
 
-      products = BxBlockCatalogue::Product.all
-      if products.present?
+      products = BxBlockCatalogue::Product.all.order(:id)
+      
+      BxBlockCatalogue::Product.find_in_batches do |products|
         products.each do |product|
           if calculation_type == "calculate_np"
             if !product.np_calculated?  
@@ -37,9 +37,8 @@ module BxBlockCatalogue
             end
 
           end
-
-          product_import_status.save
         end
+        product_import_status.save
       end
 
       product_import_status.calculation_status = "Success"
