@@ -359,14 +359,20 @@ module BxBlockCatalogue
       good_ingredient << vit_min_value 
       good_ingredient << {Calories: calories_energy} if calories_energy.present?
       saturate_fat = product_sat_fat
-      good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
-      not_so_good_ingredient << saturate_fat[0] if saturate_fat&.last == false 
+      if saturate_fat != nil && saturate_fat.first.first[:level] != nil
+        good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
+        not_so_good_ingredient << saturate_fat[0] if saturate_fat&.last == false 
+      end
       sugar = product_sugar_level
-      good_ingredient << sugar[0] if sugar&.last == true 
-      not_so_good_ingredient << sugar[0] if sugar&.last == false 
+      if sugar != nil && sugar.first.first[:level] != nil
+        good_ingredient << sugar[0] if sugar&.last == true 
+        not_so_good_ingredient << sugar[0] if sugar&.last == false 
+      end
       sodium = product_sodium_level
-      good_ingredient << sodium[0] if sodium&.last == true 
-      not_so_good_ingredient << sodium[0] if sodium&.last == false 
+      if sodium != nil && sodium.first.first[:level] != nil
+        good_ingredient << sodium[0] if sodium&.last == true 
+        not_so_good_ingredient << sodium[0] if sodium&.last == false 
+      end
       data = {
         good_ingredient: good_ingredient.flatten.compact,
         not_so_good_ingredient: not_so_good_ingredient.flatten
@@ -610,30 +616,21 @@ module BxBlockCatalogue
       when 'solid'
         if saturate_fat <= 0.1
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
-        elsif saturate_fat > 0.1 && saturate_fat <= 1.5 
+        elsif saturate_fat > 0.1 && saturate_fat <= 1.5 && energy_from_saturated_fat
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat > 1.5 && energy_from_saturated_fat
-          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
-        elsif saturate_fat > 1.5 || energy_from_saturated_fat
-          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]  
-        elsif saturate_fat >= 2
+        elsif saturate_fat >= 1.5 || energy_from_saturated_fat 
           value = BxBlockCatalogue::VitaminValueService.new().saturated_fat_clc(saturate_fat, energy)
-          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', value), false] if value != 'Low'
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', value), true] 
         end
       when 'beverage'
         if saturate_fat <= 0.1
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Free'), true]
-        elsif saturate_fat > 0.1 && saturate_fat <= 0.75 
+        elsif saturate_fat > 0.1 && saturate_fat <= 0.75 && energy_from_saturated_fat
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat > 0.75 && energy_from_saturated_fat
-          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'High'), false]
-        elsif saturate_fat > 0.75 || energy_from_saturated_fat
-          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat > 0.75 || energy_from_saturated_fat
-          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
-        elsif saturate_fat >= 2
+        elsif saturate_fat >= 2 || energy_from_saturated_fat
           value = BxBlockCatalogue::VitaminValueService.new().saturated_fat_clc(saturate_fat, energy)
-          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', value), false] if value != 'Low'
+          rating = value == 'High' ? false : true 
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', value), rating] 
         end
       end
     end
