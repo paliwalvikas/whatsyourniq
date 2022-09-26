@@ -57,7 +57,7 @@ module BxBlockCatalogue
       Product.all.each do |product|
         product.product_health_preference
       end
-      BxBlockCategories::FilterSubCategory.where(name: "Malt/cereal based bev's").update(name: "Malt/cereal based bevs")
+      BxBlockCategories::FilterCategory.where(name: "Malt/cereal based bev's").update(name: "Malt/cereal based bevs")
       render json: { errors: 'updated' }
 
     end

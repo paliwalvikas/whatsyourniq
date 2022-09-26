@@ -145,11 +145,11 @@ module BxBlockCatalogue
     end
 
     def prd_negative_not_good
-      ['energy', 'fat', 'saturated_fat','cholesterol','trans_fat','sodium','Total sugar']
+      ['calories', 'fat', 'saturated_fat','cholesterol','trans_fat','sodium','Total sugar']
     end
 
     def prd_positive_good  
-      ['protein','fibre','vit_a','vit_c','vit_d', 'vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1', 'vit_b5', 'vit_b7','calcium','iron','magnesium','zinc','iodine', 'potassium','phosphorus','manganese','copper','selenium','chloride','chromium','total_sugar','probiotic']
+      ['protein','fibre','vit_a','vit_c','vit_d', 'vit_b6','vit_b12','vit_b9','vit_b2','vit_b3','vit_b1', 'vit_b5', 'vit_b7','calcium','iron','magnesium','zinc','iodine', 'potassium','phosphorus','manganese','copper','selenium','chloride','chromium','probiotic']
     end
 
     def mineral_columns
