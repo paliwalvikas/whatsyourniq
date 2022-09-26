@@ -359,17 +359,17 @@ module BxBlockCatalogue
       good_ingredient << vit_min_value 
       good_ingredient << {Calories: calories_energy} if calories_energy.present?
       saturate_fat = product_sat_fat
-      if saturate_fat != nil && saturate_fat.first.first[:level] != nil
+      if saturate_fat != nil && saturate_fat != [] && saturate_fat.first.first[:level] != nil
         good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
         not_so_good_ingredient << saturate_fat[0] if saturate_fat&.last == false 
       end
       sugar = product_sugar_level
-      if sugar != nil && sugar.first.first[:level] != nil
+      if sugar != nil && sugar != [] && sugar.first.first[:level] != nil
         good_ingredient << sugar[0] if sugar&.last == true 
         not_so_good_ingredient << sugar[0] if sugar&.last == false 
       end
       sodium = product_sodium_level
-      if sodium != nil && sodium.first.first[:level] != nil
+      if sodium != nil && sodium != [] && sodium.first.first[:level] != nil
         good_ingredient << sodium[0] if sodium&.last == true 
         not_so_good_ingredient << sodium[0] if sodium&.last == false 
       end
@@ -483,22 +483,22 @@ module BxBlockCatalogue
       value
     end
 
-    def trans_fat_value
-      return unless ingredient.trans_fat.present?
-      pro = ingredient.trans_fat.to_f
-      energy = ingredient.energy.to_f
-      fb = []
-      case product_type
-      when 'solid', 'beverage','cheese_and_oil'
-      t_fat_level = if pro < 0.2
-          'Low'
-        elsif energy.positive? && pro > 0.09 || energy.between?(0, 7) && pro > 0.18 || energy.between?(7,14) && pro > 0.27 || energy.between?(14,22) && pro > 0.36 || energy.between?(22, 29) && pro > 0.44 || energy.between?(29,36) && pro > 0.53 || energy.between?(36,43) && pro > 0.62 || energy.between?(43, 50) && pro > 0.71 || energy.between?(50, 57) && pro > 0.8 || energy.between?(57, 64) && pro > 0.89
-          'High'
-        end
-        value = [level: t_fat_level, name: "Trans Fat"] if t_fat_level.present? 
-      end
-      value
-    end
+    # def trans_fat_value
+    #   return unless ingredient.trans_fat.present?
+    #   pro = ingredient.trans_fat.to_f
+    #   energy = ingredient.energy.to_f
+    #   fb = []
+    #   case product_type
+    #   when 'solid', 'beverage','cheese_and_oil'
+    #   t_fat_level = if pro < 0.2
+    #       'Low'
+    #     elsif energy.positive? && pro > 0.09 || energy.between?(0, 7) && pro > 0.18 || energy.between?(7,14) && pro > 0.27 || energy.between?(14,22) && pro > 0.36 || energy.between?(22, 29) && pro > 0.44 || energy.between?(29,36) && pro > 0.53 || energy.between?(36,43) && pro > 0.62 || energy.between?(43, 50) && pro > 0.71 || energy.between?(50, 57) && pro > 0.8 || energy.between?(57, 64) && pro > 0.89
+    #       'High'
+    #     end
+    #     value = [level: t_fat_level, name: "Trans Fat"] if t_fat_level.present? 
+    #   end
+    #   value
+    # end
 
     # def trans_fat
     #   energy = ingredient.energy.to_f
@@ -507,19 +507,7 @@ module BxBlockCatalogue
     #   when 'solid'
     #     if trans_fat < 0.2
     #       positive_good << 'Low trans_fat'
-    #     elsif if energy.between?(0,
-    #                              80) && trans_fat > 0.09 || energy.between?(80,
-    #                                                                         160) && trans_fat > 0.18 || energy.between?(160,
-    #                                                                                                                     240) && trans_fat > 0.27 || energy.between?(240,
-    #                                                                                                                                                                 320) && trans_fat > 0.36 || energy.between?(320,
-    #                                                                                                                                                                                                             400) && trans_fat > 0.44 || energy.between?(400,
-    #                                                                                                                                                                                                                                                         480) && trans_fat > 0.53 || energy.between?(480,
-    #                                                                                                                                                                                                                                                                                                     560) && trans_fat > 0.62 || energy.between?(560,
-    #                                                                                                                                                                                                                                                                                                                                                 640) && trans_fat > 0.71 || energy.between?(640,
-    #                                                                                                                                                                                                                                                                                                                                                                                             720) && trans_fat > 0.8 || energy.between?(
-    #                                                                                                                                                                                                                                                                                                                                                                                               720, 800
-    #                                                                                                                                                                                                                                                                                                                                                                                             ) && trans_fat > 0.89 || energy > 800 && trans_fat > 0.89
-    #             negative_not_good << 'contains more than permissible trans fats'
+    #     elsif if energy.between?(0,80) && trans_fat > 0.09 || energy.between?(80,160) && trans_fat > 0.18 || energy.between?(160,240) && trans_fat > 0.27 || energy.between?(240,320) && trans_fat > 0.36 || energy.between?(320,400) && trans_fat > 0.44 || energy.between?(400,480) && trans_fat > 0.53 || energy.between?(480,560) && trans_fat > 0.62 || energy.between?(560,640) && trans_fat > 0.71 || energy.between?(640,720) && trans_fat > 0.8 || energy.between?(720, 800) && trans_fat > 0.89 || energy > 800 && trans_fat > 0.89negative_not_good << 'contains more than permissible trans fats'
     #           end
     #     end
 
@@ -528,18 +516,7 @@ module BxBlockCatalogue
     #       positive_good << 'trans_fat Free'
     #     elsif trans_fat >= 0.5 && trans_fat < 2.5
     #       positive_good << 'Low trans_fat'
-    #     elsif if energy.positive? && trans_fat > 0.09 || energy.between?(0,
-    #                                                                      7) && trans_fat > 0.18 || energy.between?(7,
-    #                                                                                                                14) && trans_fat > 0.27 || energy.between?(14,
-    #                                                                                                                                                           22) && trans_fat > 0.36 || energy.between?(22,
-    #                                                                                                                                                                                                      29) && trans_fat > 0.44 || energy.between?(29,
-    #                                                                                                                                                                                                                                                 36) && trans_fat > 0.53 || energy.between?(36,
-    #                                                                                                                                                                                                                                                                                            43) && trans_fat > 0.62 || energy.between?(43,
-    #                                                                                                                                                                                                                                                                                                                                       50) && trans_fat > 0.71 || energy.between?(
-    #                                                                                                                                                                                                                                                                                                                                         50, 57
-    #                                                                                                                                                                                                                                                                                                                                       ) && trans_fat > 0.8 || energy.between?(
-    #                                                                                                                                                                                                                                                                                                                                         57, 64
-    #                                                                                                                                                                                                                                                                                                                                       ) && trans_fat > 0.89
+    #     elsif if energy.positive? && trans_fat > 0.09 || energy.between?(0,7) && trans_fat > 0.18 || energy.between?(7,14) && trans_fat > 0.27 || energy.between?(14,22) && trans_fat > 0.36 || energy.between?(22,29) && trans_fat > 0.44 || energy.between?(29,36) && trans_fat > 0.53 || energy.between?(36,43) && trans_fat > 0.62 || energy.between?(43,50) && trans_fat > 0.71 || energy.between?(50, 57) && trans_fat > 0.8 || energy.between?(57, 64) && trans_fat > 0.89
     #             negative_not_good << 'High trans_fat'
     #           end
     #     end
