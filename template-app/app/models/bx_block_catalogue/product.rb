@@ -617,9 +617,9 @@ module BxBlockCatalogue
       energy_from = saturate_fat * 9
       percent =  (energy_from / ingredient.energy.to_f) * 100
       value = if percent < 10
-                 false
-              else
                  true
+              else
+                 false
               end
     end
   end
