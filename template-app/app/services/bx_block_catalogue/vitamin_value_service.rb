@@ -381,7 +381,7 @@ module BxBlockCatalogue
     
 
     def saturated_fat_clc(saturate_fat, energy)
-      if saturate_fat.between?(2,3) && energy.between?(160, 320) || saturate_fat.between?(3,4) && energy.between?(160, 400) || saturate_fat.between?(4,5) && energy.between?(160, 480) || saturate_fat.between?(5,6) && energy.between?(160, 560) || saturate_fat.between?(6,7) && energy.between?(160, 640) || saturate_fat.between?(7,8) && energy.between?(160, 720) || saturate_fat.between?(8,9) && energy.between?(160, 800) || saturate_fat.between?(9,10) && energy.between?(160, 800) || saturate_fat > 10 && energy > 800
+      if saturate_fat.between?(2,3) && energy.between?(160, 320) || saturate_fat.between?(3,4) && energy.between?(160, 400) || saturate_fat.between?(4,5) && energy.between?(160, 480) || saturate_fat.between?(5,6) && energy.between?(160, 560) || saturate_fat.between?(6,7) && energy.between?(160, 640) || saturate_fat.between?(7,8) && energy.between?(160, 720) || saturate_fat.between?(8,9) && energy.between?(160, 800) || saturate_fat.between?(9,10) && energy.between?(160, 800) || saturate_fat > 10 && energy > 1
         return 'High'
       end 
     end
