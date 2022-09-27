@@ -126,6 +126,8 @@ module BxBlockCatalogue
                (product_rating.ord - 1).chr
              elsif mp.to_f > (8) && product_rating != 'A'
                product_rating == 'D' || product_rating == 'E' ? (product_rating.ord - 1).chr : (product_rating.ord - 2).chr
+             elsif mp.to_f > (8) && product_rating == 'A'
+                pr = "A"
              end
           if pr == "@" || pr == "?" 
             pr = "A"
