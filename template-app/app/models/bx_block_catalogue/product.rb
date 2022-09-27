@@ -10,7 +10,7 @@ module BxBlockCatalogue
     GOOD_INGREDIENTS = { protein: [54, 'g'], fibre: [32, 'g'], vit_a: [1000, 'mcg'], vit_c: [80, 'mg'], vit_d: [15, 'mcg'], iron: [19, 'mg'], calcium: [1000, 'mg'],
                          magnesium: [440, 'mg'], potassium: [3500, 'mg'], zinc: [17, 'mg'], iodine: [150, 'ug'], vit_b1: [1.4, 'mg'], vit_b2: [2.0, 'mg'], vit_b3: [1.4, 'mg'], vit_b6: [1.9, 'mg'], vit_b12: [2.2, 'ug'], vit_e: [10, 'mcg'], vit_b7: [40, 'mcg'], vit_b5: [5, 'mg'], phosphorus: [1000, 'mg'], copper: [2, 'mg'], manganese: [4, 'mg'], chromium: [50, 'mca'], selenium: [40, 'mca'], chloride: [2050, 'mg'] }.freeze
 
-    NOT_SO_GOOD_INGREDIENTS = { saturated_fat: [22, 'g'], sugar: [90, 'g'], sodium: [2000, 'mg'], calories: [0.0, 'kcal']}.freeze
+    NOT_SO_GOOD_INGREDIENTS = { saturated_fat: [22, 'g'], sugar: [90, 'g'], sodium: [2000, 'mg'], calories: [2110, 'kcal']}.freeze
     attr_accessor :image_url, :category_filter, :category_type_filter
 
     # before_save :image_process, if: :image_url
@@ -357,7 +357,7 @@ module BxBlockCatalogue
       good_ingredient << protein_value if protein_value.present? && protein_value.first[:level] != 'Low'
       good_ingredient << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
       good_ingredient << vit_min_value 
-      good_ingredient << {Calories: calories_energy} if calories_energy.present?
+      good_ingredient << calories_energy if calories_energy.present?
       saturate_fat = product_sat_fat
       if saturate_fat != nil && saturate_fat != [] && saturate_fat.first.first[:level] != nil
         good_ingredient << saturate_fat[0] if saturate_fat&.last == true 
@@ -458,9 +458,7 @@ module BxBlockCatalogue
                  'Low'
                end
              end
-
-      return checking_good_value(energy, 'calories', energy_level) if energy_level.present?
-      []
+    return [ checking_not_so_good_value(energy, 'calories', energy_level )] if energy_level.present?
     end
 
     def fat_value

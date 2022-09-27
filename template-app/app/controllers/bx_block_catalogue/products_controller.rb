@@ -71,10 +71,14 @@ module BxBlockCatalogue
       query = params[:query].split(' ')
       query_string = ""
       query.each do |data|
+        if data.parameterize.include?("-")
+          data = data.parameterize.split('-').first
+        end
         query_string += "(product_name ilike '%#{data}%' OR bar_code ilike '%#{data}%')"
         query_string += " AND " unless data == query[-1]
       end
       products = Product.where(query_string)
+      products = products.where(data_check: "green")
       product = Kaminari.paginate_array(products).page(params[:page]).per(params[:per_page])
       if product.present?
         serializer = valid_user.present? ? ProductSerializer.new(product, params: {user: valid_user }) : ProductSerializer.new(product)
