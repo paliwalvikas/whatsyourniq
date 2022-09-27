@@ -67,7 +67,7 @@ module BxBlockCatalogue
     def sub_category(params, data)
       product = fav_filter_product(params, 'sub_category')
       fav = fav_serach(params[:fav_search_id])
-      value = eval(fav.product_category).keys
+      value = fav.product_category.present? ? eval(fav.product_category).keys : ['food','drink','cheese_and_oil']
       value.uniq.each do |prd|
         prd = sub_value(prd)
         filter = []
@@ -113,13 +113,31 @@ module BxBlockCatalogue
 
     def food_preference(params, data)
       product = fav_filter_product(params, 'food_preference')
-      ['veg','nonveg','vegan_product','organic','gluteen_free','artificial_preservative','added_sugar','no_artificial_color'].each do |alg|
+      ['veg','nonveg','vegan_product','organic','gluteen_free','artificial_preservative','added_sugar'].each do |alg|
         id_s = find_food_pref(alg)
-        alg = 'no_' + alg if alg == 'artificial_preservative' || alg == 'added_sugar' 
-        alg = 'gluten_free' if alg == 'gluteen_free'
-        data << {count: product.where(id: id_s).count, product_rating: alg.titleize }
+        alg = values_for_food_p(alg)
+        alg = alg == 'Non-Veg' ?  alg : alg.titleize
+        data << {count: product.where(id: id_s).count, product_rating: alg }
       end 
       data = {count: total_count(data), food_preference: data}
+    end
+
+    def values_for_food_p(value)
+      val = case value
+            when 'artificial_preservative' 
+              'No Artificial Preservative or Color'
+            when 'added_sugar'
+              'no_added_sugar'
+            when 'gluteen_free'
+              'gluten_free'
+            when 'nonveg'
+              'Non-Veg'
+            when 'vegan_product'
+              'vegan' 
+            else
+              value
+            end 
+      val
     end
 
     def health_preference(params, data)
