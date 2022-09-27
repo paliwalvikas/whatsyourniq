@@ -81,7 +81,6 @@ module BxBlockCatalogue
     def calculation
       np = []
       pp = []
-
     # unless product_point.present?
         ing = ingredient
         neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
@@ -522,9 +521,9 @@ module BxBlockCatalogue
     # end
 
     def product_sugar_level
+      return if ingredient.total_sugar.nil?
       energy = ingredient.energy.to_f
       sugar = ingredient.total_sugar.to_f
-      return if sugar.zero?
       pro_sugar_val = case product_type
       when 'solid'
         if sugar <= 0.5
@@ -554,8 +553,8 @@ module BxBlockCatalogue
 
     def product_sodium_level
       energy = ingredient.energy.to_f
+      return [] if ingredient.sodium.nil?
       sodium = ingredient.sodium.to_f
-      return [] if sodium.zero?
       case product_type
       when 'solid'
         if sodium < 0.5
@@ -584,9 +583,9 @@ module BxBlockCatalogue
     end
 
     def product_sat_fat
+      return if ingredient.saturate.nil?
       saturate_fat = ingredient.saturate.to_f
       energy = ingredient.energy.to_f
-      return if saturate_fat.zero?
       pro_sat_fat = case product_type
       when 'solid'
         if saturate_fat <= 0.1
