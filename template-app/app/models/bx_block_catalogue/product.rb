@@ -594,7 +594,8 @@ module BxBlockCatalogue
           return [checking_not_so_good_value(saturate_fat, 'saturated_fat', 'Low'), true]
         elsif saturate_fat >= 1.5 || energy_from_saturated_fat 
           value = BxBlockCatalogue::VitaminValueService.new().saturated_fat_clc(saturate_fat, energy)
-          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', value), true] 
+          rating = value == 'High' ? false : true 
+          return [checking_not_so_good_value(saturate_fat, 'saturated_fat', value), rating] 
         end
       when 'beverage'
         if saturate_fat <= 0.1
