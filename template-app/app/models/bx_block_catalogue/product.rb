@@ -538,7 +538,7 @@ module BxBlockCatalogue
         if sugar < 0.5
           [checking_not_so_good_value(sugar, 'sugar', 'Free'), true]
         elsif sugar >= 0.5 && sugar <= 2.5
-          [checking_not_so_good_value(sugar, 'sugar', 'Free'), true]
+          [checking_not_so_good_value(sugar, 'sugar', 'Low'), true]
         elsif sugar > 2.5
           value = BxBlockCatalogue::VitaminValueService.new().suger_clc(product_type, sugar, energy)
           [checking_not_so_good_value(sugar, 'sugar', 'High'), false] if value != 'Low'
