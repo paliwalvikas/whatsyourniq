@@ -40,7 +40,7 @@ module BxBlockCatalogue
       food_drink = product.pluck(:food_drink_filter).uniq.compact
     	food_drink.each do |prd|
   			filter = []
-    		prod =  product.food_drink_filter(prd)
+    		prod =  product.food_drink_filter(prd).where.not(product_type: "cheese_and_oil")
     		uniq_p = filter_category_p(prod.pluck(:filter_category_id).uniq)
     		uniq_p.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
       	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter } 
@@ -71,7 +71,7 @@ module BxBlockCatalogue
       value.uniq.each do |prd|
         prd = sub_value(prd)
         filter = []
-        prod = prd == ("cheese_and_oil") ? product.product_type("cheese_and_oil") : product.where(food_drink_filter: prd)
+        prod = prd == ("cheese_and_oil") ? product.product_type("cheese_and_oil") : product.where(food_drink_filter: prd).where.not(product_type: "cheese_and_oil")
         cat_filter = filter_category_p(prod.pluck(:filter_category_id).uniq)
         cat_filter.each do |cat_f|
           sub_filter =[]
