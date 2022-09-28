@@ -39,6 +39,5 @@ module App
     config.middleware.use ActionDispatch::Session::CookieStore, 
     config.session_options
     config.middleware.use Rack::MethodOverride
-    config.factory_bot.definition_file_paths = ["custom/factories"]
   end
 end
