@@ -71,9 +71,6 @@ module BxBlockCatalogue
       query = params[:query].split(' ')
       query_string = ""
       query.each do |data|
-        if data.parameterize.include?("-")
-          data = data.parameterize.split('-').first
-        end
         query_string += "(product_name ilike '%#{data}%' OR bar_code ilike '%#{data}%')"
         query_string += " AND " unless data == query[-1]
       end
