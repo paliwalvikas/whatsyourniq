@@ -23,8 +23,7 @@ module BxBlockSms
       end
 
       def provider_name
-        # Rails.configuration.x.sms.provider
-        "TWILIO"
+        ENV["PROVIDER"]
       end
 
       def unsupported_message(provider)
