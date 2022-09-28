@@ -29,9 +29,10 @@ module BxBlockCatalogue
     def functional_preference(product, f_p)
       fun = eval(f_p[:functional_preference])
       pr_ids =[]
-      positive = product.select(:id, :positive_good)
-      negative = product.select(:id, :negative_not_good)
+      positive = product.where.not(positive_good: []).select(:id, :positive_good)
+      negative = product.where.not(negative_not_good: []).select(:id, :negative_not_good)
       fun.each do |key, value|
+        key = 'sugar'if key == "Total Sugar"
         key = key.to_s.include?(' ') ? key.to_s.downcase.tr!(" ", "_") : key.to_s.downcase
         products = prd_negative_not_good.include?(key.to_s) ? negative : positive 
         products = positive_negative(products, key.downcase, value)
@@ -76,13 +77,29 @@ module BxBlockCatalogue
       ids = []
       params[:food_preference].each do |f_all|
         f_all = f_all.include?(' ') ? f_all.downcase.tr!(" ", "_") : f_all.downcase
-        val = f_all == 'no_artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'no_artificial_color' || f_all == 'nonveg' ? 'no' : 'yes'
-        f_all = 'added_sugar' if f_all == 'no_added_sugar'
-        f_all = 'artificial_preservative' if f_all == 'no_artificial_preservative'
-        f_all = 'gluteen_free' if f_all == 'gluten_free' 
+        val = f_all == 'no_artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'nonveg' ? 'no' : 'yes'
+        f_all = food_p_value(f_all)
         ingredients = allergies(f_all.downcase, ingredients, val)
       end
       product.where(id: ingredients.pluck(:product_id)) if ingredients.present?
+    end
+
+    def food_p_value(value)
+      val = case value
+            when 'no_artificial_preservative_or_color'
+              'artificial_preservative' 
+            when 'non-veg'
+              'nonveg'
+            when 'gluten_free'
+              'gluteen_free'
+            when 'no_added_sugar'
+              'added_sugar'
+            when 'vegan'
+              'vegan_product'
+            else
+              value
+            end
+      val  
     end
 
     def p_sub_category(product, params)
