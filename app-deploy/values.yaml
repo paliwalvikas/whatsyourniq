@@ -19,24 +19,13 @@ appExtConfig:
   # A change to RAILS_MAX_THREADS might affect the 
   # resource limits set below so that needs to be taken into consideration.
   RAILS_MAX_THREADS: "10"
-
   # twilio creadentials 
   ACCOUNT_ID_TWILIO: "AC2bfa27273d30e27e3264af606ee8a0ab"
   SCREATE_KEY_TWILIO: "7b8ae648de343824ce3fc20bce6062f7" 
   FROM_NUMBER: "+13512137366"
   PROVIDER: "TWILIO"
-
-# GOOGLE_APPLICATION_CREDENTIALS: "./../template-app/lib/key.json"
-GOOGLE_APPLICATION_CREDENTIALS:  "#{Rails.root}/lib/key.json"
-
-# minio creds
-STORAGE_ACCESS_KEY: "hello"
-STORAGE_BUCKET: "sbucket"
-STORAGE_ENDPOINT: "https://minio.b133842.dev.eastus.az.svc.builder.cafe"
-STORAGE_REGION: "builder-1"
-STORAGE_SECRET_ACCESS_KEY: "builderai"
-
-
+  # GOOGLE_APPLICATION_CREDENTIALS: "./../template-app/lib/key.json"
+  GOOGLE_APPLICATION_CREDENTIALS:  "#{Rails.root}/lib/key.json"
 
 image:
   repository:  gitlab.builder.ai:5000/template-app
@@ -50,10 +39,10 @@ fullnameOverride: ""
 
 probes:
   livenessProbe:
-    initialDelaySeconds: 40
+    initialDelaySeconds: 120
     periodSeconds: 10
   readinessProbe:
-    initialDelaySeconds: 40
+    initialDelaySeconds: 120
     periodSeconds: 20
 
 probesSidekiq:
