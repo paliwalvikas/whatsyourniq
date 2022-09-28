@@ -70,7 +70,7 @@ railsMigration:
   retry: 2
 
 railsSidekiq:
-  enabled: true
+  enabled: false
   replicaCount: 1
   annotations:
     prometheus.io/scrape: 'true'
