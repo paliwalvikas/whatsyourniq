@@ -46,7 +46,10 @@ module BxBlockCatalogue
       product.each do |prd|
         data = prd_negative_not_good.include?(key) ?  prd.negative_not_good : prd.positive_good
         data = data.map{|i| eval(i)}
-        data.map{|dt| p_ids << prd.id if dt[:name].to_s == key && value.include?(dt[:level])}
+        data.each do |dt| 
+          dt[:name] = dt[:name].to_s.include?(' ') ? dt[:name].to_s.downcase.tr!(" ", "_") : dt[:name].to_s.downcase
+          p_ids << prd.id if dt[:name].to_s == key && value.include?(dt[:level]) 
+        end
       end
       product.where(id: p_ids.compact) if p_ids.present? && product.present?
     end
@@ -108,9 +111,10 @@ module BxBlockCatalogue
       psc.keys.each do |f_d|
         fc = BxBlockCategories::FilterCategory.where(name: psc[f_d].keys).ids
         fsc = BxBlockCategories::FilterSubCategory.where(name: psc[f_d].values.flatten).ids
-        val = f_d.to_s.downcase
-        val.slice!('packaged ')
-        prd << product.where(food_drink_filter: val, filter_category_id: fc, filter_sub_category_id: fsc).ids 
+        val = f_d.to_s.include?(' ') ? f_d.to_s.downcase.tr!(" ", "_") : f_d.to_s.downcase
+        val.slice!('packaged_')
+        products = val == "cheese_and_oil" ? product.where(product_type: val) : product.where(food_drink_filter: val)
+        prd << products.where(filter_category_id: fc, filter_sub_category_id: fsc).ids 
       end
       product.where(id: prd.flatten.compact)
     end
