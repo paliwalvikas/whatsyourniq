@@ -82,42 +82,47 @@ module BxBlockCatalogue
       np = []
       pp = []
     # unless product_point.present?
-        ing = ingredient
-        neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
+      ing = ingredient
+      neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
+      neg_clumns = neg_clumns.first(5)
 
-        neg_clumns.each do |clm|
-          ing_value = ing.send(clm)
+      neg_clumns.each do |clm|
+        ing_value = ing.send(clm)
+        np << check_value('negative_value', clm, ing_value) if ing_value.present?
+      end
 
-          np << check_value('negative_value', clm, ing_value) if ing_value.present?
-        end
+      pos_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::NegativeIngredient.column_names + ['product_id'])
+      if np.sum >= 11 && self.ingredient.fruit_veg.to_i < 5 
+        pos_clumns = pos_clumns.first(2)
+      else
+        pos_clumns.first(3)
+      end
 
-        pos_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::NegativeIngredient.column_names + ['product_id'])
-
-        pos_clumns.each do |clm|
-          ing_value = ing.send(clm)
-          pp << check_value('positive_value', clm, ing_value) if ing_value.present?
-        end
-        mp = micro_calculation(ing).sum
-        p_point = np.sum - pp.sum
-        if np.blank? && pp.blank?
-          self.product_rating = nil
-          self.product_point = nil
-        else
-          p_rating = if p_point <= (-1)
-                       'A'
-                     elsif p_point.between?(0, 2)
-                       'B'
-                     elsif p_point.between?(3, 10)
-                       'C'
-                     elsif p_point.between?(11, 18)
-                       'D'
-                     else
-                       'E'
-                     end
-            self.product_rating = p_rating
-            self.product_point = p_point
-          end
-        #end
+      pos_clumns.each do |clm|
+        ing_value = ing.send(clm)
+        pp << check_value('positive_value', clm, ing_value) if ing_value.present?
+      end
+      mp = micro_calculation(ing).sum
+      p_point = np.sum - pp.sum
+      if np.blank? && pp.blank?
+        self.product_rating = nil
+        self.product_point = nil
+      else
+        p_rating = if p_point <= (-1)
+                     'A'
+                   elsif p_point.between?(0, 2)
+                     'B'
+                   elsif p_point.between?(3, 10)
+                     'C'
+                   elsif p_point.between?(11, 18)
+                     'D'
+                   else
+                     'E'
+                   end
+          self.product_rating = p_rating
+          self.product_point = p_point
+      end
+    # end
       
       if product_rating.present?
         pr = if mp.to_f.between?(0, 4)
