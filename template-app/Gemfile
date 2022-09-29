@@ -13,6 +13,8 @@ gem 'puma', '~> 4.1'
 gem 'httparty'
 gem 'whenever', require: false
 gem 'kimurai'
+gem 'ocr_space'
+gem 'google-cloud-vision', '~> 1.1', '>= 1.1.3'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
 # Use Active Model has_secure_password
