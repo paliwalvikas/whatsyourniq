@@ -137,6 +137,7 @@ module BxBlockCatalogue
     end
 
     def food_drink_filter(product, cao)
+      product = product.where.not(product_type: "cheese_and_oil")
       food_ids , drink_ids = [], []
       food_ids << BxBlockCategories::FilterCategory.where(name: cao[:"Packaged Food"]).pluck(:id) if check?(cao[:"Packaged Food"])
       drink_ids << BxBlockCategories::FilterCategory.where(name: cao[:"Packaged Drink"]).pluck(:id) if check?(cao[:"Packaged Drink"])
