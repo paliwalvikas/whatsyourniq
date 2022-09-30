@@ -247,7 +247,7 @@ module BxBlockCatalogue
     end
 
     def find_food_pref(value)
-      c_val = value == 'artificial_preservative' || value == 'added_sugar' || value == 'no_artificial_color' ? 'no' : 'yes'
+      c_val = value == 'artificial_preservative' || value == 'added_sugar' ? 'no' : 'yes'
       find_allergies(value, c_val)
     end
 

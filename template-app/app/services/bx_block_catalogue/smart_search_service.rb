@@ -80,7 +80,7 @@ module BxBlockCatalogue
       ids = []
       params[:food_preference].each do |f_all|
         f_all = f_all.include?(' ') ? f_all.downcase.tr!(" ", "_") : f_all.downcase
-        val = f_all == 'no_artificial_preservative'|| f_all == 'no_added_sugar' || f_all == 'nonveg' ? 'no' : 'yes'
+        val = f_all == 'no_artificial_preservative_or_color'|| f_all == 'no_added_sugar' || f_all == 'nonveg' ? 'no' : 'yes'
         f_all = food_p_value(f_all)
         ingredients = allergies(f_all.downcase, ingredients, val)
       end
