@@ -390,17 +390,17 @@ module BxBlockCatalogue
       p_good << vit_min_value 
       p_good << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
       p_good << protein_value if protein_value.present? && protein_value.first[:level] != 'Low'
-      p_good << {Calories: calories_energy} if calories_energy.present?
+      neg_n_good << {Calories: calories_energy} if calories_energy.present?
       saturate_fat = product_sat_fat
-      p_good << saturate_fat[0] if saturate_fat&.last == true 
-      neg_n_good << saturate_fat[0] if saturate_fat&.last == false 
+      neg_n_good << saturate_fat[0] #if saturate_fat&.last == false 
       sugar = product_sugar_level
-      p_good << sugar[0] if sugar&.last == true 
-      neg_n_good << sugar[0] if sugar&.last == false 
+      # p_good << saturate_fat[0] if saturate_fat&.last == true 
+      # p_good << sugar[0] if sugar&.last == true 
+      # p_good << sodium[0] if sodium&.last == true 
+      neg_n_good << sugar[0] #if sugar&.last == false 
       sodium = product_sodium_level
-      p_good << sodium[0] if sodium&.last == true 
       p_good << probiotic_value
-      neg_n_good << sodium[0] if sodium&.last == false 
+      neg_n_good << sodium[0] #if sodium&.last == false 
       neg_n_good << cholesterol_value 
       neg_n_good << fat_value
       neg_n_good << trans_fat_value
