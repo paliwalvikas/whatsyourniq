@@ -35,8 +35,8 @@ module BxBlockCatalogue
     end
 
   	def category(params, data)
-      fav = fav_serach(params[:fav_search_id])
-      product = fav.present? && fav[:food_type].present? ? find_product(fav) : BxBlockCatalogue::Product.where(id:0)
+      # fav = fav_serach(params[:fav_search_id]) \  fav.present? && fav[:food_type].present? ? \  : BxBlockCatalogue::Product.where(id:0)
+      product = find_product
       food_drink = product.pluck(:food_drink_filter).uniq.compact
     	food_drink.each do |prd|
   			filter = []
@@ -224,9 +224,9 @@ module BxBlockCatalogue
       BxBlockCategories::FilterSubCategory.where(id: ids)
     end
   	
-  	def find_product(params)
-      food_type = params[:food_type].map{|val| value_is(val)}
-      category = BxBlockCategories::Category.where(category_type: food_type)
+  	def find_product
+      # food_type = params[:food_type].map{|val| value_is(val)}
+      category = BxBlockCategories::Category.where(category_type: "packaged_food")
       product = BxBlockCatalogue::Product.where(category_id: category.ids) #.pluck(:food_drink_filter).uniq
   	end
 
