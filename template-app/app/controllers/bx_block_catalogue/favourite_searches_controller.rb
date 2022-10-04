@@ -57,6 +57,7 @@ module BxBlockCatalogue
     def initilize_fav_search
       if valid_user.present?
         @fav_search = valid_user.favourite_searches.new(search_params)
+        @fav_search.food_type = ["Packaged Food"]
       else
         @fav_search = FavouriteSearch.new(search_params)
       end 
