@@ -198,7 +198,7 @@ module BxBlockCatalogue
     end
 
     def fav_product(params, val)
-      if  params[:fav_search_id].present?
+      if params[:fav_search_id].present?
         fav = fav_serach(params[:fav_search_id])
         fav_value =  case val
                     when 'sub_category'
@@ -216,7 +216,7 @@ module BxBlockCatalogue
                     end if fav.present?
         product = fav.present? ? BxBlockCatalogue::SmartSearchService.new.smart_search(fav_value) : BxBlockCatalogue::Product.where(id:0)
       else
-        product = BxBlockCatalogue::Product.all
+        product = BxBlockCatalogue::Product.where(category_id: BxBlockCategories::Category.where(category_type: "packaged_food").ids)
       end
     end
 
@@ -225,9 +225,10 @@ module BxBlockCatalogue
     end
   	
   	def find_product
-      # food_type = params[:food_type].map{|val| value_is(val)}
       category = BxBlockCategories::Category.where(category_type: "packaged_food")
-      product = BxBlockCatalogue::Product.where(category_id: category.ids) #.pluck(:food_drink_filter).uniq
+      product = BxBlockCatalogue::Product.where(category_id: category.ids)
+      #.pluck(:food_drink_filter).uniq
+      # food_type = params[:food_type].map{|val| value_is(val)}
   	end
 
     def value_is(val)
