@@ -2,13 +2,12 @@
 
 Rails.application.routes.draw do
   # devise_for :admin_users, ActiveAdmin::Devise.config
-  # devise_for :admin_users, ActiveAdmin::Devise.config
   get '/healthcheck', to: proc { [200, {}, ['Ok']] }
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self) rescue ActiveAdmin::DatabaseHitDuringLoad
-  # require 'sidekiq/web'
-  # require 'sidekiq/cron/web'
-  # mount Sidekiq::Web => '/sidekiq'
+  require 'sidekiq/web'
+  require 'sidekiq/cron/web'
+  mount Sidekiq::Web => '/sidekiq'
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :bx_block_catalogue do
@@ -66,4 +65,5 @@ Rails.application.routes.draw do
   post 'sms_otp', to: 'account_block/accounts/send_otps#create'
   post '/accounts/sms_confirmation', to: 'account_block/accounts/sms_confirmations#create'
   delete '/destroy_all', to: 'bx_block_catalogue/compare_products#destroy_all'
+  delete 'remove_product', to: 'bx_block_catalogue/orders#remove_product'
 end
