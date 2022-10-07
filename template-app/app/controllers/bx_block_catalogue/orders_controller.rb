@@ -51,9 +51,9 @@ module BxBlockCatalogue
       order_item = @order.order_items.find_by(product_id: params[:product_id])
       if order_item.present?
         order_item.destroy
-        render json: { message: 'Product successfully removed' }
+        render json: { message: 'Product successfully removed', success: 1 }
       else
-        render json: { message: 'Product Not Found' }
+        render json: { message: 'Product Not Found' , success: 0}
       end
     end
 
@@ -94,7 +94,7 @@ module BxBlockCatalogue
       if @order.present?
         @order
       else
-        render json: { error: 'Order not found' }
+        render json: { error: 'Food Basket not found', success: 0 }
       end
     end
   end
