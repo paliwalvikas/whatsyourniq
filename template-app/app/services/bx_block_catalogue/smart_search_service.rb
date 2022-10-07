@@ -2,7 +2,7 @@ module BxBlockCatalogue
   class SmartSearchService
 
   	def smart_search(params)
-      product = BxBlockCatalogue::Product.all
+      product = BxBlockCatalogue::Product.where(category_id: BxBlockCategories::Category.find_by(category_type: 'packaged_food').id)
       # "pakaged_food", "row_food", "cooked_food"
       product = food_type(params, product) if check?(params[:food_type]) && check?(product)
 	    product = p_category_filter(product, params) if check?(params[:product_category]) && check?(product)
@@ -71,7 +71,7 @@ module BxBlockCatalogue
           ing = allergies(f_all, ingredients, 'yes')
           ids << ing.pluck(:product_id) if ing.present?
         end
-      product.where.not(id: ids.flatten.compact.uniq) if ids.flatten.present?
+      product.where.not(id: ids.flatten.compact.uniq - product.ids) if product.ids.present?
       # ingredient_to_product(ingredients, product)
     end
 
