@@ -13,7 +13,7 @@ module BxBlockCatalogue
       BxBlockCatalogue::Product.find_in_batches do |products|
         products.each do |product|
           if calculation_type == "calculate_np"
-            if !product.np_calculated?  
+            # if !product.np_calculated?  
               status = product.negative_and_positive if product.bar_code.present?
               csv_row << ["#{product.id}", "#{product.product_name}", "#{calculation_type}", "Success"] if status
               product_import_status.file_status = CSV.generate do |csv|
@@ -21,11 +21,11 @@ module BxBlockCatalogue
                   csv << r_data
                 end
                 csv
-              end
+              # end
             end
 
           elsif calculation_type == "calculate_ratings"
-            if !product.calculated?  
+            # if !product.calculated?  
               status = product.calculation if product.bar_code.present?
               csv_row << ["#{product.id}", "#{product.product_name}", "#{calculation_type}", "Success"] if status
               product_import_status.file_status = CSV.generate do |csv|
@@ -33,7 +33,7 @@ module BxBlockCatalogue
                   csv << r_data
                 end
                 csv
-              end
+              # end
             end
 
           end
