@@ -113,7 +113,7 @@ module BxBlockCatalogue
     		n +=1 if check_greater?(ing[:vit_b2], val[:vit_b2])
     		n +=1 if check_greater?(ing[:vit_b6], val[:vit_b6])
     		n +=1 if check_greater?(ing[:vit_b12], val[:vit_b12])
-    		return (n >= 3 ? true : false) unless a = 'w'
+    		return (n >= 3 ? true : false) unless a == 'w'
     		n +=1 if check_greater?(ing[:vit_d], val[:vit_d])
     		n +=1 if check_greater?(ing[:iron], val[:iron])
     		n >= 3 ? true : false
