@@ -28,7 +28,7 @@ module BxBlockCatalogue
     def food_type(data)
 			category = BxBlockCategories::Category.all
       category.each do |category|
-        product = BxBlockCatalogue::Product.where(category_id: category.id)
+        product = BxBlockCatalogue::Product.where(category_id: category.id).where.not(category_filter_id: nil)
         data << {count: product.count, food_type: category.category_type.titleize}
       end
       data = {count: total_count(data), food_type: data}

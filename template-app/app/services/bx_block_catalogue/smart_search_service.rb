@@ -2,7 +2,7 @@ module BxBlockCatalogue
   class SmartSearchService
 
   	def smart_search(params)
-      product = BxBlockCatalogue::Product.where(category_id: BxBlockCategories::Category.find_by(category_type: 'packaged_food').id)
+      product = BxBlockCatalogue::Product
       # "pakaged_food", "row_food", "cooked_food"
       product = food_type(params, product) if check?(params[:food_type]) && check?(product)
 	    product = p_category_filter(product, params) if check?(params[:product_category]) && check?(product)
