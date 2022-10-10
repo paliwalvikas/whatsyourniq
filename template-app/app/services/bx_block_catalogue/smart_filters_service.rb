@@ -26,24 +26,23 @@ module BxBlockCatalogue
   	private
 
     def food_type(data)
-			category = BxBlockCategories::Category.where.not(category_type: "cooked_food")
+			category = BxBlockCategories::Category.all
       category.each do |category|
-        product = BxBlockCatalogue::Product.where(category_id: category.id)
+        product = BxBlockCatalogue::Product.where(category_id: category.id).where.not(filter_category_id: nil)
         data << {count: product.count, food_type: category.category_type.titleize}
       end
       data = {count: total_count(data), food_type: data}
     end
 
   	def category(params, data)
-      # fav = fav_serach(params[:fav_search_id]) \  fav.present? && fav[:food_type].present? ? \  : BxBlockCatalogue::Product.where(id:0)
       product = find_product
       food_drink = product.pluck(:food_drink_filter).uniq.compact
     	food_drink.each do |prd|
   			filter = []
-    		prod =  product.food_drink_filter(prd).where.not(product_type: "cheese_and_oil")
+    		prod = product.where(food_drink_filter: prd).where.not(product_type: "cheese_and_oil")
     		uniq_p = filter_category_p(prod.pluck(:filter_category_id).uniq)
     		uniq_p.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
-      	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter } 
+      	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter} 
 			end if product.present? && food_drink.present?
       c_ao = product.product_type("cheese_and_oil")
       c_prod = filter_category_p(c_ao.pluck(:filter_category_id).uniq)
@@ -51,12 +50,12 @@ module BxBlockCatalogue
       c_prod.each do |cao|
         cao_filter << {count: c_ao.filter_category_id(cao.id).count, category_filter: cao.name }
       end
-      data << {count:  total_count(cao_filter), category: 'packaged_cheese_and_oil'.titleize, category_filter: cao_filter }
+      data << {count:  total_count(cao_filter), category: 'packaged_cheese_and_oil'.titleize, category_filter: cao_filter}
 
       cat= BxBlockCategories::Category.where.not(category_type: ['packaged_food','cooked_food'])
       cat.each do |c|
         filter = []
-        prod = product.where(category_id: c.id)
+        prod = BxBlockCatalogue::Product.where(category_id: c.id)
         u_f = filter_category_p(prod.pluck(:filter_category_id).uniq)
         u_f.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
         data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
@@ -227,8 +226,6 @@ module BxBlockCatalogue
   	def find_product
       category = BxBlockCategories::Category.where(category_type: "packaged_food")
       product = BxBlockCatalogue::Product.where(category_id: category.ids)
-      #.pluck(:food_drink_filter).uniq
-      # food_type = params[:food_type].map{|val| value_is(val)}
   	end
 
     def value_is(val)
