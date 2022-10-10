@@ -55,12 +55,15 @@ module BxBlockCatalogue
       cat= BxBlockCategories::Category.where.not(category_type: ['packaged_food','cooked_food'])
       cat.each do |c|
         filter = []
-        prod = product.where(category_id: c.id)
+        prod = BxBlockCatalogue::Product.where(category_id: c.id)
         u_f = filter_category_p(prod.pluck(:filter_category_id).uniq)
         u_f.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
         data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
       end
-			data = {count: total_count(data), category: data, total: product.count }
+      pr = product.select(:id, :food_drink_filter).pluck(:id)
+      pr1 = product.product_type("cheese_and_oil").pluck(:id)
+      pr2 = product.pluck(:id)
+			data = {count: total_count(data), category: data, all: pr2, f_d: pr, cao: pr1 }
     end
 
     def sub_category(params, data)
