@@ -42,7 +42,7 @@ module BxBlockCatalogue
     		prod = product.where(food_drink_filter: prd).where.not(product_type: "cheese_and_oil")
     		uniq_p = filter_category_p(prod.pluck(:filter_category_id).uniq)
     		uniq_p.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
-      	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter, c_count: prod.count } 
+      	data << {count: total_count(filter), category: ("packaged " + prd).titleize, category_filter: filter} 
 			end if product.present? && food_drink.present?
       c_ao = product.product_type("cheese_and_oil")
       c_prod = filter_category_p(c_ao.pluck(:filter_category_id).uniq)
@@ -50,7 +50,7 @@ module BxBlockCatalogue
       c_prod.each do |cao|
         cao_filter << {count: c_ao.filter_category_id(cao.id).count, category_filter: cao.name }
       end
-      data << {count:  total_count(cao_filter), category: 'packaged_cheese_and_oil'.titleize, category_filter: cao_filter , c_count: c_ao.count}
+      data << {count:  total_count(cao_filter), category: 'packaged_cheese_and_oil'.titleize, category_filter: cao_filter}
 
       cat= BxBlockCategories::Category.where.not(category_type: ['packaged_food','cooked_food'])
       cat.each do |c|
@@ -60,10 +60,10 @@ module BxBlockCatalogue
         u_f.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
         data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
       end
-      pr = product.where.not(product_type: "cheese_and_oil").pluck(:id)
+      pr = product.where(food_drink_filter: ['food','drink']).where.not(product_type: "cheese_and_oil").pluck(:id)
       pr1 = product.product_type("cheese_and_oil").pluck(:id)
-      pr2 = product.pluck(:id) - (pr + pr1)
-			data = {count: total_count(data), category: data, all: pr2}
+      pr2 = product.pluck(:id)
+			data = {count: total_count(data), category: data, all: pr2, c_a_o: pr1, f_d: pr}
     end
 
     def sub_category(params, data)
