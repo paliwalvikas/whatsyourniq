@@ -26,11 +26,11 @@ module BxBlockCatalogue
   	private
 
     def food_type(data)
-			category = BxBlockCategories::Category.where.not(category_type: "cooked_food")
-      category.each do |category|
-        product = BxBlockCatalogue::Product.where(category_id: category.id)
-        data << {count: product.count, food_type: category.category_type.titleize}
-      end
+			category = BxBlockCategories::Category.where(category_type: "packaged_food")
+      # category.each do |category|
+      product = BxBlockCatalogue::Product.where(category_id: category.ids)
+      data << {count: product.count, food_type: category.first.category_type.titleize}
+      # end
       data = {count: total_count(data), food_type: data}
     end
 
@@ -226,9 +226,7 @@ module BxBlockCatalogue
   	
   	def find_product
       category = BxBlockCategories::Category.where(category_type: "packaged_food")
-      product = BxBlockCatalogue::Product.where(category_id: category.ids)
-      #.pluck(:food_drink_filter).uniq
-      # food_type = params[:food_type].map{|val| value_is(val)}
+      product = BxBlockCatalogue::Product.where(category_id: category.ids).where.not(filter_category_id: nil)
   	end
 
     def value_is(val)
