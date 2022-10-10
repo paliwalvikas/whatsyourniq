@@ -60,10 +60,7 @@ module BxBlockCatalogue
         u_f.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
         data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
       end
-      pr = product.where(food_drink_filter: ['food','drink']).where.not(product_type: "cheese_and_oil").pluck(:id)
-      pr1 = product.product_type("cheese_and_oil").pluck(:id)
-      pr2 = product.pluck(:id)
-			data = {count: total_count(data), category: data, all: pr2, c_a_o: pr1, f_d: pr}
+			data = {count: total_count(data), category: data}
     end
 
     def sub_category(params, data)
