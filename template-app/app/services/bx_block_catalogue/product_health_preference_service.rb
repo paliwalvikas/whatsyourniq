@@ -72,11 +72,11 @@ module BxBlockCatalogue
     	end
 
     	def physical_growth(ing, val)
-    		check_greater?(ing[:calcium], val[:calcium]) && check_greater?(ing[:vit_d], val[:vit_d]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:folate], val[:folate]) && check_greater?(ing[:vit_b12], val[:vit_b12] && check_greater?(ing[:vit_b6], val[:vit_b6]) && check_greater?(ing[:vit_b2], val[:vit_b2])) && check_greater?(ing[:fibre], val[:fibre]) 
+    		check_greater?(ing[:calcium], val[:calcium]) && check_greater?(ing[:vit_d], val[:vit_d]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:folate], val[:folate]) && check_greater?(ing[:vit_b12], val[:vit_b12] && check_greater?(ing[:vit_b6], val[:vit_b6]) && check_greater?(ing[:vit_b2], val[:vit_b2])) || check_greater?(ing[:fibre], val[:fibre]) 
     	end
 
     	def cognitive_health(ingr, val)
-    		check_greater?(ingr[:iron], val[:iron]) && check_greater?(ingr[:iodine], val[:lodine]) && check_greater?(ingr[:vit_b12], val[:vit_b12]) || ingredient_herbs(ingr) && (ingr[:omega_3].to_f > 40 || ingr[:d_h_a].to_f == 40) 
+    		check_greater?(ingr[:iron], val[:iron]) || check_greater?(ingr[:iodine], val[:lodine]) || check_greater?(ingr[:vit_b12], val[:vit_b12]) || ingredient_herbs(ingr) || (ingr[:omega_3].to_f > 40 || ingr[:d_h_a].to_f == 40) 
     	end
 
     	def holistic_nutrition(ing, val)
@@ -113,7 +113,7 @@ module BxBlockCatalogue
     		n +=1 if check_greater?(ing[:vit_b2], val[:vit_b2])
     		n +=1 if check_greater?(ing[:vit_b6], val[:vit_b6])
     		n +=1 if check_greater?(ing[:vit_b12], val[:vit_b12])
-    		return (n >= 3 ? true : false) unless a = 'w'
+    		return (n >= 3 ? true : false) unless a == 'w'
     		n +=1 if check_greater?(ing[:vit_d], val[:vit_d])
     		n +=1 if check_greater?(ing[:iron], val[:iron])
     		n >= 3 ? true : false
