@@ -71,7 +71,7 @@ module BxBlockCatalogue
           ing = allergies(f_all, ingredients, 'yes')
           ids << ing.pluck(:product_id) if ing.present?
         end
-      product.where.not(id: ids.flatten.compact.uniq) if ids.flatten.present?
+      ids.flatten.present? ? product.where.not(id: ids.flatten.compact.uniq) : product 
       # ingredient_to_product(ingredients, product)
     end
 
