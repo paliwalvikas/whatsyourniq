@@ -70,7 +70,7 @@ gem 'active_admin_role'
 gem 'activeadmin_json_editor'
 gem 'active_admin_datetimepicker'
 gem 'sidekiq_alive'
-gem 'sidekiq'
+gem 'sidekiq', '~> 6.0.0'
 gem "yabeda-prometheus"    # Base
 gem "yabeda-rails"         #API endpoint monitoring
 gem "yabeda-http_requests" #External request monitoring
