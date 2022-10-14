@@ -12,8 +12,7 @@ module BxBlockCatalogue
                  .serializable_hash,
         status: :ok
       else
-        render json: ErrorSerializer.new(fav_search).serializable_hash,
-        status: :unprocessable_entity
+        render json: {message: "Record not found."}
       end
     end
 
