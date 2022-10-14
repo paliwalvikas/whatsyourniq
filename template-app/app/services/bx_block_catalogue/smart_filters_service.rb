@@ -223,9 +223,9 @@ module BxBlockCatalogue
       BxBlockCategories::FilterSubCategory.where(id: ids)
     end
   	
-    def find_product(params)
-      food_type = params[:food_type].map{|val| value_is(val)}
-      category = BxBlockCategories::Category.where(category_type: food_type)
+    def find_product
+      # food_type = params[:food_type].map{|val| value_is(val)}
+      category = BxBlockCategories::Category.where(category_type: 'packaged_food')
       product = BxBlockCatalogue::Product.where(category_id: category.ids)
   	end
 
