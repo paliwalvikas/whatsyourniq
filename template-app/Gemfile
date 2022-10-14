@@ -32,6 +32,8 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rspec-sonarqube-formatter', '~> 1.5'
   gem 'rubocop-rails', require: false
+  gem 'factory_girl_rails'
+  gem 'faker'
 end
 
 group :development do
