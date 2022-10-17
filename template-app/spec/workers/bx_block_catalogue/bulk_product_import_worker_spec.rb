@@ -4,6 +4,24 @@ require 'sidekiq/testing'
 Sidekiq::Testing.fake!
 
 RSpec.describe BxBlockCatalogue::BulkProductImportWorker, type: :worker do
+  describe 'BxBlockCatalogue::BulkProductImportWorker' do
+    let(:file_path) {
+      Dir.pwd + "/spec/workers/bx_block_catalogue/bulk_product_import_worker_test_csv_data/product_importable_file_format_dup.csv"
+    }
+
+    describe '#perform' do
+      let!(:perform) {
+        subject.perform(file_path)
+      }
+
+      it "should perform with file_path" do
+        Timecop.freeze(DateTime.now) do
+          perform
+        end
+      end
+    end
+  end
+
   let(:time) { (Time.now).to_datetime }
   let(:scheduled_job) { described_class.perform_in(time, 'BxBlockCatalogue::BulkProductImportWorker', true) }
 
@@ -29,7 +47,10 @@ RSpec.describe BxBlockCatalogue::BulkProductImportWorker, type: :worker do
     end
 
     context 'when file_path is given' do
-      let(:file_path) { '/home/rails/temp/ft-pse/product_importable_file_format.csv' }
+      let(:file_path) {
+        Dir.pwd + "/spec/workers/bx_block_catalogue/bulk_product_import_worker_test_csv_data/product_importable_file_format_dup.csv"
+      }
+      
       let(:product_import_status) { BxBlockCatalogue::ImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}") }
       let(:csv_text) {
         open(file_path) do |io|
@@ -37,6 +58,7 @@ RSpec.describe BxBlockCatalogue::BulkProductImportWorker, type: :worker do
           io.read
         end
       }
+      
       let(:csv) { CSV.parse(csv_text, headers: true) }
       let(:filter_category) { BxBlockCategories::FilterCategory.find_or_create_by(name: "Pasta & Noodles") }
       let(:filter_sub_category) { BxBlockCategories::FilterSubCategory.find_or_create_by(name: "Noodles") }
