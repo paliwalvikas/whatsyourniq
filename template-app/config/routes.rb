@@ -33,10 +33,10 @@ Rails.application.routes.draw do
     resources :orders
   end
 
-  # namespace :bx_block_add_profile do
-  #   resources :add_profiles
-  #   resources :relations
-  # end
+  namespace :bx_block_add_profile do
+    resources :add_profiles
+    resources :relations
+  end
 
   namespace :account_block do
     resources :accounts
