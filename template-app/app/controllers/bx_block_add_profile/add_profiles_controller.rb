@@ -42,7 +42,7 @@ module BxBlockAddProfile
     private 
 
     def prfile_params
-      params.require(:data).permit(:full_name, :age, :email, :height, :weight, :address, :pincode, :city, :state, :activity_level,:contact_no, :relation_id, :image)
+      params.permit(:full_name, :age, :email, :height, :weight, :address, :pincode, :city, :state, :activity_level,:contact_no, :relation_id, :image)
     end
 
     def serialization_options
