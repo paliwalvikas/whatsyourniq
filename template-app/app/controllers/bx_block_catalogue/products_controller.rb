@@ -65,6 +65,11 @@ module BxBlockCatalogue
 
     end
 
+    def change_for_cal
+      Product.update_all(np_calculated: false)
+      render json: {msg: "Updated"}
+    end
+
     def delete_health_preference
       BxBlockCatalogue::HealthPreference.destroy_all
       render json: { errors: 'Deleted' }

@@ -18,7 +18,7 @@ module AccountBlock
     # has_many :members, class_name: 'AccountBlock::Member', dependent: :destroy
     # has_many :addresses, class_name: 'BxBlockAddress::Address', as: :addressble, dependent: :destroy
     has_many :orders, class_name: 'BxBlockCatalogue::Order', dependent: :destroy
-    # has_many :add_profiles, class_name: 'BxBlockAddProfile::AddProfile', dependent: :destroy
+    has_many :add_profiles, class_name: 'BxBlockAddProfile::AddProfile', dependent: :destroy
 
     before_save :image_process, if: :image_url
     enum status: %i[regular suspended deleted]
