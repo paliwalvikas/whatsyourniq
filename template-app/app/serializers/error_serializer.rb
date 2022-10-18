@@ -1,7 +1,3 @@
-module BxBlockAddProfile
-  class ErrorSerializer < BuilderBase::BaseSerializer
-    attribute :errors do |coupon|
-      coupon.errors.as_json
-    end
-  end
+class ErrorSerializer 
+ 
 end
