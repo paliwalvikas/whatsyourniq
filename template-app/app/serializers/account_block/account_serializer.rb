@@ -13,6 +13,14 @@ module AccountBlock
       phone_number_for object
     end
 
+    attribute :favourite_products_count do |object|
+      object&.favourite_products&.count
+    end
+
+    attribute :food_basket_count do |object|
+      object&.orders&.count
+    end
+
     attribute :image do |object, _params|
       if object.image.attached?
         if Rails.env.development?
