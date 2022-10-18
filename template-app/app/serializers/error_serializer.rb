@@ -1,3 +1,0 @@
-class ErrorSerializer 
- 
-end
