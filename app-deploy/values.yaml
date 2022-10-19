@@ -60,7 +60,7 @@ railsMigration:
 
 railsSidekiq:
   enabled: true
-  replicaCount: 1
+  replicaCount: 2
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/port: '3000'
