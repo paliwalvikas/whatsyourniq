@@ -21,6 +21,7 @@ Rails.application.routes.draw do
         get :product_smart_search
         get :compare_product
         post :prod_health_preference
+        post :change_for_cal
         get :product_calculation
         delete :delete_health_preference
       end
@@ -30,6 +31,11 @@ Rails.application.routes.draw do
     resources :favourite_searches 
     resources :order_items
     resources :orders
+  end
+
+  namespace :bx_block_add_profile do
+    resources :add_profiles
+    resources :relations
   end
 
   namespace :account_block do

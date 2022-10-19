@@ -32,9 +32,9 @@ module BxBlockCatalogue
       positive = product.where.not(positive_good: []).select(:id, :positive_good)
       negative = product.where.not(negative_not_good: []).select(:id, :negative_not_good)
       fun.each do |key, value|
-        key = 'sugar'if key.to_s == "Total Sugar"
+        key = 'sugar' if key.to_s.downcase == "total sugar"
         key = key.to_s.include?(' ') ? key.to_s.downcase.tr!(" ", "_") : key.to_s.downcase
-        products = prd_negative_not_good.include?(key.to_s) ? negative : positive 
+        products = p_negative_not_good.include?(key.to_s) ? negative : positive 
         products = positive_negative(products, key.downcase, value)
         pr_ids << products.pluck(:id) if products.present?
       end
@@ -44,7 +44,7 @@ module BxBlockCatalogue
     def positive_negative(product, key, value)
       p_ids =[]
       product.each do |prd|
-        data = prd_negative_not_good.include?(key) ?  prd.negative_not_good : prd.positive_good
+        data = p_negative_not_good.include?(key) ?  prd.negative_not_good : prd.positive_good
         data = data.map{|i| eval(i)}
         data.each do |dt| 
           dt[:name] = dt[:name].to_s.include?(' ') ? dt[:name].to_s.downcase.tr!(" ", "_") : dt[:name].to_s.downcase
@@ -54,8 +54,8 @@ module BxBlockCatalogue
       product.where(id: p_ids.compact) if p_ids.present? && product.present?
     end
 
-    def prd_negative_not_good
-      ['calories', 'fat', 'saturated_fat','cholesterol','trans_fat','sodium','Total sugar']
+    def p_negative_not_good
+      ['calories', 'fat', 'saturated_fat','cholesterol','trans_fat','sodium','sugar']
     end
 
     def food_type(params, product)

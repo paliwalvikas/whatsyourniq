@@ -60,7 +60,7 @@ railsMigration:
 
 railsSidekiq:
   enabled: true
-  replicaCount: 1
+  replicaCount: 2
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/port: '3000'
@@ -86,7 +86,7 @@ serviceAccount:
 resources:
   limits:
     cpu: 350m
-    memory: 515Mi
+    memory: 800Mi
   requests:
     cpu: 350m
     memory: 315Mi
