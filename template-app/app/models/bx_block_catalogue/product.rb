@@ -387,7 +387,7 @@ module BxBlockCatalogue
 
     def negative_and_positive
       p_good, neg_n_good = [], []
-      p_good << vit_min_value 
+      p_good << for_np_vit_min_value 
       p_good << dietary_fibre if dietary_fibre.present? #&& dietary_fibre.first[:level] != 'Low'
       p_good << protein_value if protein_value.present? #&& protein_value.first[:level] != 'Low'
       neg_n_good << {Calories: calories_energy} if calories_energy.present?
@@ -627,5 +627,47 @@ module BxBlockCatalogue
                  false
               end
     end
+
+
+    def for_np_vit_min_value 
+      ing = ingredient
+      vit_min = []
+      val = 0
+      if self.product_type == "solid"
+        micro_columns.each do |clm|
+          good_value = GOOD_INGREDIENTS[:"#{clm}"]
+          mp = ing.send(clm).to_f
+          val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_solid(clm, mp).to_f
+          next if mp.zero? || good_value.nil?
+          if val <= 0.5 
+            vit_min_level = 'Low'
+          elsif val >= 0.6 && val < 1
+            vit_min_level = 'Medium'
+          elsif val >= 1
+            vit_min_level = 'High'
+          end
+          value = checking_good_value(mp, clm, vit_min_level)
+          vit_min << value if value.present?
+        end
+      elsif self.product_type == "beverage" || self.product_type == "cheese_and_oil"
+        micro_columns.each do |clm|
+          good_value = GOOD_INGREDIENTS[:"#{clm}"]
+          mp = ing.send(clm).to_f
+          val = BxBlockCatalogue::VitaminValueService.new().set_vitamin_value_for_beaverage(clm, mp).to_f
+          next if mp.zero? || good_value.nil?
+          if val <= 0.5 
+            vit_min_level = 'Low'
+          elsif val >= 0.6 && val < 1
+            vit_min_level = 'Medium'
+          elsif val >= 1
+            vit_min_level = 'High'
+          end
+          value = checking_good_value(mp, clm, vit_min_level) 
+          vit_min << value if value.present?
+        end
+      end
+      vit_min
+    end
+
   end
 end
