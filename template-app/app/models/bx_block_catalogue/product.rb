@@ -388,8 +388,8 @@ module BxBlockCatalogue
     def negative_and_positive
       p_good, neg_n_good = [], []
       p_good << vit_min_value 
-      p_good << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
-      p_good << protein_value if protein_value.present? && protein_value.first[:level] != 'Low'
+      p_good << dietary_fibre if dietary_fibre.present? #&& dietary_fibre.first[:level] != 'Low'
+      p_good << protein_value if protein_value.present? #&& protein_value.first[:level] != 'Low'
       neg_n_good << {Calories: calories_energy} if calories_energy.present?
       saturate_fat = product_sat_fat
       neg_n_good << saturate_fat[0] if saturate_fat&.last == false || saturate_fat&.last == true
