@@ -88,3 +88,4 @@ gem 'activerecord-import'
 gem 'pry'
 gem "sidekiq-cron"
 gem 'kaminari'
+gem 'bmi_calculator', '~> 0.2.1'

@@ -17,6 +17,14 @@ module BxBlockAddProfile
     enum activity_level: %i[high medium low]
     has_one_attached :image
 
+    enum bmi_status: {
+      under_weight: 0,
+      normal_weight_range_for_asians: 1,
+      overweight_at_risk: 2,
+      obese_grade_1: 3,
+      obese_grade_2: 4
+    }
+
   end
 end
 
