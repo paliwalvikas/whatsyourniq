@@ -101,6 +101,9 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     column :weight
     column :price_mrp
     column :price_post_discount
+    column :ingredients do |obj|
+      obj.ingredient
+    end
     actions do |resource|
       link_to 'calculate_rating', '#', onclick: "calculateRating(#{resource.id});"
     end
@@ -133,11 +136,15 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       row :category_id do |obj|
         obj&.category&.category_type
       end
+
       row :filter_category_id do |obj|
         obj.filter_category.name
       end
       row :filter_sub_category_id do |obj|
         obj.filter_sub_category.name
+      end
+      row :ingredients do |obj|
+        obj.ingredient
       end
     end
   end

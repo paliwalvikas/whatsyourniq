@@ -36,7 +36,7 @@ module BxBlockCategories
                       else
                         'cooked_food'
                       end
-      Category.find_by(category_type: category_type)&.id || Category.first.id
+      BxBlockCategories::Category.find_or_create_by(category_type: category_type)&.id || BxBlockCategories::Category.first&.id
     end
   end
 end
