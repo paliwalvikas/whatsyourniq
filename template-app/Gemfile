@@ -32,6 +32,9 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rspec-sonarqube-formatter', '~> 1.5'
   gem 'rubocop-rails', require: false
+  gem 'factory_girl_rails'
+  gem 'faker'
+  gem "timecop"
 end
 
 group :development do
@@ -42,6 +45,7 @@ end
 group :test do
   gem 'mock_redis'
   gem 'simplecov', '<= 0.17'
+  gem 'rspec-sidekiq'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -84,3 +88,4 @@ gem 'activerecord-import'
 gem 'pry'
 gem "sidekiq-cron"
 gem 'kaminari'
+gem 'bmi_calculator', '~> 0.2.1'

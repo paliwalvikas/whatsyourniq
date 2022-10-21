@@ -1,6 +1,6 @@
 module BxBlockAddProfile
   class AddProfileSerializer < BuilderBase::BaseSerializer
-    attributes :id, :full_name, :age, :weight, :height, :contact_no, :email, :city, :state, :activity_level, :address, :pincode, :created_at, :updated_at
+    attributes :id, :full_name, :age, :weight, :height, :bmi_result, :bmi_status, :contact_no, :email, :city, :state, :activity_level, :address, :pincode, :created_at, :updated_at
 
     attributes :relation do |object|
       object&.relation&.relation

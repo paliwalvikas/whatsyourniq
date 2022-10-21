@@ -39,6 +39,48 @@ module BxBlockAddProfile
       render json: serializer, status: :ok
     end
 
+    def calculate_bmi
+      if params[:height].present? and params[:weight].present?
+        @add_profile = BxBlockAddProfile::AddProfile.find_by account_id: current_user.id
+
+        unless @add_profile.present?
+          return render json: {
+            message: "Profile doesn't exists"
+          }, status: :unprocessable_entity
+        end
+
+        @add_profile.height = params[:height]
+        @add_profile.weight = params[:weight]
+
+        @add_profile.bmi_result = BmiCalculator.calc_m @add_profile.height, @add_profile.weight
+
+        if @add_profile.bmi_result < 18.50
+          @add_profile.bmi_status = 0
+        elsif @add_profile.bmi_result >= 18.51 and @add_profile.bmi_result <= 22.90
+          @add_profile.bmi_status = 1
+        elsif @add_profile.bmi_result >= 22.91 and @add_profile.bmi_result <= 24.90
+          @add_profile.bmi_status = 2
+        elsif @add_profile.bmi_result >= 24.91 and @add_profile.bmi_result <= 29.90
+          @add_profile.bmi_status = 3
+        elsif @add_profile.bmi_result >= 29.91
+          @add_profile.bmi_status = 4
+        end
+
+        if @add_profile.save
+          serializer = AddProfileSerializer.new(@add_profile, serialization_options).serializable_hash
+          render json: serializer, status: :ok
+        else
+          render json: {
+            message: "Something went wrong"
+          }, status: :unprocessable_entity
+        end
+      else
+        render json: {
+          message: "Please provide the requierd details"
+        }, status: :unprocessable_entity
+      end
+    end
+
     private 
 
     def prfile_params
