@@ -94,7 +94,7 @@ resources:
 sidekiqResources:
   limits:
     cpu: 350m
-    memory: 515Mi
+    memory: 800Mi
   requests:
     cpu: 350m
     memory: 315Mi
