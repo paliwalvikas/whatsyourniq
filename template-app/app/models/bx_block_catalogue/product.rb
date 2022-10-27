@@ -660,7 +660,6 @@ module BxBlockCatalogue
           elsif val >= 0.6 && val < 1
             vit_min_level = 'Medium'
           elsif val >= 1
-            
             vit_min_level = 'High'
           end
           value = checking_good_value(mp, clm, vit_min_level) 
