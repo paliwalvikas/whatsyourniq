@@ -57,7 +57,7 @@ module AccountBlock
         end
 
       when 'social_account'
-        account = SocialAccount.find_by(email: jsonapi_deserialize(params)['email'])
+        account = SocialAccount.find_by(email: params[:data][:attributes][:email])
         if account.present?
           account.register = true
           account.additional_details = true unless account.full_name.nil?
