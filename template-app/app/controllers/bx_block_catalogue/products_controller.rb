@@ -25,7 +25,7 @@ module BxBlockCatalogue
 
     def update
       product = BxBlockCatalogue::Product.find_by(id: params[:id])
-      if product.calculation || product.rda_calculation
+      if product&.calculation || product&.rda_calculation
         render json: { message: 'Calculated successfully!' }
       else
         render json: { error: 'Something went wrong!' }
