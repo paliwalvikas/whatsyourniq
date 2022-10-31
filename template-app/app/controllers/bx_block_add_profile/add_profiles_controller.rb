@@ -9,7 +9,7 @@ module BxBlockAddProfile
     end
 
     def create
-      add_prfile = AddProfile.new(prfile_params.merge(account_id: current_user.id))
+      add_prfile = current_user.add_profiles.new(prfile_params)
       save_result = add_prfile.save
 
       if save_result
