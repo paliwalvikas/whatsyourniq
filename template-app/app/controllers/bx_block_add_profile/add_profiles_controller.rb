@@ -1,15 +1,16 @@
 module BxBlockAddProfile
   class AddProfilesController < ApplicationController
-    before_action :find_profile, only: %i[show update]
+    before_action :find_profile, only: %i[show update calculate_bmi]
+    before_action :current_user, only: %i[index create calculate_bmi]
 
     def index
-      serializer = AddProfileSerializer.new(current_user.add_profiles, serialization_options).serializable_hash
+      serializer = AddProfileSerializer.new(@current_user.add_profiles, serialization_options).serializable_hash
 
       render json: serializer, status: :ok
     end
 
     def create
-      add_prfile = current_user.add_profiles.new(prfile_params)
+      add_prfile = @current_user.add_profiles.new(profile_params)
       save_result = add_prfile.save
 
       if save_result
@@ -22,33 +23,25 @@ module BxBlockAddProfile
     end
 
     def update
-      update_result = @profile.update(prfile_params)
+      update_result = @add_profile.update(profile_params)
       if update_result
-        render json: AddProfileSerializer.new(@profile, serialization_options)
+        render json: AddProfileSerializer.new(@add_profile, serialization_options)
                          .serializable_hash,
                status: :ok
       else
-        render json: ErrorSerializer.new(@profile).serializable_hash,
+        render json: ErrorSerializer.new(@add_profile).serializable_hash,
                status: :unprocessable_entity
       end
     end
 
-    def show 
-      serializer = AddProfileSerializer.new(@profile, serialization_options).serializable_hash
+    def show
+      serializer = AddProfileSerializer.new(@add_profile, serialization_options).serializable_hash
 
       render json: serializer, status: :ok
     end
 
     def calculate_bmi
       if params[:height].present? and params[:weight].present?
-        @add_profile = BxBlockAddProfile::AddProfile.find_by account_id: current_user.id
-
-        unless @add_profile.present?
-          return render json: {
-            message: "Profile doesn't exists"
-          }, status: :unprocessable_entity
-        end
-
         @add_profile.height = params[:height]
         @add_profile.weight = params[:weight]
 
@@ -71,7 +64,7 @@ module BxBlockAddProfile
           render json: serializer, status: :ok
         else
           render json: {
-            message: "Something went wrong"
+            message: "Unable to Calculate BMI"
           }, status: :unprocessable_entity
         end
       else
@@ -83,8 +76,11 @@ module BxBlockAddProfile
 
     private 
 
-    def prfile_params
-      params.permit(:full_name, :age, :gender, :email, :height, :weight, :address, :pincode, :city, :state, :activity_level,:contact_no, :relation_id, :image)
+    def profile_params
+      params.permit(
+        :full_name, :age, :gender, :email, :height, :weight, :address, :pincode,
+        :city, :state, :activity_level, :contact_no, :relation_id, :image
+      )
     end
 
     def serialization_options
@@ -92,7 +88,23 @@ module BxBlockAddProfile
     end
 
     def find_profile
-      @profile = AddProfile.find_by_id(params[:id])
+      @add_profile = BxBlockAddProfile::AddProfile.find_by_id(params[:id] || params[:profile_id])
+
+      unless @add_profile.present?
+        return render json: {
+            message: "Profile doesn't exists for provided Id"
+          }, status: :unprocessable_entity
+      end
+    end
+
+    def current_user
+      unless @token.present?
+        return render json: {
+            message: "Token doesn't exists"
+          }, status: :unprocessable_entity
+      end
+
+      @current_user = AccountBlock::Account.find_by id: @token.id
     end
 
   end
