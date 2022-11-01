@@ -2,7 +2,7 @@ module BxBlockAddProfile
   class AddProfile < BxBlockCatalogue::ApplicationRecord
     self.table_name = :add_profiles
     
-    validates :full_name, :age, :email, :height, :weight, :address, :pincode, :city, :state, :activity_level, :gender, :contact_no, presence: true
+    validates_presence_of :full_name, :age, :height, :weight, :address, :pincode, :city, :state, :activity_level, :gender
     validates :contact_no, phone: true ,uniqueness: true
     validates :email, uniqueness: true
     enum gender: %i[female male other]
