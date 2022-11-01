@@ -3,13 +3,13 @@ module BxBlockAddProfile
     before_action :find_profile, only: %i[show update]
 
     def index
-      serializer = AddProfileSerializer.new(AddProfile.all, serialization_options).serializable_hash
+      serializer = AddProfileSerializer.new(current_user.add_profiles, serialization_options).serializable_hash
 
       render json: serializer, status: :ok
     end
 
     def create
-      add_prfile = AddProfile.new(prfile_params.merge(account_id: current_user.id))
+      add_prfile = current_user.add_profiles.new(prfile_params)
       save_result = add_prfile.save
 
       if save_result

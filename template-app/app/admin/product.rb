@@ -2,7 +2,12 @@
 
 ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name,
-                :price_post_discount, :price_mrp, :category_id, :positive_good, :negative_not_good, :image, :bar_code, :data_check, :description, :ingredient_list, :food_drink_filter, :filter_category_id, :filter_sub_category_id
+                :price_post_discount, :price_mrp, :category_id, :positive_good, :negative_not_good, :image, :bar_code, :data_check, :description, :ingredient_list, :food_drink_filter, :filter_category_id, :filter_sub_category_id, ingredient_attributes: [:id, :product_id, :energy, :saturate, :total_sugar, :sodium, :ratio_fatty_acid_lipids, :fibre, :fruit_veg,
+                :protein, :vit_a, :vit_c, :vit_d, :vit_b6, :vit_b12, :vit_b9, :vit_b2, :vit_b3, :vit_b1, :vit_b5, :vit_b7, :calcium,
+                :iron, :magnesium, :zinc, :iodine, :potassium, :phosphorus, :manganese, :copper, :selenium, :chloride, :chromium,
+                :total_fat, :monosaturated_fat, :polyunsaturated_fat, :trans_fat, :soyabean, :cholestrol, :fat, :mono_unsaturated_fat,
+                :veg_and_nonveg, :gluteen_free, :added_sugar, :artificial_preservative, :organic, :vegan_product, :egg, :fish,
+                :shellfish, :tree_nuts, :peanuts, :wheat, :carbohydrate]
 
   active_admin_import
   config.batch_actions = true
@@ -77,7 +82,65 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       f.input :food_drink_filter
       f.input :filter_category_id, as: :select, collection: BxBlockCategories::FilterCategory.pluck(:name, :id)
       f.input :filter_sub_category_id, as: :select,
+      
                                        collection: BxBlockCategories::FilterSubCategory.all.pluck(:name, :id)
+
+
+      f.inputs "Ingredient", for: [:ingredient, f.object.ingredient || BxBlockCatalogue::Ingredient.new] do |ff|
+      
+        ff.input :energy
+        ff.input :saturate
+        ff.input :total_sugar
+        ff.input :ratio_fatty_acid_lipids
+        ff.input :fruit_veg
+        ff.input :protein
+        ff.input :vit_a
+        ff.input :vit_c
+        ff.input :vit_d
+        ff.input :vit_b6
+        ff.input :vit_b12
+        ff.input :vit_b9
+        ff.input :vit_b2
+        ff.input :vit_b3
+        ff.input :vit_b1
+        ff.input :vit_b5
+        ff.input :vit_b7
+        ff.input :calcium
+        ff.input :iron
+        ff.input :magnesium
+        ff.input :zinc
+        ff.input :iodine
+        ff.input :potassium
+        ff.input :phosphorus
+        ff.input :manganese
+        ff.input :copper
+        ff.input :selenium
+        ff.input :chloride
+        ff.input :chromium
+        ff.input :fibre
+        ff.input :sodium
+        ff.input :total_fat
+        ff.input :monosaturated_fat
+        ff.input :polyunsaturated_fat
+        ff.input :trans_fat
+        ff.input :soyabean
+        ff.input :cholestrol
+        ff.input :fat
+        ff.input :mono_unsaturated_fat
+        ff.input :veg_and_nonveg
+        ff.input :gluteen_free
+        ff.input :added_sugar
+        ff.input :artificial_preservative
+        ff.input :organic
+        ff.input :vegan_product
+        ff.input :egg
+        ff.input :fish
+        ff.input :shellfish
+        ff.input :tree_nuts
+        ff.input :peanuts
+        ff.input :wheat
+        ff.input :carbohydrate
+      end
     end
     f.actions
   end
