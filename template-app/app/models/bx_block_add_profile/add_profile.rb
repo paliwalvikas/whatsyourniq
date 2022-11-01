@@ -1,11 +1,7 @@
 module BxBlockAddProfile
   class AddProfile < BxBlockCatalogue::ApplicationRecord
     self.table_name = :add_profiles
-    
-    # before_create :full_name, :age, :height, :weight, :address, :pincode, :city, :state, :activity_level, :gender, :presence => true
-    validates :contact_no, phone: true ,uniqueness: true
-    validates :email, uniqueness: true
-    enum gender: %i[female male other]
+
     belongs_to :relation, 
                 class_name: 'BxBlockAddProfile::Relation',
                 foreign_key: 'relation_id'
@@ -14,9 +10,15 @@ module BxBlockAddProfile
               class_name: 'AccountBlock::Account',
               foreign_key: 'account_id'
 
-    enum activity_level: %i[high medium low]
     has_one_attached :image
-
+    
+    validates :full_name, :age, :height, :weight, :address, :pincode, :city, :state, :activity_level, :gender, presence: true, on: :create
+    validates :contact_no, phone: true ,uniqueness: true
+    validates :email, uniqueness: true
+    
+    enum gender: %i[female male other]
+    enum activity_level: %i[high medium low]
+    
     enum bmi_status: {
       under_weight: 0,
       normal_weight_range_for_asians: 1,

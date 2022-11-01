@@ -12,10 +12,5 @@ module BxBlockAddProfile
       return render :json => {'errors' => ['Record not found']}, :status => :not_found
     end
 
-    def current_user
-      return unless @token
-      @current_user ||= AccountBlock::Account.find(@token.id)
-    end
-
   end
 end
