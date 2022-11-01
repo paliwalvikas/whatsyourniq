@@ -18,7 +18,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   end
 
   collection_action :calculate_ratings do
-    BxBlockCatalogue::ProductCalculation.perform_later(params[:calculation_type])
+    BxBlockCatalogue::ProductCalculationWorker.perform_async(params[:calculation_type])
     redirect_to collection_path flash[:notice] = 'Calculation on product is processing.'
   end
 
@@ -158,7 +158,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       redirect_to import_admin_products_path, flash: {error: "Please select file!"} and return if params[:active_admin_import_model].nil?
       redirect_to import_admin_products_path, flash: {error: "File format not valid!"} and return unless params[:active_admin_import_model][:file].content_type.include?("csv")
       file_path = params[:active_admin_import_model][:file].path
-      BxBlockCatalogue::BulkProductImport.perform_later(file_path)
+      BxBlockCatalogue::BulkProductImportWorker.perform_async(file_path)
       redirect_to collection_path flash[:notice] = 'Data import processing'
     end
   end

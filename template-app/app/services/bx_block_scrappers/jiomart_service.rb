@@ -78,5 +78,5 @@ end
     # end
 
 
-                # image[:images].flatten.compact.each do |image|
-                # end
+    #             image[:images].flatten.compact.each do |image|
+    #             end

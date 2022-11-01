@@ -7,7 +7,7 @@
 # #
 # #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 # #   Character.create(name: 'Luke', movie: movies.first)
-AdminUser.create(email: 'ft@example.com', password: 'password', password_confirmation: 'password') unless AdminUser.find_by(email: 'ft@example.com')
+# AdminUser.create(email: 'ft@example.com', password: 'password', password_confirmation: 'password') unless AdminUser.find_by(email: 'ft@example.com')
 
 # BxBlockCheeseAndOil::PositiveIngredient.create(point: 0.0, fruit_veg: { 'value' => '40.0', 'sign' => 'less_than_equals_to' },fibre: { 'value' => '0.9', 'sign' => 'less_than_equals_to' }, protein: { 'value' => '1.6', 'sign' => 'less_than_equals_to' })
 
@@ -130,3 +130,4 @@ AdminUser.create(email: 'ft@example.com', password: 'password', password_confirm
 
 # BxBlockCatalogue::Product.all.destroy_all
 # BxBlockCatalogue::Ingredient.all.delete_all
+
