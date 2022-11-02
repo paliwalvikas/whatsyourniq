@@ -40,8 +40,8 @@ module App
     config.session_options
     config.middleware.use Rack::MethodOverride
     # config.autoloader = :classic
-    config.load_defaults 5.2
-    config.autoloader = :zeitwerk
+    # config.load_defaults 5.2
+    # config.autoloader = :zeitwerk
 
   end
 end
