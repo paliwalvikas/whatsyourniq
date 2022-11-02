@@ -3,7 +3,7 @@ module BxBlockAddProfile
     before_action :find_profile, only: %i[show update calculate_bmi]
 
     def index
-      serializer = AddProfileSerializer.new(@current_user.add_profiles, serialization_options).serializable_hash
+      serializer = AddProfileSerializer.new(current_user.add_profiles, serialization_options).serializable_hash
 
       render json: serializer, status: :ok
     end
