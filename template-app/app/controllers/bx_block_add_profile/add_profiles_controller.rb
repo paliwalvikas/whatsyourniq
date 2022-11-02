@@ -1,7 +1,6 @@
 module BxBlockAddProfile
   class AddProfilesController < ApplicationController
     before_action :find_profile, only: %i[show update calculate_bmi]
-    before_action :current_user, only: %i[index create calculate_bmi]
 
     def index
       serializer = AddProfileSerializer.new(@current_user.add_profiles, serialization_options).serializable_hash
@@ -10,7 +9,7 @@ module BxBlockAddProfile
     end
 
     def create
-      add_prfile = @current_user.add_profiles.new(profile_params)
+      add_prfile = current_user.add_profiles.new(profile_params)
       save_result = add_prfile.save
 
       if save_result
@@ -95,16 +94,6 @@ module BxBlockAddProfile
             message: "Profile doesn't exists for provided Id"
           }, status: :unprocessable_entity
       end
-    end
-
-    def current_user
-      unless @token.present?
-        return render json: {
-            message: "Token doesn't exists"
-          }, status: :unprocessable_entity
-      end
-
-      @current_user = AccountBlock::Account.find_by id: @token.id
     end
 
   end
