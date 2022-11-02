@@ -1,5 +1,6 @@
-# module BxBlockScrappers
-#   class AmazonService
+module BxBlockScrappers
+  class AmazonService
+    " "
 #     attr_accessor :headers, :base_url, :append_url
 #     require 'csv'
 #     require 'google/cloud/vision'
@@ -8,42 +9,43 @@
 #     ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
     
 #     def initialize
-#       @append_url = "https://www.amazon.in/"
-#       @headers = {
-#         'Connection': 'keep-alive',
-#         'Pragma': 'no-cache',
-#         'Cache-Control': 'no-cache',
-#         'DNT': '1',
-#         'Upgrade-Insecure-Requests': '1',
-#         # You may want to change the user agent if you get blocked
-#         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36',
-#         'Referer': @append_url,
-#         'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
-#       }
-#       @base_url = "https://www.amazon.in/Gourmet-Specialty-Foods/b/?ie=UTF8&node=2454178031&ref_=nav_cs_grocery"
+#       # @append_url = "https://www.amazon.in/"
+#       # @headers = {
+#       #   'Connection': 'keep-alive',
+#       #   'Pragma': 'no-cache',
+#       #   'Cache-Control': 'no-cache',
+#       #   'DNT': '1',
+#       #   'Upgrade-Insecure-Requests': '1',
+#       #   # You may want to change the user agent if you get blocked
+#       #   'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36',
+#       #   'Referer': @append_url,
+#       #   'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
+#       # }
+#       # @base_url = "https://www.amazon.in/Gourmet-Specialty-Foods/b/?ie=UTF8&node=2454178031&ref_=nav_cs_grocery"
+#       " "
 #     end
 
 #     def scrap_data
-#       if is_valid_url? @base_url
-#         file = "#{Rails.root}/public/amazon.csv"
-#         csv_headers = ['images','Brand','Weight','Price','Selling Price']
-#         CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
-#           parsed_page = BxBlockScrappers::UrlService.new.http_noko(@base_url, @headers) 
-#           products = parsed_page.css('a.acs-product-block__product-title')
-#           products.each do |product|
-#             detail_url = append_url + product.attributes['href'].value rescue nil
-#             get_detail(detail_url,value)
-#             value[:product].uniq.each do |link|
-#               parsed_page = BxBlockScrappers::UrlService.new.http_noko(@append_url+link, @headers) 
-#               weight_and_brand(parsed_page, value)
-#               value = {}
-#               csv << [value[:image].compact.uniq , value[:brand], value[:weight] , value[:price], value[:selling_p]]
-#             end
-#           end
-#         end
-#       else
-#         return false
-#       end
+#       # if is_valid_url? @base_url
+#       #   file = "#{Rails.root}/public/amazon.csv"
+#       #   csv_headers = ['images','Brand','Weight','Price','Selling Price']
+#       #   CSV.open(file, 'w', write_headers: true, headers: csv_headers) do |csv|
+#       #     parsed_page = BxBlockScrappers::UrlService.new.http_noko(@base_url, @headers) 
+#       #     products = parsed_page.css('a.acs-product-block__product-title')
+#       #     products.each do |product|
+#       #       detail_url = append_url + product.attributes['href'].value rescue nil
+#       #       get_detail(detail_url,value)
+#       #       value[:product].uniq.each do |link|
+#       #         parsed_page = BxBlockScrappers::UrlService.new.http_noko(@append_url+link, @headers) 
+#       #         weight_and_brand(parsed_page, value)
+#       #         value = {}
+#       #         csv << [value[:image].compact.uniq , value[:brand], value[:weight] , value[:price], value[:selling_p]]
+#       #       end
+#       #     end
+#       #   end
+#       # else
+#       #   return false
+#       # end
 #     end
 
 #     def get_detail(url, value)
@@ -136,8 +138,8 @@
 #     #   value[:src] = value[:src].present? ? value[:src] : image
 #     #   # [value[:src].uniq, :value[:nutrition], value[ingredient]]
 #     # end
-#   end
-# end
+  end
+end
 #               # img = parsed_page.search('ul.a-unordered-list').search('li.image')[0].search('img').first['src']
 #             # if detail_url
 #             #   @src.uniq
