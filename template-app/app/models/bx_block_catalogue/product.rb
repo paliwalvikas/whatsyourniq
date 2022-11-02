@@ -390,7 +390,7 @@ module BxBlockCatalogue
       p_good << for_np_vit_min_value 
       p_good << dietary_fibre if dietary_fibre.present? #&& dietary_fibre.first[:level] != 'Low'
       p_good << protein_value if protein_value.present? #&& protein_value.first[:level] != 'Low'
-      neg_n_good << {Calories: calories_energy} if calories_energy.present?
+      neg_n_good << calories_energy if calories_energy.present?
       saturate_fat = product_sat_fat
       neg_n_good << saturate_fat[0] if saturate_fat&.last == false || saturate_fat&.last == true
       sugar = product_sugar_level
@@ -464,7 +464,7 @@ module BxBlockCatalogue
                  'Low'
                end
              end
-    return [ checking_not_so_good_value(energy, 'calories', energy_level )] if energy_level.present?
+    return [checking_not_so_good_value(energy, 'calories', energy_level )] if energy_level.present?
     end
 
     def fat_value
@@ -473,16 +473,16 @@ module BxBlockCatalogue
       fb = []
       case product_type
       when 'solid'
-      fat_level = if pro < 0.5 
+      fat_level = if pro < 0.5 || pro == 0
           'Free'
         elsif pro < 3
           'Low'
         end
-        value = [level: fat_level, name: "Fat"] if fat_level.present? 
+        value = [level: fat_level, name: "fat"] if fat_level.present? 
       when 'beverage'
-        fat_level = 'Free' if  pro < 0.5 
+        fat_level = 'Free' if  pro < 0.5 || pro == 0
         fat_level = 'Low' if  pro < 1.5
-        value = [level: fat_level, name: "Fat"] if fat_level.present?
+        value = [level: fat_level, name: "fat"] if fat_level.present?
       end
       value
     end
