@@ -1,7 +1,7 @@
 module BxBlockScrappers
   # require 'nokogiri'
   # require 'pp'
-  # class FlipkartService
+  class FlipkartService
   #   attr_accessor :headers, :base_urls, :append_url
   #   ENV["GOOGLE_APPLICATION_CREDENTIALS"] = "#{Rails.root}/lib/key.json"
     
