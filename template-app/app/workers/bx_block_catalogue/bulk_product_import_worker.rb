@@ -4,7 +4,7 @@ require 'csv'
 module BxBlockCatalogue
   class BulkProductImportWorker 
     include Sidekiq::Worker
-    sidekiq_options retry: false, timeout: 4.hours
+    sidekiq_options retry: false
 
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
 
