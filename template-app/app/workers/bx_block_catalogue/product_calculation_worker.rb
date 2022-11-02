@@ -1,7 +1,7 @@
 module BxBlockCatalogue
   class ProductCalculationWorker
     include Sidekiq::Worker
-    sidekiq_options retry: false
+    sidekiq_options retry: false, timeout: 4.hours
 
     def perform(calculation_type)
       product_import_status = BxBlockCatalogue::ImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}", calculation_status: "Pending")
