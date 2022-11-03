@@ -206,7 +206,7 @@ module BxBlockCatalogue
 
     def coding_calculation(ing, ele, value)
       return 0 if %w[carbohydrate cholestrol soyabean wheat peanuts tree_nuts shellfish total_fat
-            monosaturated_fat polyunsaturated_fat fatty_acid mono_unsaturated_fat veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish trans_fat].include?(ele) || ing.send(ele).nil?
+            monosaturated_fat polyunsaturated_fat fatty_acid mono_unsaturated_fat veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish trans_fat fat].include?(ele) || ing.send(ele).nil?
 
       com_v = ing.send(ele)['value'].to_f
       com_lower = ing.send(ele)['lower_limit'].to_f
@@ -428,15 +428,15 @@ module BxBlockCatalogue
       fb = []
       case product_type
       when 'solid'
-      cho_level = if pro < 5 && sat_fat < 1.5 && energy_from_saturated_fat 
+      cho_level = if pro <= 5 && sat_fat < 1.5 && energy_from_saturated_fat 
           'Free'
-        elsif pro < 20 && sat_fat < 1.5 && energy_from_saturated_fat
+        elsif pro <= 20 && sat_fat <= 1.5 && energy_from_saturated_fat
           'Low'
         end
         value = [level: cho_level, name: "Cholesterol"] if cho_level.present? 
       when 'beverage'
-        cho_level = 'Free' if  pro < 5 && sat_fat < 0.75 && energy_from_saturated_fat 
-        cho_level = 'Low' if  pro < 10 && sat_fat < 0.75 && energy_from_saturated_fat
+        cho_level = 'Free' if  pro <= 5 && sat_fat <= 0.75 && energy_from_saturated_fat 
+        cho_level = 'Low' if  pro <= 10 && sat_fat <= 0.75 && energy_from_saturated_fat
         value = [level: cho_level, name: "Cholesterol"] if cho_level.present?
       end
       value
@@ -473,15 +473,15 @@ module BxBlockCatalogue
       fb = []
       case product_type
       when 'solid'
-      fat_level = if pro < 0.5 || pro == 0
+      fat_level = if pro <= 0.5 || pro == 0
           'Free'
-        elsif pro < 3
+        elsif pro <= 3
           'Low'
         end
         value = [level: fat_level, name: "fat"] if fat_level.present? 
       when 'beverage'
-        fat_level = 'Free' if  pro < 0.5 || pro == 0
-        fat_level = 'Low' if  pro < 1.5
+        fat_level = 'Free' if  pro <= 0.5 || pro == 0
+        fat_level = 'Low' if  pro <= 1.5
         value = [level: fat_level, name: "fat"] if fat_level.present?
       end
       value
@@ -564,20 +564,20 @@ module BxBlockCatalogue
       sodium = ingredient.sodium.to_f
       case product_type
       when 'solid'
-        if sodium < 0.5
+        if sodium <= 0.5
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
-        elsif sodium >= 0.5 && sodium <= 5.0
+        elsif sodium >= 0.5 && sodium <= 0.12
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
         elsif sodium > 5.0
           value = BxBlockCatalogue::VitaminValueService.new().sodium_level_clc(sodium, energy)
           return [checking_not_so_good_value(sodium, 'sodium', value), false]  
         end
       when 'beverage'
-        if sodium < 0.5
+        if sodium <= 0.5
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
-        elsif sodium >= 0.5 && sodium <= 2.5
+        elsif sodium >= 0.5 && sodium <= 0.12
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
-        elsif sodium > 2.5
+        elsif sodium > 5.0
           value = BxBlockCatalogue::VitaminValueService.new().sodium_level_clc(sodium, energy)
           return [checking_not_so_good_value(sodium, 'sodium', value), false]  
         end
