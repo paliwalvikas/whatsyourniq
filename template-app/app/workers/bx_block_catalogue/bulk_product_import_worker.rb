@@ -1,10 +1,9 @@
-# frozen_string_literal: true
 require 'csv'
 
 module BxBlockCatalogue
   class BulkProductImportWorker 
     include Sidekiq::Worker
-    sidekiq_options retry: false
+    # sidekiq_options retry: false
 
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
 
