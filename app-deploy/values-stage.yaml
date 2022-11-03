@@ -146,6 +146,8 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt-staging
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     # nginx.ingress.kubernetes.io/server-alias: <custom_cname>
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"

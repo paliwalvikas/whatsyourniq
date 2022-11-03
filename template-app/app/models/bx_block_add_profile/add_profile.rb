@@ -27,6 +27,28 @@ module BxBlockAddProfile
       obese_grade_2: 4
     }
 
+    after_create :calculate_bmi
+
+    private
+
+    def calculate_bmi
+      self.bmi_result = BmiCalculator.calc_m self.height, self.weight
+
+      if self.bmi_result < 18.50
+        self.bmi_status = 0
+      elsif self.bmi_result >= 18.51 and self.bmi_result <= 22.90
+        self.bmi_status = 1
+      elsif self.bmi_result >= 22.91 and self.bmi_result <= 24.90
+        self.bmi_status = 2
+      elsif self.bmi_result >= 24.91 and self.bmi_result <= 29.90
+        self.bmi_status = 3
+      elsif self.bmi_result >= 29.91
+        self.bmi_status = 4
+      end
+
+      self.save
+    end
+
   end
 end
 
