@@ -89,5 +89,5 @@ gem 'pry'
 gem "sidekiq-cron"
 gem 'kaminari'
 gem 'bmi_calculator', '~> 0.2.1'
-gem 'redis', '~> 4.8.0'#, '>= 5.0.5'
+gem 'redis', '< 4.6'
 gem 'i18n'
