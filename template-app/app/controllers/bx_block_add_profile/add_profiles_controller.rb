@@ -1,6 +1,6 @@
 module BxBlockAddProfile
   class AddProfilesController < ApplicationController
-    before_action :find_profile, only: %i[show update calculate_bmi]
+    before_action :find_profile, only: %i[show update calculate_bmi destroy]
 
     def index
       serializer = AddProfileSerializer.new(current_user.add_profiles, serialization_options).serializable_hash
@@ -37,6 +37,11 @@ module BxBlockAddProfile
       serializer = AddProfileSerializer.new(@add_profile, serialization_options).serializable_hash
 
       render json: serializer, status: :ok
+    end
+
+    def destroy
+      @add_profile.destroy
+      render json: { success: true, message: "Profile successfully deleted" }, status: :ok
     end
 
     def calculate_bmi

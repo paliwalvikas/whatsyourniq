@@ -21,6 +21,14 @@ module AccountBlock
       object&.orders&.count
     end
 
+    attribute :fav_smart_search_count do |object|
+      object&.favourite_searches&.count
+    end
+
+    attribute :added_member_count do |object|
+      object&.add_profiles&.count
+    end
+
     attribute :image do |object, _params|
       if object.image.attached?
         if Rails.env.development?
