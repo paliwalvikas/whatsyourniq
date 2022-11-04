@@ -184,7 +184,6 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       end
       row :brand_name
       row :weight
-      row :image
       row :image do |obj|
         link_to image_tag(obj.image&.service_url&.split('?')&.first, size: "150x200"), obj.image&.service_url&.split('?')&.first if obj.image.attached?
       end
@@ -221,6 +220,11 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       redirect_to import_admin_products_path, flash: {error: "Please select file!"} and return if params[:active_admin_import_model].nil?
       redirect_to import_admin_products_path, flash: {error: "File format not valid!"} and return unless params[:active_admin_import_model][:file].content_type.include?("csv")
       file_path = params[:active_admin_import_model][:file].path
+      puts  "======================================================="
+      puts file_path
+      puts "===================================="
+      Rails.logger.info("============== #{file_path} ================"  ) 
+      puts "==========================================================="
       BxBlockCatalogue::BulkProductImportWorker.perform_at(Time.now, file_path)
       redirect_to collection_path flash[:notice] = 'Data import processing'
     end

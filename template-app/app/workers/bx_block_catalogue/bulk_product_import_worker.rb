@@ -8,11 +8,13 @@ module BxBlockCatalogue
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
 
     def perform(file_path)
+      Rails.logger.info("=============inside perform file_path=======================#{file_path}")
       csv_text = open(file_path) do |io|
         io.set_encoding('utf-8')
         io.read
       end
       
+      Rails.logger.info("=============inside perform csv_text=========================#{csv_text}")
       row_count = 0
       product_import_status = BxBlockCatalogue::ImportStatus.create!(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}")
 
@@ -22,6 +24,8 @@ module BxBlockCatalogue
       csv_headers = ["Row Number", "Product Name", "Error Message", "Status"]
 
       csv = CSV.parse(csv_text, headers: true)
+      Rails.logger.info("================inside perform csv=============================#{csv}"
+
       product_import_status.record_file_contain = csv&.count
       count = 0
       csv.each.each do |product_data|
@@ -47,7 +51,7 @@ module BxBlockCatalogue
         ingredient = product.ingredient ||= product.build_ingredient
         product.calculated = false
         product.np_calculated = false
-      if product.save!
+        if product.save!
           file_url = URI.parse(product_params["image"]) rescue nil
           if file_url
             file = open(product_params["image"].strip) rescue nil
