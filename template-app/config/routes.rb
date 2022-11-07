@@ -75,6 +75,6 @@ Rails.application.routes.draw do
   delete 'remove_product', to: 'bx_block_catalogue/orders#remove_product'
 
   scope :add_profiles do
-    get "calculate_bmi", to: "bx_block_add_profile/add_profiles#calculate_bmi"
+    post "calculate_bmi", to: "bx_block_add_profile/add_profiles#calculate_bmi"
   end
 end
