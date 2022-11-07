@@ -3,18 +3,18 @@ require 'csv'
 module BxBlockCatalogue
   class BulkProductImportWorker 
     include Sidekiq::Worker
+    include Sidekiq::Status::Worker
     # sidekiq_options retry: false
 
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
-
-    def perform(file_path)
-      Rails.logger.info("=============inside perform file_path=======================#{file_path}")
-      csv_text = open(file_path) do |io|
+    
+    def perform(product_csv_id)
+      pcsv = BxBlockCatalogue::ProductCsv.find_by_id(product_csv_id)
+      csv_text = open(pcsv.csv_file) do |io|
         io.set_encoding('utf-8')
         io.read
       end
       
-      Rails.logger.info("=============inside perform csv_text=========================#{csv_text}")
       row_count = 0
       product_import_status = BxBlockCatalogue::ImportStatus.create!(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}")
 
@@ -24,7 +24,6 @@ module BxBlockCatalogue
       csv_headers = ["Row Number", "Product Name", "Error Message", "Status"]
 
       csv = CSV.parse(csv_text, headers: true)
-      Rails.logger.info("================inside perform csv=============================#{csv}"
 
       product_import_status.record_file_contain = csv&.count
       count = 0
