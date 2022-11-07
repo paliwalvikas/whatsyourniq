@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self) rescue ActiveAdmin::DatabaseHitDuringLoad
   require 'sidekiq/web'
+  require 'sidekiq-status/web'
   require 'sidekiq/cron/web'
   mount Sidekiq::Web => '/sidekiq'
 

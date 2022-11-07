@@ -220,12 +220,14 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       redirect_to import_admin_products_path, flash: {error: "Please select file!"} and return if params[:active_admin_import_model].nil?
       redirect_to import_admin_products_path, flash: {error: "File format not valid!"} and return unless params[:active_admin_import_model][:file].content_type.include?("csv")
       file_path = params[:active_admin_import_model][:file].path
-      puts  "======================================================="
-      puts file_path
-      puts "===================================="
-      Rails.logger.info("============== #{file_path} ================"  ) 
-      puts "==========================================================="
-      BxBlockCatalogue::BulkProductImportWorker.perform_at(Time.now, file_path)
+      file = open(file_path) rescue nil
+      pcsv = BxBlockCatalogue::ProductCsv.create
+      pcsv.csv_file.attach(
+        io: file,
+        filename: "#{file_path.split("/").last}",
+        content_type: params[:active_admin_import_model][:file].content_type
+      ) if file
+      BxBlockCatalogue::BulkProductImportWorker.perform_at(Time.now, "#{pcsv.id}")
       redirect_to collection_path flash[:notice] = 'Data import processing'
     end
   end
