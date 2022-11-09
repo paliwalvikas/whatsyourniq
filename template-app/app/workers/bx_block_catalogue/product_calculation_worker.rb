@@ -2,6 +2,7 @@ module BxBlockCatalogue
   class ProductCalculationWorker  
     include Sidekiq::Worker
     include Sidekiq::Status::Worker
+    sidekiq_options lock: :until_executed, on_conflict: { client: :log, server: :raise }
     # sidekiq_options retry: false
 
     def perform(calculation_type)
