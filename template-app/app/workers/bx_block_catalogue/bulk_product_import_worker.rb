@@ -4,8 +4,7 @@ module BxBlockCatalogue
   class BulkProductImportWorker 
     include Sidekiq::Worker
     include Sidekiq::Status::Worker
-    sidekiq_options lock: :until_executed, on_conflict: { client: :log, server: :raise }
-    # sidekiq_options retry: false
+    sidekiq_options retry: false, lock: :until_executed, on_conflict: { client: :log, server: :raise }
 
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
     
@@ -52,9 +51,10 @@ module BxBlockCatalogue
         product.calculated = false
         product.np_calculated = false
         if product.save!
-          file_url = URI.parse(product_params["image"]) rescue nil
+          img = product_params["image"]&.split("\n")&.first
+          file_url = URI.parse(img) rescue nil
           if file_url
-            file = open(product_params["image"].strip) rescue nil
+            file = open(img) rescue nil
             product.image.attach(
               io: file,
               filename: "#{product&.product_name&.split&.first}.#{file.content_type_parse.first.split("/").last}",
