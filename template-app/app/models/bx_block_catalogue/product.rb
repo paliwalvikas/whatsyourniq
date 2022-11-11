@@ -4,8 +4,8 @@ module BxBlockCatalogue
   class Product < BxBlockCatalogue::ApplicationRecord
     self.table_name = :products
 
-    validates :bar_code, uniqueness: true
-    validates :bar_code, presence: true
+    # validates :bar_code, uniqueness: true
+    # validates :bar_code, presence: true
 
     GOOD_INGREDIENTS = { protein: [54, 'g'], fibre: [32, 'g'], vit_a: [1000, 'mcg'], vit_c: [80, 'mg'], vit_d: [15, 'mcg'], iron: [19, 'mg'], calcium: [1000, 'mg'],
                          magnesium: [440, 'mg'], potassium: [3500, 'mg'], zinc: [17, 'mg'], iodine: [150, 'ug'], vit_b1: [1.4, 'mg'], vit_b2: [2.0, 'mg'], vit_b3: [1.4, 'mg'], vit_b6: [1.9, 'mg'], vit_b12: [2.2, 'ug'], vit_e: [10, 'mcg'], vit_b7: [40, 'mcg'], vit_b9: [40, 'mcg'], vit_b5: [5, 'mg'], phosphorus: [1000, 'mg'], copper: [2, 'mg'], manganese: [4, 'mg'], chromium: [50, 'mca'], selenium: [40, 'mca'], chloride: [2050, 'mg'] }.freeze
@@ -505,9 +505,9 @@ module BxBlockCatalogue
     end
 
     def fat_value
-      return unless ingredient.fat.present?
+      return unless ingredient.total_fat.present?
 
-      pro = ingredient.fat.to_f
+      pro = ingredient.total_fat.to_f
       fb = []
       case product_type
       when 'solid'
@@ -607,7 +607,7 @@ module BxBlockCatalogue
       when 'solid'
         if sodium <= 0.5
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
-        elsif sodium >= 0.5 && sodium <= 0.12
+        elsif sodium <= 0.12
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
         elsif sodium > 5.0
           value = BxBlockCatalogue::VitaminValueService.new.sodium_level_clc(sodium, energy)
@@ -616,7 +616,7 @@ module BxBlockCatalogue
       when 'beverage'
         if sodium <= 0.5
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
-        elsif sodium >= 0.5 && sodium <= 0.12
+        elsif sodium <= 0.12
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
         elsif sodium > 5.0
           value = BxBlockCatalogue::VitaminValueService.new.sodium_level_clc(sodium, energy)
