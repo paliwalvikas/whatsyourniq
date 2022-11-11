@@ -168,6 +168,16 @@ module BxBlockCatalogue
       redirect_to "/admin"
     end
 
+    def cmp_product(ids)
+      products = Product.where(id: ids)
+      data = []
+      products.each do |product|
+        product.calculation
+        p_data = product.compare_product_good_not_so_good_ingredients
+        data << ProductSerializer.new(product, params: { good_ingredient: p_data[:good_ingredient] })
+      end
+      data
+    end
     private
 
     def case_for_product(product)
@@ -188,16 +198,6 @@ module BxBlockCatalogue
       a
     end
 
-    def cmp_product(ids)
-      products = Product.where(id: ids)
-      data = []
-      products.each do |product|
-        product.calculation
-        p_data = product.compare_product_good_not_so_good
-        data << ProductSerializer.new(product, params: {good_ingredient: p_data[:good_ingredient], not_so_good_ingredient: p_data[:not_so_good_ingredient]})
-      end
-      data
-    end
 
     def find_filter_products(rating, filter_sub_category_id,filter_category_id, product_id)
       products = BxBlockCatalogue::Product.where.not(id: product_id).where(product_rating: rating, filter_sub_category_id: filter_sub_category_id, filter_category_id: filter_category_id)

@@ -47,10 +47,10 @@ module BxBlockCatalogue
       end
     end
 
-    attribute :negative_not_good do |object, _params|
-      if _params[:not_so_good_ingredient].present?
-        _params[:not_so_good_ingredient].reduce Hash.new, :merge
-      end
-    end
+    # attribute :negative_not_good do |object, _params|
+    #   if _params[:not_so_good_ingredient].present?
+    #     _params[:not_so_good_ingredient].reduce Hash.new, :merge
+    #   end
+    # end
   end
 end

@@ -131,20 +131,23 @@ module BxBlockCatalogue
       end
     end
 
-    # def trans_fat_value
-    #   if ingredient.trans_fat.present?
-    #     trans_fat = ingredient.trans_fat.to_f
-    #     energy = ingredient.energy.to_f
-    #     case product_type
-    #     when 'solid', 'beverage','cheese_and_oil'
-    #     level = if trans_fat < 0.2
-    #         'Low'
-    #       elsif trans_fat > 0.2
-    #         BxBlockCatalogue::VitaminValueService.trans_fat_clc(trans_fat, energy)
-    #       end
-    #     end
-    #     return { trans_fat: checking_not_so_good_value(trans_fat, 'trans_fat', level) } 
-    # end
+    def trans_fat_value
+      if ingredient.trans_fat.present?
+        trans_fat = ingredient.trans_fat.to_f
+        energy = ingredient.energy.to_f
+        case product_type
+        when 'solid', 'beverage','cheese_and_oil'
+        level = if trans_fat < 0.2
+            'Low'
+          elsif trans_fat > 0.2
+            BxBlockCatalogue::VitaminValueService.trans_fat_clc(trans_fat, energy)
+          end
+        end
+        return { trans_fat: checking_not_so_good_value(trans_fat, 'trans_fat', level) } 
+      else
+        return { trans_fat: checking_not_so_good_value(trans_fat, 'trans_fat', "N/A") } 
+      end
+    end
 
     # def fat_value
     #   if ingredient.total_fat.present?
@@ -293,8 +296,8 @@ module BxBlockCatalogue
       good_ingredient << vit_min_value
       good_ingredient << dietary_fibre
       good_ingredient << protein_value
-      not_so_good_ingredient << fat_value
-      # not_so_good_ingredient << trans_fat_value
+      # not_so_good_ingredient << fat_value
+      good_ingredient << trans_fat_value
       good_ingredient << cholesterol_value
       good_ingredient <<  product_sat_fat
       good_ingredient << product_sugar_level
