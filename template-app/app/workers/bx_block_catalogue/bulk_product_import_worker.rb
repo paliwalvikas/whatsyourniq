@@ -4,7 +4,7 @@ module BxBlockCatalogue
   class BulkProductImportWorker 
     include Sidekiq::Worker
     include Sidekiq::Status::Worker
-    sidekiq_options retry: false, lock: :until_executed, on_conflict: { client: :log, server: :raise }
+    sidekiq_options lock: :until_executed, on_conflict: { client: :log, server: :raise }
 
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
     
