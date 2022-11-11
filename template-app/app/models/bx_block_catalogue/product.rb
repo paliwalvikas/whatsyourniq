@@ -605,7 +605,7 @@ module BxBlockCatalogue
       sodium = ingredient.sodium.to_f
       case product_type
       when 'solid'
-        if sodium <= 0.5
+        if sodium <= 0.05
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
         elsif sodium <= 0.12
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
@@ -614,7 +614,7 @@ module BxBlockCatalogue
           return [checking_not_so_good_value(sodium, 'sodium', value), false]
         end
       when 'beverage'
-        if sodium <= 0.5
+        if sodium <= 0.05
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
         elsif sodium <= 0.12
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
