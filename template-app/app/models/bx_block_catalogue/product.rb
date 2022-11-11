@@ -505,9 +505,9 @@ module BxBlockCatalogue
     end
 
     def fat_value
-      return unless ingredient.fat.present?
+      return unless ingredient.total_fat.present?
 
-      pro = ingredient.fat.to_f
+      pro = ingredient.total_fat.to_f
       fb = []
       case product_type
       when 'solid'
@@ -607,7 +607,7 @@ module BxBlockCatalogue
       when 'solid'
         if sodium <= 0.5
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
-        elsif sodium >= 0.5 && sodium <= 0.12
+        elsif sodium <= 0.12
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
         elsif sodium > 5.0
           value = BxBlockCatalogue::VitaminValueService.new.sodium_level_clc(sodium, energy)
@@ -616,7 +616,7 @@ module BxBlockCatalogue
       when 'beverage'
         if sodium <= 0.5
           return [checking_not_so_good_value(sodium, 'sodium', 'Free'), true]
-        elsif sodium >= 0.5 && sodium <= 0.12
+        elsif sodium <= 0.12
           return [checking_not_so_good_value(sodium, 'sodium', 'Low'), true]
         elsif sodium > 5.0
           value = BxBlockCatalogue::VitaminValueService.new.sodium_level_clc(sodium, energy)
