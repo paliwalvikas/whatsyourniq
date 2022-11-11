@@ -14,6 +14,10 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
 
   before_action :set_product # , only: [:show, :edit, :update, :destroy]
 
+  sidebar :actions do
+    button_to "Delete All Products", "/admin/products/delete_all_products", :method => :delete, data: {:confirm => "It will delete all products. Are you sure?"}
+  end
+
   action_item :only => :index do
     link_to "Calculate Ratings", calculate_ratings_admin_products_path(:calculation_type => "calculate_ratings")
   end
@@ -25,6 +29,12 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   collection_action :calculate_ratings do
     BxBlockCatalogue::ProductCalculationWorker.perform_at(Time.now, params[:calculation_type])
     redirect_to collection_path flash[:notice] = 'Calculation on product is processing.'
+  end
+
+  collection_action :delete_all_products, :method => :delete do
+    BxBlockCatalogue::Product.delete_all
+    flash[:alert] = "All product deleted successfully."  
+    redirect_to admin_products_path
   end
 
   action_item only: :index do
@@ -214,6 +224,9 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   controller do
     def set_product
       ActiveStorage::Current.host = request.base_url
+    end
+
+    def delete_all_product
     end
 
     def do_import
