@@ -393,6 +393,21 @@ module BxBlockCatalogue
         good_ingredient << sodium[0] if sodium&.last == true
         not_so_good_ingredient << sodium[0] if sodium&.last == false
       end
+      cholestrol = cholesterol_rda
+      if !cholestrol.nil? && cholestrol != [] && !cholestrol.first.first[:level].nil?
+        good_ingredient << cholestrol[0] if cholestrol&.last == true
+        not_so_good_ingredient << cholestrol[0] if cholestrol&.last == false
+      end
+      trans_fat = trans_fat_rda
+      if !trans_fat.nil? && trans_fat != [] && !trans_fat.first.first[:level].nil?
+        good_ingredient << trans_fat[0] if trans_fat&.last == true
+        not_so_good_ingredient << trans_fat[0] if trans_fat&.last == false
+      end
+      total_fat = total_fat_rda
+      if !total_fat.nil? && total_fat != [] && !total_fat.first.first[:level].nil?
+        good_ingredient << total_fat[0] if total_fat&.last == true
+        not_so_good_ingredient << total_fat[0] if total_fat&.last == false
+      end
       data = {
         good_ingredient: good_ingredient.flatten.compact,
         not_so_good_ingredient: not_so_good_ingredient.flatten
@@ -461,27 +476,57 @@ module BxBlockCatalogue
 
     def cholesterol_rda
       energy = ingredient.energy.to_f
-      return [] if ingredient.cholestrol.present?
-
+      return [] if ingredient.cholestrol.nil?
       cholestrol = ingredient.cholestrol.to_f
       sat_fat = ingredient.saturate.to_f
       case product_type
       when 'solid'
         if pro <= 5 && sat_fat < 1.5 && energy_from_saturated_fat
           return [checking_not_so_good_value(cholestrol, 'cholestrol', 'Free'), true]
-        elsif pro <= 20 && sat_fat <= 1.5 && energy_from_saturated_fat
+        elsif cholestrol <= 20 && sat_fat <= 1.5 && energy_from_saturated_fat
           return [checking_not_so_good_value(cholestrol, 'cholestrol', 'Low'), true]
         end
       when 'beverage'
-        if pro <= 5 && sat_fat <= 0.75 && energy_from_saturated_fat
+        if cholestrol <= 5 && sat_fat <= 0.75 && energy_from_saturated_fat
           return [checking_not_so_good_value(cholestrol, 'cholestrol', 'Free'), true]
-        elsif pro <= 10 && sat_fat <= 0.75 && energy_from_saturated_fat
+        elsif cholestrol <= 10 && sat_fat <= 0.75 && energy_from_saturated_fat
           return [checking_not_so_good_value(cholestrol, 'cholestrol', 'Low'), true]
         end
-
-        value
       end
     end
+
+    def total_fat_rda
+      energy = ingredient.energy.to_f
+      return [] if ingredient.total_fat.nil?
+      pro = ingredient.total_fat.to_f
+      case product_type
+      when 'solid'
+        if pro <= 0.5 
+          return [checking_not_so_good_value(pro, 'total_fat', 'Free'), true]
+        elsif pro <= 3
+          return [checking_not_so_good_value(pro, 'total_fat', 'Low'), true]
+        end
+      when 'beverage'
+        if  pro <= 0.5  
+          return [checking_not_so_good_value(pro, 'total_fat', 'Free'), true]
+        elsif pro <= 1.5
+          return [checking_not_so_good_value(pro, 'total_fat', 'Low'), true]
+        end
+      end
+    end
+
+    def trans_fat_rda
+      return [] if ingredient.trans_fat.nil?
+      trans_fat = ingredient.trans_fat.to_f
+      energy = ingredient.energy.to_f
+      if trans_fat < 0.2
+        return [checking_not_so_good_value(trans_fat, 'trans_fat', 'Low'), true]
+      elsif trans_fat > 0.2
+        level = BxBlockCatalogue::VitaminValueService.trans_fat_clc(trans_fat, energy)
+        return [checking_not_so_good_value(trans_fat, 'trans_fat', level), true]
+      end
+    end
+
     def vitamins_and_minrals
       good_ingredient = { vitamins: [percent: 0.0, upper_limit: 0.0, level: levels_for_vit_and_min(vitamin_columns), quantity: 0.0],
                           minerals: [percent: 0.0, upper_limit: 0.0, level: levels_for_vit_and_min(minral_columns), quantity: 0.0] }

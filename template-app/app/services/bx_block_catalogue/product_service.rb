@@ -149,28 +149,25 @@ module BxBlockCatalogue
       end
     end
 
-    # def fat_value
-    #   if ingredient.total_fat.present?
-    #     pro = ingredient.fat.to_f
-    #     fb = []
-    #     case product_type
-    #     when 'solid'
-    #     fat_level = if pro <= 0.5 || pro == 0
-    #         'Free'
-    #       elsif pro <= 3
-    #         'Low'
-    #       end
-    #       value = [level: fat_level, name: "fat"] if fat_level.present? 
-    #     when 'beverage'
-    #       fat_level = 'Free' if  pro <= 0.5 || pro == 0
-    #       fat_level = 'Low' if  pro <= 1.5
-    #       value = [level: fat_level, name: "fat"] if fat_level.present?
-    #     end
-    #     value
-    #   else
-    #   end
-    # end
-
+    def total_fat_value
+      if ingredient.total_fat.present?
+        pro = ingredient.total_fat.to_f
+        case product_type
+        when 'solid'
+        fat_level = if pro <= 0.5 || pro == 0
+            'Free'
+          elsif pro <= 3
+            'Low'
+          end
+        when 'beverage'
+          fat_level = 'Free' if  pro <= 0.5 || pro == 0
+          fat_level = 'Low' if  pro <= 1.5
+        end
+        return { total_fat: checking_not_so_good_value(pro, 'total_fat', fat_level) } 
+      else
+        return { total_fat: checking_not_so_good_value(pro, 'total_fat', "N/A") }
+      end
+    end
     
     def cholesterol_value
       if ingredient.cholestrol.present?
@@ -279,6 +276,7 @@ module BxBlockCatalogue
     end
 
     def checking_not_so_good_value(ing_vlue, ing, level)
+      level = "N/A" if level == nil
       return unless (not_so_good_value = NOT_SO_GOOD_INGREDIENTS[:"#{ing}"]).present?
       if ing_vlue != nil
        ing_vlue = ing_vlue.round(2)
@@ -286,6 +284,7 @@ module BxBlockCatalogue
       else
         value_percent = nil
         ing_vlue = 0.0
+        level = "N/A"
       end
       [percent: value_percent, upper_limit: not_so_good_value[0], level: level, quantity: "#{ing_vlue} #{not_so_good_value[1]}", name: ing]
     end
