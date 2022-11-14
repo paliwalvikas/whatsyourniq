@@ -2,7 +2,7 @@ module BxBlockCatalogue
   class ProductCalculationWorker  
     include Sidekiq::Worker
     include Sidekiq::Status::Worker
-    sidekiq_options retry: false, lock: :until_executed, on_conflict: { client: :log, server: :raise }
+    sidekiq_options lock: :until_executed, on_conflict: { client: :log, server: :raise }
 
     def perform(calculation_type)
       product_import_status = BxBlockCatalogue::ImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}", calculation_status: "Pending")
