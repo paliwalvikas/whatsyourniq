@@ -35,6 +35,19 @@ module BxBlockCatalogue
       end
     end
 
+    def filter_fav_product
+      p_ids = current_user&.favourite_products.select(:product_id)
+      if params[:product_rating].present? && p_ids.present?
+        products = BxBlockCatalogue::Product.where(id: p_ids, product_rating: params[:product_rating])
+        fav_prod = current_user&.favourite_products&.where(product_id: products.ids)
+        render json: FavouriteProductSerializer.new(fav_prod).serializable_hash,
+               status: :ok
+      else
+        render json:  { message: "Product not found" },
+               status: :unprocessable_entity
+      end
+    end
+
     def destroy
       if @fav_prod.present? && @fav_prod.destroy
         render json: { success: true, message: "Product successfully deleted" }, status: :ok
