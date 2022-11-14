@@ -276,6 +276,7 @@ module BxBlockCatalogue
     end
 
     def checking_not_so_good_value(ing_vlue, ing, level)
+      level = "N/A" if level == nil
       return unless (not_so_good_value = NOT_SO_GOOD_INGREDIENTS[:"#{ing}"]).present?
       if ing_vlue != nil
        ing_vlue = ing_vlue.round(2)
