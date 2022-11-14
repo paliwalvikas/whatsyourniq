@@ -10,7 +10,7 @@ module BxBlockCatalogue
       csv_row = []  
       csv_row << csv_headers
     
-      BxBlockCatalogue::Product.find_in_batches(batch_size: 5000) do |products|
+      BxBlockCatalogue::Product.find_in_batches(batch_size: 500) do |products|
         products.each do |product|
           if calculation_type == "calculate_np"
             # if !product.np_calculated?  
