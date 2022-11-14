@@ -55,7 +55,7 @@ module BxBlockCatalogue
     end
 
     def p_negative_not_good
-      ['calories', 'fat', 'saturated_fat','cholesterol','trans_fat','sodium','sugar']
+      ['calories', 'total_fat', 'saturated_fat','cholesterol','trans_fat','sodium','sugar']
     end
 
     def food_type(params, product)

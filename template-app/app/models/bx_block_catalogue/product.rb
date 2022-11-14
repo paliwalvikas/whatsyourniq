@@ -516,11 +516,11 @@ module BxBlockCatalogue
                     elsif pro <= 3
                       'Low'
                     end
-        value = [level: fat_level, name: 'fat'] if fat_level.present?
+        value = [level: fat_level, name: 'total_fat'] if fat_level.present?
       when 'beverage'
         fat_level = 'Free' if pro <= 0.5 || pro.zero?
         fat_level = 'Low' if pro <= 1.5
-        value = [level: fat_level, name: 'fat'] if fat_level.present?
+        value = [level: fat_level, name: 'total_fat'] if fat_level.present?
       end
       value
     end
