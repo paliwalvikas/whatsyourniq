@@ -1,5 +1,7 @@
 //= require active_admin/base
 //= require jquery3
+//= require activeadmin/quill_editor/quill
+//= require activeadmin/quill_editor_input
 function calculateRating(product_id) {
   $.ajax({
     url: "/bx_block_catalogue/products/" + product_id,
