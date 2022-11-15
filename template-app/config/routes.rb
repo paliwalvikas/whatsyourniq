@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   require 'sidekiq-status/web'
   require 'sidekiq/cron/web'
   mount Sidekiq::Web => '/sidekiq'
-
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :bx_block_catalogue do
     get 'search', to: 'products#search'
@@ -28,6 +27,7 @@ Rails.application.routes.draw do
       end
     end
     resources :compare_products
+    get 'filter_fav_product', to: 'favourite_products#filter_fav_product'
     resources :favourite_products
     resources :favourite_searches 
     resources :order_items
