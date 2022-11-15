@@ -28,23 +28,24 @@ gem 'rack-cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'rspec-rails'
-  gem 'rspec-sonarqube-formatter', '~> 1.5'
-  gem 'rubocop-rails', require: false
-  gem 'factory_girl_rails'
-  gem 'faker'
-  gem "timecop"
-end
-
-group :development do
-  gem 'dotenv-rails'
   gem "rails-erd"
+  gem 'dotenv-rails'
+  gem 'byebug', platform: :mri
+  gem 'listen'
+  gem 'simplecov'
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'shoulda-matchers'
+  gem 'shoulda-callback-matchers'
 end
 
 group :test do
+  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "webdrivers"
   gem 'mock_redis'
-  gem 'simplecov', '<= 0.17'
   gem 'rspec-sidekiq'
 end
 

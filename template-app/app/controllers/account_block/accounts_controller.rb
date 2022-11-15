@@ -10,7 +10,6 @@ module AccountBlock
       case params[:data][:type] #### rescue invalid API format
       when 'sms_account'
         account = SmsAccount.find_by(full_phone_number: params[:data][:attributes][:full_phone_number])
-
         sms_otp = sms_otp_pin
         if account.present?
           account.register = true
@@ -27,33 +26,6 @@ module AccountBlock
             render json: { errors: format_activerecord_errors(account.errors) },
                    status: :unprocessable_entity
           end
-        end
-      when 'email_account'
-        account_params = jsonapi_deserialize(params)
-
-        query_email = account_params['email'].downcase
-        account = EmailAccount.where('LOWER(email) = ?', query_email).first
-
-        validator = EmailValidation.new(account_params['email'])
-
-        if account || !validator.valid?
-          return render json: EmailAccountSerializer.new(account, meta: { token: encode(account.id), message: 'Account already registered' }),
-                        status: :unprocessable_entity
-        end
-
-        @account = EmailAccount.new(jsonapi_deserialize(params))
-        @account.platform = request.headers['platform'].downcase if request.headers.include?('platform')
-        if @account.save
-          # EmailAccount.create_stripe_customers(@account)
-          EmailValidationMailer
-            .with(account: @account, host: request.base_url)
-            .activation_email.deliver
-          render json: EmailAccountSerializer.new(@account, meta: {
-                                                    token: encode(@account.id)
-                                                  }).serializable_hash, status: :created
-        else
-          render json: { errors: @account.errors },
-                 status: :unprocessable_entity
         end
 
       when 'social_account'
@@ -89,19 +61,6 @@ module AccountBlock
       end
     end
 
-    def search
-      @accounts = Account.where(activated: true)
-                         .where('first_name ILIKE :search OR '\
-       'last_name ILIKE :search OR '\
-       'email ILIKE :search', search: "%#{search_params[:query]}%")
-      if @accounts.present?
-        render json: AccountSerializer.new(@accounts, meta: { message: 'List of users.' }).serializable_hash,
-               status: :ok
-      else
-        render json: { errors: [{ message: 'Not found any user.' }] }, status: :ok
-      end
-    end
-
     def show
       account = AccountBlock::Account.find_by_id(params[:id])
       render json: AccountSerializer.new(account)
@@ -133,10 +92,6 @@ module AccountBlock
 
     def sms_otp_pin
       sms_otp = SmsOtp.create(full_phone_number: params[:data][:attributes][:full_phone_number], hash_key: params[:data][:attributes][:hash_key])
-    end
-
-    def search_params
-      params.permit(:query)
     end
   end
 end
