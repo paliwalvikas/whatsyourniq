@@ -11,7 +11,7 @@ module BxBlockCatalogue
                          magnesium: [440, 'mg'], potassium: [3500, 'mg'], zinc: [17, 'mg'], iodine: [150, 'ug'], vit_b1: [1.4, 'mg'], vit_b2: [2.0, 'mg'], vit_b3: [1.4, 'mg'], vit_b6: [1.9, 'mg'], vit_b12: [2.2, 'ug'], vit_e: [10, 'mcg'], vit_b7: [40, 'mcg'], vit_b9: [40, 'mcg'], vit_b5: [5, 'mg'], phosphorus: [1000, 'mg'], copper: [2, 'mg'], manganese: [4, 'mg'], chromium: [50, 'mca'], selenium: [40, 'mca'], chloride: [2050, 'mg'] }.freeze
 
     NOT_SO_GOOD_INGREDIENTS = { saturated_fat: [22, 'g'], sugar: [90, 'g'], sodium: [2000, 'mg'],
-                                calories: [2110, 'kcal'], cholesterol: [300, 'mg'], trans_fat: [2, 'g'], total_fat: [67, 'g'] }.freeze
+                                calories: [2110, 'kcal'], cholestrol: [300, 'mg'], trans_fat: [2, 'g'], total_fat: [67, 'g'] }.freeze
 
     attr_accessor :image_url, :category_filter, :category_type_filter
 
@@ -436,9 +436,6 @@ module BxBlockCatalogue
       self.np_calculated = true
       save!
     end
-    # p_good << saturate_fat[0] if saturate_fat&.last == true
-    # p_good << sugar[0] if sugar&.last == true
-    # p_good << sodium[0] if sodium&.last == true
 
     def probiotic_value
       return unless ingredient.probiotic.present?
@@ -476,12 +473,12 @@ module BxBlockCatalogue
 
     def cholesterol_rda
       energy = ingredient.energy.to_f
-      return [] if ingredient.cholestrol.nil?
+      return [] if ingredient.cholestrol.nil? 
       cholestrol = ingredient.cholestrol.to_f
       sat_fat = ingredient.saturate.to_f
       case product_type
       when 'solid'
-        if pro <= 5 && sat_fat < 1.5 && energy_from_saturated_fat
+        if cholestrol <= 5 && sat_fat < 1.5 && energy_from_saturated_fat
           return [checking_not_so_good_value(cholestrol, 'cholestrol', 'Free'), true]
         elsif cholestrol <= 20 && sat_fat <= 1.5 && energy_from_saturated_fat
           return [checking_not_so_good_value(cholestrol, 'cholestrol', 'Low'), true]
@@ -498,19 +495,19 @@ module BxBlockCatalogue
     def total_fat_rda
       energy = ingredient.energy.to_f
       return [] if ingredient.total_fat.nil?
-      pro = ingredient.total_fat.to_f
+      total_fat = ingredient.total_fat.to_f
       case product_type
       when 'solid'
-        if pro <= 0.5 
-          return [checking_not_so_good_value(pro, 'total_fat', 'Free'), true]
-        elsif pro <= 3
-          return [checking_not_so_good_value(pro, 'total_fat', 'Low'), true]
+        if total_fat <= 0.5 
+          return [checking_not_so_good_value(total_fat, 'total_fat', 'Free'), true]
+        elsif total_fat <= 3
+          return [checking_not_so_good_value(total_fat, 'total_fat', 'Low'), true]
         end
       when 'beverage'
-        if  pro <= 0.5  
-          return [checking_not_so_good_value(pro, 'total_fat', 'Free'), true]
-        elsif pro <= 1.5
-          return [checking_not_so_good_value(pro, 'total_fat', 'Low'), true]
+        if  total_fat <= 0.5  
+          return [checking_not_so_good_value(total_fat, 'total_fat', 'Free'), true]
+        elsif total_fat <= 1.5
+          return [checking_not_so_good_value(total_fat, 'total_fat', 'Low'), true]
         end
       end
     end
@@ -587,29 +584,6 @@ module BxBlockCatalogue
       end
       value
     end
-
-    # def trans_fat
-    #   energy = ingredient.energy.to_f
-    #   trans_fat = ingredient.trans_fat.to_f
-    #   case product_type
-    #   when 'solid'
-    #     if trans_fat < 0.2
-    #       positive_good << 'Low trans_fat'
-    #     elsif if energy.between?(0,80) && trans_fat > 0.09 || energy.between?(80,160) && trans_fat > 0.18 || energy.between?(160,240) && trans_fat > 0.27 || energy.between?(240,320) && trans_fat > 0.36 || energy.between?(320,400) && trans_fat > 0.44 || energy.between?(400,480) && trans_fat > 0.53 || energy.between?(480,560) && trans_fat > 0.62 || energy.between?(560,640) && trans_fat > 0.71 || energy.between?(640,720) && trans_fat > 0.8 || energy.between?(720, 800) && trans_fat > 0.89 || energy > 800 && trans_fat > 0.89negative_not_good << 'contains more than permissible trans fats'
-    #           end
-    #     end
-
-    #   when 'beverage'
-    #     if trans_fat < 0.5
-    #       positive_good << 'trans_fat Free'
-    #     elsif trans_fat >= 0.5 && trans_fat < 2.5
-    #       positive_good << 'Low trans_fat'
-    #     elsif if energy.positive? && trans_fat > 0.09 || energy.between?(0,7) && trans_fat > 0.18 || energy.between?(7,14) && trans_fat > 0.27 || energy.between?(14,22) && trans_fat > 0.36 || energy.between?(22,29) && trans_fat > 0.44 || energy.between?(29,36) && trans_fat > 0.53 || energy.between?(36,43) && trans_fat > 0.62 || energy.between?(43,50) && trans_fat > 0.71 || energy.between?(50, 57) && trans_fat > 0.8 || energy.between?(57, 64) && trans_fat > 0.89
-    #             negative_not_good << 'High trans_fat'
-    #           end
-    #     end
-    #   end
-    # end
 
     def product_sugar_level
       return if ingredient.total_sugar.nil?
