@@ -3,8 +3,8 @@ require 'csv'
 
 module BxBlockCatalogue
   class ProductWorker 
-    # include Sidekiq::Worker
-    # sidekiq_options retry: false
+    include Sidekiq::Worker
+    sidekiq_options retry: 3
     ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
 
     def product_data_import(file)

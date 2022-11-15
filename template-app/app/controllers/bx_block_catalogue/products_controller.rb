@@ -1,7 +1,4 @@
-# frozen_string_literal: true
-
 require 'json'
-
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
@@ -9,8 +6,8 @@ module BxBlockCatalogue
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
-        product.calculation
-        data = product.rda_calculation
+        CalculateProductRating.new.calculation(product)
+        data = CalculateRda.new.rda_calculation(product)
         begin
           return render json: ProductCompareSerializer.new(product,
                                              params: { good_ingredient: data[:good_ingredient],
@@ -25,7 +22,8 @@ module BxBlockCatalogue
 
     def update
       product = BxBlockCatalogue::Product.find_by(id: params[:id])
-      if product&.calculation || product&.rda_calculation
+      if product.present?
+        CalculateProductRating.new.calculation(product) || CalculateRda.rda_calculation.new(product)
         render json: { message: 'Calculated successfully!' }
       else
         render json: { error: 'Something went wrong!' }
@@ -57,12 +55,11 @@ module BxBlockCatalogue
       Product.all.each do |product|
         # product.product_health_preference
         unless product.np_calculated?
-          product.negative_and_positive
+          CalculateRda.new.negative_and_positive(product)
         end
       end
       BxBlockCategories::FilterCategory.where(name: "Malt/cereal based bev's").update(name: "Malt/cereal based bevs")
       render json: { errors: 'updated' }
-
     end
 
     def change_for_cal
@@ -129,7 +126,7 @@ module BxBlockCatalogue
 
     def calculation_for_rda
       if product = Product.find_by(id: params[:id])
-        render json: { data: product.rda_calculation }
+        render json: { data: CalculateRda.rda_calculation.new(product) }
       else
         render json: { errors: 'Product not found' }
       end
@@ -161,7 +158,7 @@ module BxBlockCatalogue
     def product_calculation
       BxBlockCatalogue::Product.find_in_batches do |products|
         products.each do |product|
-          product.calculation if product.bar_code.present?
+          CalculateProductRating.new.calculation(product) if product.bar_code.present?
         end
       end
       flash[:success] = "product calculation successfully"
@@ -172,12 +169,26 @@ module BxBlockCatalogue
       products = Product.where(id: ids)
       data = []
       products.each do |product|
-        product.calculation
+        CalculateProductRating.new.calculation(product)
         p_data = product.compare_product_good_not_so_good_ingredients
         data << ProductSerializer.new(product, params: { good_ingredient: p_data[:good_ingredient] })
       end
       data
     end
+
+    def requested_products
+      requested_product = current_user.requested_products.new(requested_product_params)
+      if requested_product.save
+         render json: RequestedProductSerializer.new(requested_product), status: :ok
+      else
+        render json: {error: "request not send "}, status: :unprocessable_entity
+      end
+    end
+
+    def requested_products_list
+      render json: RequestedProductSerializer.new(current_user.requested_products.all), status: :ok
+    end
+
     private
 
     def case_for_product(product)
@@ -211,5 +222,10 @@ module BxBlockCatalogue
     def product_found
       @product = BxBlockCatalogue::Product.find_by(id: params[:id])
     end
+
+    def requested_product_params
+      params.permit(:name, :refernce_url, :weight, :status ,barcode_image:[], product_image:[])
+    end
+
   end
 end
