@@ -9,7 +9,7 @@ module BxBlockCatalogue
     before_create :inc_added_count, if: :check?
     # after_create :update_product_count, if: :check?
     after_destroy :update_all_records
-    validate :check_dupicate, on: :create
+    before_commit :check_dupicate, on: :create
 
     scope :product_category, ->(product_category) { where product_category: product_category }
     scope :product_sub_category, ->(product_sub_category) { where product_sub_category: product_sub_category }
