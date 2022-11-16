@@ -33,8 +33,8 @@ module BxBlockCatalogue
       data = []
       order = @order
       if order.present?
-        calculation = order.order_product_calculation
-        data << calculation
+        order_calculation = order.order_product_calculation
+        data << order_calculation
         serializer = BxBlockCatalogue::OrderSerializer.new(order, params: { user: current_user })
         render json: { nutrition_value: data, product: serializer }
       else

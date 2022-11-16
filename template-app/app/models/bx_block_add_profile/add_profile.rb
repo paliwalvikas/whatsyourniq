@@ -27,7 +27,7 @@ module BxBlockAddProfile
       obese_grade_2: 4
     }
 
-    after_save :calculate_bmi
+    after_create :calculate_bmi
 
     private
 
