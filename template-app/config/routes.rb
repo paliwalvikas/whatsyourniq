@@ -24,6 +24,9 @@ Rails.application.routes.draw do
         post :change_for_cal
         get :product_calculation
         delete :delete_health_preference
+        post :requested_products
+        get :requested_products_list
+
       end
     end
     resources :compare_products
@@ -36,6 +39,7 @@ Rails.application.routes.draw do
 
   namespace :bx_block_faq_and_contact_us do
     resources :faqs
+    resources :contact_us
   end
 
   namespace :bx_block_add_profile do
