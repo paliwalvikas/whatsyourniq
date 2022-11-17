@@ -37,6 +37,11 @@ Rails.application.routes.draw do
     resources :orders
   end
 
+  namespace :bx_block_faq_and_contact_us do
+    resources :faqs
+    resources :contact_us
+  end
+
   namespace :bx_block_add_profile do
     resources :add_profiles
     resources :relations
