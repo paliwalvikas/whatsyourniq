@@ -13,7 +13,7 @@ class CalculateRda
     not_so_good_ingredient = []
     good_ingredient << protein_value if protein_value.present? && protein_value.first[:level] != 'Low'
     good_ingredient << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
-    good_ingredient << vit_min_value(true)
+    good_ingredient << vit_min_value(true, "a")
     good_ingredient << calories_energy if calories_energy.present?
     saturate_fat = product_sat_fat
     if !saturate_fat.nil? && saturate_fat != [] && !saturate_fat.first.first[:level].nil?
@@ -80,7 +80,7 @@ class CalculateRda
     end
   end
 
-  def vit_min_value(value)
+  def vit_min_value(value, var)
     ing = @product.ingredient
     vit_min = []
     val = 0
@@ -99,7 +99,7 @@ class CalculateRda
         elsif val >= 1
           vit_min_level = 'High'
         end
-        value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low'
+        value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' || var == "vit"
         vit_min << value if value.present?
       end
     when 'beverage', 'cheese_and_oil'
@@ -117,7 +117,7 @@ class CalculateRda
           vit_min_level = 'High'
         end
         if value
-          value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low'
+          value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' || var == "vit"
           vit_min << value if value.present?
         else
           value = checking_good_value(mp, clm, vit_min_level)
@@ -200,9 +200,9 @@ class CalculateRda
     @product = product
     p_good = []
     neg_n_good = []
-    p_good << vit_min_value(false)
-    p_good << dietary_fibre if dietary_fibre.present? # && dietary_fibre.first[:level] != 'Low'
-    p_good << protein_value if protein_value.present? # && protein_value.first[:level] != 'Low'
+    p_good << vit_min_value(false, "vit")
+    p_good << dietary_fibre if dietary_fibre.present? 
+    p_good << protein_value if protein_value.present? 
     neg_n_good << calories_energy if calories_energy.present?
     saturate_fat = product_sat_fat
     neg_n_good << saturate_fat[0] if saturate_fat&.last == false || saturate_fat&.last == true
@@ -214,10 +214,10 @@ class CalculateRda
     neg_n_good << cholesterol_rda
     neg_n_good << total_fat_rda
     neg_n_good << trans_fat_rda
-    @product.negative_not_good = neg_n_good.flatten.compact if neg_n_good.present?
-    @product.positive_good = p_good.flatten.compact if p_good.present?
-    @product.np_calculated = true
-    @product.save!
+    @product.update(negative_not_good: (neg_n_good.flatten.compact - ['t',true, false])) if neg_n_good.present?
+    @product.update(positive_good: (p_good.flatten.compact - ['t',true, false])) if p_good.present?
+    @product.update(np_calculated: true)
+    # @product.save!
   end
 
   def probiotic_value
