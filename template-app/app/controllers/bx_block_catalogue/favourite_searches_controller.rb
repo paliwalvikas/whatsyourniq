@@ -28,14 +28,13 @@ module BxBlockCatalogue
   	end
 
   	def update
-      fav_search = @fav_search.update(search_params)
       fav_serach_update
-      if @fav_search.save
+      if @fav_search.update(search_params)
         render json: FavouriteSearchSerializer.new(@fav_search)
                          .serializable_hash,
                status: :ok
       else
-        render json: ErrorSerializer.new(fav_search).serializable_hash,
+        render json: ErrorSerializer.new(@fav_search).serializable_hash,
                status: :unprocessable_entity
       end
   	end
