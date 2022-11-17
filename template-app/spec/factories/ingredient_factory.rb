@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ingredient, class: BxBlockCatalogue::Ingredient do
     energy {"20 kcal"}
     saturate {"20 Gram"}

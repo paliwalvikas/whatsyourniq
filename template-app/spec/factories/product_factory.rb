@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :product, class: BxBlockCatalogue::Product do
     product_type {"Beverage"}
     product_name {"THE HONEY SHOP - Honey Mango Spread - Sugar Free Mango Jam, Perfect Addition to Your Healthy Breakfast (Combination of Alphonso Mango and 100% Pure Honey), 200 gm - Pack of 1"}

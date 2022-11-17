@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :category, class: BxBlockCategories::Category do
     name {"category"}
   end

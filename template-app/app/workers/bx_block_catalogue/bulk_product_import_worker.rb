@@ -51,6 +51,8 @@ module BxBlockCatalogue
         product.calculated = false
         product.np_calculated = false
         if product.save!
+          CalculateProductRating.new.calculation(product)
+          CalculateRda.new.negative_and_positive(product)
           img = product_params["image"]&.split("\n")&.first
           file_url = URI.parse(img) rescue nil
           if file_url

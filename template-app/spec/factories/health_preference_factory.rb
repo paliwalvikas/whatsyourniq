@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :health_preference, class: BxBlockCatalogue::HealthPreference do
     immunity {true}
     gut_health {true}

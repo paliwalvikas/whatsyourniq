@@ -28,16 +28,13 @@ gem 'rack-cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem "rails-erd"
-  gem 'dotenv-rails'
-  gem 'byebug', platform: :mri
-  gem 'listen'
-  gem 'simplecov'
+  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails'
-  gem 'factory_bot_rails'
-  gem 'faker'
   gem 'shoulda-matchers'
+  gem 'factory_bot_rails'
   gem 'shoulda-callback-matchers'
+  gem 'simplecov'
+  gem 'faker'
 end
 
 group :test do
@@ -66,7 +63,7 @@ gem 'bx_block_categories-acd0763f', '0.0.8', require: 'bx_block_categories'
 gem 'bx_block_content_management', '0.0.2', require: 'bx_block_content_management'
 gem 'bx_block_custom_form-63cd533b', '0.0.7', require: 'bx_block_custom_form'
 gem 'bx_block_notifications-a22eb801', '0.0.3', require: 'bx_block_notifications'
-gem 'builder_base', '0.0.43'
+gem 'builder_base', '0.0.50'
 gem 'sassc-rails'
 gem 'activeadmin'
 gem 'jquery-rails'
@@ -95,3 +92,5 @@ gem 'sidekiq-status'
 gem 'sidekiq-unique-jobs'
 gem 'activeadmin_quill_editor'
 gem 'redis', '< 4.6'
+gem 'rswag'
+# gem 'rswag-ui'

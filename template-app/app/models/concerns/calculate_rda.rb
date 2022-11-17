@@ -103,7 +103,7 @@ class CalculateRda
         vit_min << value if value.present?
       end
     when 'beverage', 'cheese_and_oil'
-      micro_columns.each do |clm|
+      CalculateProductRating.new.micro_columns.each do |clm|
         good_value = GOOD_INGREDIENTS[:"#{clm}"]
         mp = ing.send(clm).to_f
         val = BxBlockCatalogue::VitaminValueService.new.set_vitamin_value_for_beaverage(clm, mp).to_f

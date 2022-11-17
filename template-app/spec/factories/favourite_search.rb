@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :favourite_search, class: BxBlockCatalogue::FavouriteSearch do
     product_category {{"Packaged Food" => ["Jams, Honey & Spreads"]}}
     product_sub_category {{"Packaged Food" => {"Jams, Honey & Spreads" => ['Jams & Spreads']}}}
