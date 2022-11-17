@@ -1,4 +1,4 @@
-module BxBlockFaqAndContactUs
+module BxBlockCatalogue
   class ErrorSerializer < BuilderBase::BaseSerializer
     attribute :errors do |catalogue|
       catalogue.errors.as_json
