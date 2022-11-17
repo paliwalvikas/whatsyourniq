@@ -4,6 +4,7 @@ ActiveAdmin.register BxBlockCatalogue::CompareProduct, as: "compare" do
 
 
   index title: 'compare' do
+    selectable_column
   	id_column
     column :selected
     column :account_id
