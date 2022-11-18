@@ -281,10 +281,10 @@ class CalculateRda
     trans_fat = @product.ingredient.trans_fat.to_f
     energy = @product.ingredient.energy.to_f
     if trans_fat < 0.2
-      [checking_not_so_good_value(trans_fat, 'trans_fat', 'Low'), true]
+      [checking_not_so_good_value(trans_fat, 'trans_fat', 'Low'), false]
     elsif trans_fat > 0.2
       level = BxBlockCatalogue::VitaminValueService.new.trans_fat_clc(trans_fat, energy)
-      [checking_not_so_good_value(trans_fat, 'trans_fat', level), true]
+      [checking_not_so_good_value(trans_fat, 'trans_fat', level), false]
     end
   end
 
