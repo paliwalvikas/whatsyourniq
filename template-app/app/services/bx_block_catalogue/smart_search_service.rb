@@ -32,7 +32,6 @@ module BxBlockCatalogue
       positive = product.where.not(positive_good: []).select(:id, :positive_good)
       negative = product.where.not(negative_not_good: []).select(:id, :negative_not_good)
       fun.each do |key, value|
-        key = 'sugar' if key.to_s.downcase == "total sugar"
         key = key.to_s.include?(' ') ? key.to_s.downcase.tr!(" ", "_") : key.to_s.downcase
         products = p_negative_not_good.include?(key.to_s) ? negative : positive 
         products = positive_negative(products, key.downcase, value)

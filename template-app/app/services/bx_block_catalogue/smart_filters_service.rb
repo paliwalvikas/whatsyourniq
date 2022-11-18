@@ -172,7 +172,7 @@ module BxBlockCatalogue
     end
 
     def prd_negative_not_good
-      ['calories', 'Total fat', 'saturated_fat','cholesterol','trans_fat','sodium','Total sugar']
+      ['calories', 'Total fat', 'saturated_fat','cholesterol','trans_fat','sodium','Sugar']
     end
 
     def prd_positive_good  

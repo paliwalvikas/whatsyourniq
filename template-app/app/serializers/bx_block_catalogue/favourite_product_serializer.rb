@@ -9,7 +9,7 @@ module BxBlockCatalogue
     end
 
     attribute :product do |object, _params|
-      BxBlockCatalogue::ProductSerializer.new(object&.product)
+      BxBlockCatalogue::ProductSerializer.new(object&.product, params: {user: object&.account})
     end
 
     attribute :account do |object|
