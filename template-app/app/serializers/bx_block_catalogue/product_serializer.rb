@@ -33,6 +33,15 @@ module BxBlockCatalogue
       end
     end
 
+    attribute :added_to_fav do |object, user|
+      if user[:user].present?
+        compare = user[:user].favourite_products.where(product_id: object.id)
+        compare.present? 
+      else
+        false
+      end
+    end
+
     attribute :filter_category do |object|
       object.filter_category.name.titleize
     end
