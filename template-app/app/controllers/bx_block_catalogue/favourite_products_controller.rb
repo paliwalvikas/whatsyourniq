@@ -39,7 +39,7 @@ module BxBlockCatalogue
       p_ids = current_user&.favourite_products.select(:product_id)
       if params[:product_rating].present? && p_ids.present?
         products = BxBlockCatalogue::Product.where(id: p_ids, product_rating: params[:product_rating])
-        fav_prod = current_user&.favourite_products&.where(product_id: products.ids)
+        fav_prod = current_user&.favourite_products&.where(product_id: products.ids)&.joins(:product).order("products.product_rating asc")
         render json: FavouriteProductSerializer.new(fav_prod).serializable_hash,
                status: :ok
       else
