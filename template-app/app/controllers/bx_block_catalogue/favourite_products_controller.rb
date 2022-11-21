@@ -1,6 +1,7 @@
 module BxBlockCatalogue
   class FavouriteProductsController < ApplicationController
-    before_action :find_fav_prod, only: [:update, :destroy]
+    before_action :find_fav_prod, only: [:update]
+    before_action :find_product, only: [:destroy]
 
     def index
       fav_prod = current_user.favourite_products.all
@@ -61,6 +62,10 @@ module BxBlockCatalogue
 
     def fav_prod_params
       params.require(:data).require(:attributes).permit(:account_id, :product_id, :favourite)
+    end
+
+    def find_product
+      @fav_prod = current_user.favourite_products.find_by(product_id: params[:product_id] || params[:id])
     end
 
     def find_fav_prod
