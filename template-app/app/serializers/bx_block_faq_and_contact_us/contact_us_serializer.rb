@@ -3,7 +3,7 @@ module BxBlockFaqAndContactUs
     include FastJsonapi::ObjectSerializer
     attributes *[
       :id,
-      :type, 
+      :contact_type, 
       :business_name, 
       :name, 
       :email, 
