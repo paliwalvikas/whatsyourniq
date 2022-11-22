@@ -7,9 +7,10 @@ ActiveAdmin.register BxBlockCatalogue::CompareProduct, as: "compare" do
     selectable_column
   	id_column
     column :selected
-    column :account_id
-    column :product_id
-    column :email
+    column :account
+    column :product do |obj|
+      obj&.product&.product_name
+    end
     actions
   end   
 
