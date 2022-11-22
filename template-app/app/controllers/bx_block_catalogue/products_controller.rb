@@ -53,7 +53,7 @@ module BxBlockCatalogue
 
     def prod_health_preference
       Product.all.each do |product|
-        # product.product_health_preference
+        product.product_health_preference
         unless product.np_calculated?
           CalculateRda.new.negative_and_positive(product)
         end
