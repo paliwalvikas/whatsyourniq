@@ -2,7 +2,7 @@ require 'json'
 module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
-    skip_before_action :validate_json_web_token, only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data delete_all_products product_calculation regenerate_master_data]
+    skip_before_action :validate_json_web_token, only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data delete_all_products product_calculation regenerate_master_data question_listing]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
@@ -189,6 +189,23 @@ module BxBlockCatalogue
       render json: RequestedProductSerializer.new(current_user.requested_products.all), status: :ok
     end
 
+    def question_listing
+      render json: BxBlockCatalogue::ReportedProductQuestionSerializer.new(BxBlockCatalogue::ReportedProductQuestion.all)
+    end
+
+    def reported_product
+      reported_product = current_user.reported_products.create(reported_product_params)
+      if reported_product.present?
+        render json: BxBlockCatalogue::ReportedProductSerializer.new(reported_product)
+      else
+        render json: {error: "failed to report please try again "}, status: :unprocessable_entity
+      end
+    end
+
+    def reported_product_list
+      render json: BxBlockCatalogue::ReportedProductSerializer.new(current_user.reported_products)
+    end
+
     private
 
     def case_for_product(product)
@@ -225,6 +242,10 @@ module BxBlockCatalogue
 
     def requested_product_params
       params.permit(:name, :refernce_url, :weight, :status ,barcode_image:[], product_image:[])
+    end
+
+    def reported_product_params
+      params.permit(:description, :product_id, ans_ids:[])
     end
 
   end
