@@ -85,4 +85,6 @@ Rails.application.routes.draw do
   scope :add_profiles do
     post "calculate_bmi", to: "bx_block_add_profile/add_profiles#calculate_bmi"
   end
+
+  get '/about_us', to: "bx_block_content_management/about_contents#about_us_contents"
 end
