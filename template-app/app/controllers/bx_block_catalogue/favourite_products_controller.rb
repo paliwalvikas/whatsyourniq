@@ -49,6 +49,17 @@ module BxBlockCatalogue
       end
     end
 
+    def fav_search
+      query = search_query
+      prd_id = current_user&.favourite_products&.select(:product_id)
+      products = BxBlockCatalogue::Product.where(id: prd_id)&.where(query)
+      if products.present? 
+        return render json: FavouriteProductSerializer.new(FavouriteProduct.where(product_id: products&.ids), params: {user: current_user})
+      else
+        render json: { errors: 'Product Not Found' }, status: :ok
+      end
+    end
+
     def destroy
       if @fav_prod.present? && @fav_prod.destroy
         render json: { success: true, message: "Product successfully deleted" }, status: :ok
@@ -59,6 +70,16 @@ module BxBlockCatalogue
     end
 
     private
+
+    def search_query
+      query = params[:query].split(' ')
+      query_string = ""
+      query.each do |data|
+        query_string += "(product_name ilike '%#{data}%' OR bar_code ilike '%#{data}%')"
+        query_string += " AND " unless data == query[-1]
+      end
+      query_string
+    end
 
     def fav_prod_params
       params.require(:data).require(:attributes).permit(:account_id, :product_id, :favourite)

@@ -33,6 +33,7 @@ Rails.application.routes.draw do
     end
     resources :compare_products
     get 'filter_fav_product', to: 'favourite_products#filter_fav_product'
+    get 'fav_search', to: 'favourite_products#fav_search'
     resources :favourite_products
     resources :favourite_searches 
     resources :order_items
