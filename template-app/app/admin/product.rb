@@ -234,7 +234,11 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       redirect_to import_admin_products_path, flash: {error: "File format not valid!"} and return unless params[:active_admin_import_model][:file].content_type.include?("csv")
       file_path = params[:active_admin_import_model][:file].path
       file = open(file_path) rescue nil
+      file_csv = CSV.parse(file, headers: true)
+      expected_headers = ["category_id", "product_type", "food_drink_filter", "category_filter", "category_type_filter", "website", "product_name", "brand_name", "description", "bar_code", "weight", "price_mrp", "price_post_discount", "image", "ingredient_list", "fruit_veg", "nutritional", "energy", "carbohydrate", "fibre", "protein", "total_fat", "saturate", "monosaturated_fat", "polyunsaturated_fat", "trans_fat", "fatty_acid", "vit_a", "vit_c", "vit_d", "vit_b6", "vit_b12", "vit_b9", "calcium", "iron", "magnesium", "zinc", "iodine", "cholestrol", "sodium", "fat", "total_sugar", "mono_unsaturated_fat", "data_check", "veg_and_nonveg", "gluteen_free", "added_sugar", "artificial_preservative", "organic", "vegan_product", "egg", "fish", "shellfish", "tree_nuts", "peanuts", "wheat", "soyabean"]
+      redirect_to import_admin_products_path, flash: {error: "File contains invalid headers!"} and return unless file_csv.headers == expected_headers
       pcsv = BxBlockCatalogue::ProductCsv.create
+      file = open(file_path) rescue nil
       pcsv.csv_file.attach(
         io: file,
         filename: "#{file_path.split("/").last}",
