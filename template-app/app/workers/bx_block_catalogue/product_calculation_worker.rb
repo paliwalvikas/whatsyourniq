@@ -14,7 +14,8 @@ module BxBlockCatalogue
       BxBlockCatalogue::Product.find_in_batches do |products|
         products.each do |product|
           if calculation_type == "calculate_np"
-            # if !product.np_calculated?  
+            # if !product.np_calculated? 
+              product.product_health_preference 
               status = CalculateRda.new.negative_and_positive(product) if product.bar_code.present?
               csv_row << ["#{product.id}", "#{product.product_name}", "#{calculation_type}", "Success"] if status
               product_import_status.file_status = CSV.generate do |csv|
