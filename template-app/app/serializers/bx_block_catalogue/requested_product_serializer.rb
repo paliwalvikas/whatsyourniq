@@ -1,6 +1,6 @@
 module BxBlockCatalogue
   class RequestedProductSerializer < BuilderBase::BaseSerializer
-    attributes :name, :weight, :status
+    attributes :name, :weight, :status, :category
 
     attribute :product_image do |object, params|
       host = params[:host] || ''
