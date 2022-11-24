@@ -1,4 +1,4 @@
-ActiveAdmin.register BxBlockFaqAndContactUs::Faq, as: "Faq" do
+ActiveAdmin.register BxBlockFaqAndContactUs::Faq, as: "FQA_Question" do
   permit_params :question, answers_attributes: %i[id answer _destroy]
 
   form do |f|
