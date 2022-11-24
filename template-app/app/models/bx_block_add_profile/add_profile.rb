@@ -27,7 +27,7 @@ module BxBlockAddProfile
       obese_grade_2: 4
     }
 
-    after_create :calculate_bmi
+    before_save :calculate_bmi
 
     private
 
@@ -45,8 +45,6 @@ module BxBlockAddProfile
       elsif self.bmi_result >= 29.91
         self.bmi_status = 4
       end
-
-      self.save
     end
 
   end
