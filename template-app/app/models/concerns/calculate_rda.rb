@@ -80,7 +80,7 @@ class CalculateRda
     end
   end
 
-  def vit_min_value(value, var)
+  def vit_min_value(value, val)
     ing = @product.ingredient
     vit_min = []
     val = 0
@@ -99,8 +99,13 @@ class CalculateRda
         elsif val >= 1
           vit_min_level = 'High'
         end
-        value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' || var == "vit"
-        vit_min << value if value.present?
+        if value && vit_min_level != 'Low'
+          value = checking_good_value(mp, clm, vit_min_level)  
+          vit_min << value if value.present?
+        elsif value == false
+          value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' || val == "vit"
+          vit_min << value if value.present?
+        end
       end
     when 'beverage', 'cheese_and_oil'
       CalculateProductRating.new.micro_columns.each do |clm|
@@ -116,44 +121,17 @@ class CalculateRda
         elsif val >= 1
           vit_min_level = 'High'
         end
-        if value
-          value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' || var == "vit"
+        if value && vit_min_level != 'Low'
+          value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' 
           vit_min << value if value.present?
-        else
-          value = checking_good_value(mp, clm, vit_min_level)
+        elsif value == false
+          value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' || val == "vit"
           vit_min << value if value.present?
         end
       end
     end
     vit_min
   end
-
-  def levels_for_vit_and_min(columns)
-    ing = @product.ingredient
-    vit_min = []
-    columns.each do |clm|
-      ing_value = ing.send(clm)
-      next unless ing_value.present?
-
-      ing_value = ing_value.to_f
-      vit_min << check_value('micro_value', clm, ing_value) if ing_value.present?
-    end
-    sum_of_vit_and_min = vit_min.sum.to_f
-    if sum_of_vit_and_min < 0.6
-      'Low'
-    else
-      (sum_of_vit_and_min >= 0.6 && sum_of_vit_and_min < 1.0 ? 'Medium' : 'High')
-    end
-  end
-
-  # def minral_columns
-  #   %w[calcium iron magnesium zinc iodine potassium phosphorus manganese copper selenium
-  #      chloride chromium]
-  # end
-
-  # def vitamin_columns
-  #   %w[vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 vit_b2 vit_b3 vit_b1 vit_b5 vit_b7]
-  # end
 
   def dietary_fibre
     return unless @product.ingredient.fibre.present?
@@ -287,11 +265,6 @@ class CalculateRda
       [checking_not_so_good_value(trans_fat, 'trans_fat', level), false]
     end
   end
-
-  # def vitamins_and_minrals
-  #   good_ingredient = { vitamins: [percent: 0.0, upper_limit: 0.0, level: levels_for_vit_and_min(vitamin_columns), quantity: 0.0],
-  #                       minerals: [percent: 0.0, upper_limit: 0.0, level: levels_for_vit_and_min(minral_columns), quantity: 0.0] }
-  # end
 
   def calories_energy
     return unless (energy = @product.ingredient.energy).present?
