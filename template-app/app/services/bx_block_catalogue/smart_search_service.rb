@@ -29,15 +29,16 @@ module BxBlockCatalogue
     def functional_preference(product, f_p)
       fun = eval(f_p[:functional_preference])
       pr_ids =[]
-      positive = product.where.not(positive_good: []).select(:id, :positive_good)
-      negative = product.where.not(negative_not_good: []).select(:id, :negative_not_good)
+      products = product.select(:id, :positive_good, :negative_not_good)
+      # positive = product.where.not(positive_good: []).select(:id, :positive_good)
+      # negative = product.where.not(negative_not_good: []).select(:id, :negative_not_good)
       fun.each do |key, value|
         key = key.to_s.include?(' ') ? key.to_s.downcase.tr!(" ", "_") : key.to_s.downcase
-        products = p_negative_not_good.include?(key.to_s) ? negative : positive 
+        # products = p_negative_not_good.include?(key.to_s) ? negative : positive 
         products = positive_negative(products, key.downcase, value)
-        pr_ids << products.pluck(:id) if products.present?
+        # pr_ids << products.select(:id) #if products.present?
       end
-      product.present? ? product.where(id: pr_ids.flatten.uniq) : nil
+      product.present? ? product.where(id: products&.ids) : nil
     end
 
     def positive_negative(product, key, value)
@@ -49,7 +50,7 @@ module BxBlockCatalogue
           dt[:name] = dt[:name].to_s.include?(' ') ? dt[:name].to_s.downcase.tr!(" ", "_") : dt[:name].to_s.downcase
           p_ids << prd.id if dt[:name].to_s == key && value.include?(dt[:level]) 
         end
-      end
+      end if product.present?
       product.where(id: p_ids.compact) if p_ids.present? && product.present?
     end
 
