@@ -1,5 +1,6 @@
-class CalculateProductRating 
+# frozen_string_literal: true
 
+class CalculateProductRating
   def calculation(product)
     np = []
     pp = []
@@ -52,6 +53,8 @@ class CalculateProductRating
              @product.product_rating
            elsif mp.to_f.between?(4, 8) && @product.product_rating != 'A' && @product.product_rating != 'E'
              (@product.product_rating.ord - 1).chr
+           elsif mp.to_f.between?(4, 8) && @product.product_rating == 'A' || @product.product_rating == 'E'
+             @product.product_rating
            elsif mp.to_f > (8) && @product.product_rating != 'A'
              @product.product_rating == 'D' || @product.product_rating == 'E' ? (@product.product_rating.ord - 1).chr : (@product.product_rating.ord - 2).chr
            elsif mp.to_f > (8) && @product.product_rating == 'A'
@@ -79,7 +82,7 @@ class CalculateProductRating
 
   def check_value(val, ele, value)
     product_type = @product.product_type
-    if product_type == 'cheese_and_oil' || product_type == 'solid'
+    if %w[cheese_and_oil solid].include?(product_type)
       case val
       when 'negative_value'
         BxBlockCheeseAndOil::NegativeIngredient.all.each do |ni|
@@ -145,5 +148,4 @@ class CalculateProductRating
       ing.point if value.to_f.between?(com_lower, com_upper)
     end
   end
-
 end

@@ -13,7 +13,7 @@ class CalculateRda
     not_so_good_ingredient = []
     good_ingredient << protein_value if protein_value.present? && protein_value.first[:level] != 'Low'
     good_ingredient << dietary_fibre if dietary_fibre.present? && dietary_fibre.first[:level] != 'Low'
-    good_ingredient << vit_min_value(true, "a")
+    good_ingredient << vit_min_value(true)
     good_ingredient << calories_energy if calories_energy.present?
     saturate_fat = product_sat_fat
     if !saturate_fat.nil? && saturate_fat != [] && !saturate_fat.first.first[:level].nil?
@@ -80,7 +80,7 @@ class CalculateRda
     end
   end
 
-  def vit_min_value(value, val)
+  def vit_min_value(value)
     ing = @product.ingredient
     vit_min = []
     val = 0
@@ -103,7 +103,7 @@ class CalculateRda
           value = checking_good_value(mp, clm, vit_min_level)  
           vit_min << value if value.present?
         elsif value == false
-          value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' || val == "vit"
+          value = checking_good_value(mp, clm, vit_min_level) 
           vit_min << value if value.present?
         end
       end
@@ -125,7 +125,7 @@ class CalculateRda
           value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' 
           vit_min << value if value.present?
         elsif value == false
-          value = checking_good_value(mp, clm, vit_min_level) if vit_min_level != 'Low' || val == "vit"
+          value = checking_good_value(mp, clm, vit_min_level) 
           vit_min << value if value.present?
         end
       end
@@ -178,7 +178,7 @@ class CalculateRda
     @product = product
     p_good = []
     neg_n_good = []
-    p_good << vit_min_value(false, "vit")
+    p_good << vit_min_value(false)
     p_good << dietary_fibre if dietary_fibre.present? 
     p_good << protein_value if protein_value.present? 
     neg_n_good << calories_energy if calories_energy.present?
