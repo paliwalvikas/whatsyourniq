@@ -170,6 +170,8 @@ RSpec.describe "Products", type: :request do
     let(:account) { create(:account)}
 
     it "should respond with Product#prod_health_preference" do                             
+      token = Support::ApiHelper.authenticated_user(account)
+
       headers = { "ACCEPT" => "application/json" }
       post "/bx_block_catalogue/products/prod_health_preference", :params => {
         product: product, ingredient: ingredient
@@ -193,9 +195,11 @@ RSpec.describe "Products", type: :request do
     }
     let(:ingredient) { create(:ingredient, product_id: product.id) }
     let(:health_preference) { create(:health_preference, product_id: product.id) }
-    let(:account) { create(:account)}
+    let(:account) { create(:account) }
+    
+    it "should respond with Product#change_for_cal" do
+      token = Support::ApiHelper.authenticated_user(account)
 
-    it "should respond with Product#change_for_cal" do                             
       headers = { "ACCEPT" => "application/json" }
       post "/bx_block_catalogue/products/change_for_cal", :params => {
         product: product, ingredient: ingredient
@@ -220,8 +224,10 @@ RSpec.describe "Products", type: :request do
     let(:ingredient) { create(:ingredient, product_id: product.id) }
     let(:health_preference) { create(:health_preference, product_id: product.id) }
     let(:account) { create(:account)}
-
-    it "should respond with Product#delete_health_preference" do                             
+    
+    it "should respond with Product#delete_health_preference" do
+      token = Support::ApiHelper.authenticated_user(account)
+      
       headers = { "ACCEPT" => "application/json" }
       delete "/bx_block_catalogue/products/delete_health_preference", :params => {
         product: product, ingredient: ingredient
@@ -370,10 +376,128 @@ RSpec.describe "Products", type: :request do
   end
 
   describe "GET /compare_product" do
-    let(:category) { create(:category) }
-    let(:filter_category) { create(:filter_category) }
-    let(:filter_sub_category) { create(:filter_sub_category, filter_category_id: filter_category.id) }
-    let(:product) {
+    let!(:category) { create(:category) }
+    let!(:filter_category) { create(:filter_category) }
+    let!(:filter_sub_category) { create(:filter_sub_category, filter_category_id: filter_category.id) }
+    let!(:product) {
+      create(:product, category_id: category.id, filter_category_id: filter_category.id, filter_sub_category_id: filter_sub_category.id)
+    }
+    let!(:ingredient) { create(:ingredient, product_id: product.id) }
+    let!(:health_preference) { create(:health_preference, product_id: product.id) }
+    let!(:account) { create(:account)}
+    let!(:favourite_search) { create(:favourite_search, account_id: account.id) }
+    let!(:compare_product) { create(:compare_product, account_id: account.id, product_id: product.id) }
+
+    it "should respond with Product#compare_product when token present" do
+      token = Support::ApiHelper.authenticated_user(account)
+
+      headers = { "ACCEPT" => "application/json" }
+      get "/bx_block_catalogue/products/compare_product", :params => {
+        product: product, ingredient: ingredient, token: token
+      }, :headers => headers
+
+      json = JSON.parse(response.body).deep_symbolize_keys
+
+      expect(json[:data]).not_to be_nil
+      
+      expect(response.content_type).to eq("application/json; charset=utf-8")
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "GET /compare_product" do
+    let!(:category) { create(:category) }
+    let!(:filter_category) { create(:filter_category) }
+    let!(:filter_sub_category) { create(:filter_sub_category, filter_category_id: filter_category.id) }
+    let!(:product) {
+      create(:product, category_id: category.id, filter_category_id: filter_category.id, filter_sub_category_id: filter_sub_category.id)
+    }
+    let!(:ingredient) { create(:ingredient, product_id: product.id) }
+    let!(:health_preference) { create(:health_preference, product_id: product.id) }
+    let!(:account) { create(:account)}
+    let!(:favourite_search) { create(:favourite_search, account_id: account.id) }
+
+    it "should respond with Product#compare_product when token present" do
+      token = Support::ApiHelper.authenticated_user(account)
+
+      headers = { "ACCEPT" => "application/json" }
+      get "/bx_block_catalogue/products/compare_product", :params => {
+        token: token
+      }, :headers => headers
+
+      json = JSON.parse(response.body).deep_symbolize_keys
+
+      expect(json[:message]).to eq "Please add one more product"
+      
+      expect(response.content_type).to eq("application/json; charset=utf-8")
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "GET /compare_product" do
+    let!(:category) { create(:category) }
+    let!(:filter_category) { create(:filter_category) }
+    let!(:filter_sub_category) { create(:filter_sub_category, filter_category_id: filter_category.id) }
+    let!(:product) {
+      create(:product, category_id: category.id, filter_category_id: filter_category.id, filter_sub_category_id: filter_sub_category.id)
+    }
+    let!(:ingredient) { create(:ingredient, product_id: product.id) }
+    let!(:health_preference) { create(:health_preference, product_id: product.id) }
+    let!(:account) { create(:account)}
+    let!(:favourite_search) { create(:favourite_search, account_id: account.id) }
+    let!(:compare_product) { create(:compare_product, account_id: account.id, product_id: product.id) }
+
+    it "should respond with Product#compare_product when token present" do
+      token = Support::ApiHelper.authenticated_user(account)
+
+      headers = { "ACCEPT" => "application/json" }
+      get "/bx_block_catalogue/products/compare_product", :params => {
+        product: product, ingredient: ingredient, token: token
+      }, :headers => headers
+
+      json = JSON.parse(response.body).deep_symbolize_keys
+
+      expect(json[:data]).not_to be_nil
+      
+      expect(response.content_type).to eq("application/json; charset=utf-8")
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "GET /compare_product" do
+    let!(:category) { create(:category) }
+    let!(:filter_category) { create(:filter_category) }
+    let!(:filter_sub_category) { create(:filter_sub_category, filter_category_id: filter_category.id) }
+    let!(:product) {
+      create(:product, category_id: category.id, filter_category_id: filter_category.id, filter_sub_category_id: filter_sub_category.id)
+    }
+    let!(:ingredient) { create(:ingredient, product_id: product.id) }
+    let!(:health_preference) { create(:health_preference, product_id: product.id) }
+    let!(:account) { create(:account)}
+    let!(:favourite_search) { create(:favourite_search, account_id: account.id) }
+
+    it "should respond with Product#compare_product when token present" do
+      token = Support::ApiHelper.authenticated_user(account)
+
+      headers = { "ACCEPT" => "application/json" }
+      get "/bx_block_catalogue/products/compare_product", :params => {
+        token: token
+      }, :headers => headers
+
+      json = JSON.parse(response.body).deep_symbolize_keys
+
+      expect(json[:message]).to eq "Please add one more product"
+      
+      expect(response.content_type).to eq("application/json; charset=utf-8")
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe "GET /compare_product" do
+    let!(:category) { create(:category) }
+    let!(:filter_category) { create(:filter_category) }
+    let!(:filter_sub_category) { create(:filter_sub_category, filter_category_id: filter_category.id) }
+    let!(:product) {
       create(:product, category_id: category.id, filter_category_id: filter_category.id, filter_sub_category_id: filter_sub_category.id)
     }
     let(:ingredient) { create(:ingredient, product_id: product.id) }
@@ -418,10 +542,26 @@ RSpec.describe "Products", type: :request do
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
-      expect(json[:errors]).to eq [{:token=>"Invalid token"}]
+      expect(json[:errors]).to eq nil
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
-      expect(response).to have_http_status(:bad_request)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "should respond with Product#regenerate_master_data with token" do
+      token = Support::ApiHelper.authenticated_user(account)
+
+      headers = { "ACCEPT" => "application/json" }
+      get "/bx_block_catalogue/regenerate_master_data", :params => {
+        product: product, ingredient: ingredient, token: token
+      }, :headers => headers
+
+      json = JSON.parse(response.body).deep_symbolize_keys
+      
+      expect(json[:message]).to eq "Success"
+      
+      expect(response.content_type).to eq("application/json; charset=utf-8")
+      expect(response).to have_http_status(:ok)
     end
   end
 

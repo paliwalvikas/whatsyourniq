@@ -13,9 +13,9 @@ FactoryBot.define do
     cognitive_health {true}
     high_protein {true}
     low_sugar {true}
-    hyperthyroid {true}
-    greater_than_60_years_old {true}
-    pregnant_women {true}
-    hypothyroid {true}
+    # hyperthyroid {true}
+    # greater_than_60_years_old {true}
+    # pregnant_women {true}
+    # hypothyroid {true}
   end
 end
