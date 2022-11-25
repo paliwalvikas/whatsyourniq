@@ -44,6 +44,7 @@ group :test do
   gem "webdrivers"
   gem 'mock_redis'
   gem 'rspec-sidekiq'
+  # gem 'shoulda-matchers', '~> 5.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -94,3 +95,4 @@ gem 'activeadmin_quill_editor'
 gem 'redis', '< 4.6'
 gem 'rswag'
 # gem 'rswag-ui'
+gem 'timecop', '~> 0.9.5'

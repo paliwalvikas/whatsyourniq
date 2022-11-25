@@ -71,5 +71,6 @@ RSpec.configure do |config|
   end
 
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
-
+  # Warn when jobs are not enqueued to Redis but to a job array
+  # config.warn_when_jobs_not_processed_by_sidekiq = true # default => true
 end

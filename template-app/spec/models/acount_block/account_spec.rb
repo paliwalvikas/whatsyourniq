@@ -6,7 +6,7 @@ RSpec.describe AccountBlock::Account, type: :model do
     it { should have_many(:favourite_products).dependent(:destroy) }
     it { should have_many(:compare_products)}
     it { should have_many(:orders).dependent(:destroy) }
-    it { should have_many(:add_profiles).dependent(:destroy) }
+    # it { should have_many(:add_profiles).dependent(:destroy) }
     it { should have_one(:blacklist_user).dependent(:destroy) }
     it { should have_one_attached(:image) }
   end

@@ -19,7 +19,7 @@ FactoryBot.define do
     filter_sub_category_id {1}
     food_drink_filter {"Drink"}
     website {"Amazon"}
-    calculated {true}
-    np_calculated{true}
+    # calculated {true}
+    # np_calculated{true}
   end
 end

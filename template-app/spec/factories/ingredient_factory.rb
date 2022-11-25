@@ -60,6 +60,6 @@ FactoryBot.define do
     no_artificial_color {"20 Gram"}
     folate {"20 Gram"}
     fat {"20 Gram"}
-    jain {"20 Gram"}
+    # jain {"20 Gram"}
   end
 end
