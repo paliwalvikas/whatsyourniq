@@ -2,6 +2,7 @@
 
 RSpec.describe BxBlockCatalogue::FavouriteSearch, type: :model do
    describe 'Associations' do
-    it { should belong_to(:account) }
-  end
+      it { should belong_to(:account).optional }
+   end
+
 end
