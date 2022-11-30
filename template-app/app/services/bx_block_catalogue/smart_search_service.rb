@@ -152,7 +152,7 @@ module BxBlockCatalogue
       elsif cao[:"Packaged Food"].present?
         product = product&.food&.where(filter_category_id: food_ids.flatten.compact.uniq).ids
       end
-      check?(product) ? product : products&.where(id: 0)
+      check?(product) ? product : product&.where(id: 0)
     end
 
     def cheese_and_oil(product, cao)
