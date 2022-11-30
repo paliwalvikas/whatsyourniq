@@ -29,7 +29,7 @@ module BxBlockCatalogue
     def functional_preference(product, f_p)
       fun = eval(f_p[:functional_preference])
       pr_ids =[]
-      products = product.select(:id, :positive_good, :negative_not_good)
+      products = product&.where.not(positive_good: [], negative_not_good: [])&.select(:id, :positive_good, :negative_not_good)
       # positive = product.where.not(positive_good: []).select(:id, :positive_good)
       # negative = product.where.not(negative_not_good: []).select(:id, :negative_not_good)
       fun.each do |key, value|
@@ -45,7 +45,7 @@ module BxBlockCatalogue
       p_ids =[]
       product.each do |prd|
         data = p_negative_not_good.include?(key) ?  prd.negative_not_good : prd.positive_good
-        data = data.map{|i| eval(i)}
+        data = data.map{|i| eval(i) if i.present?}
         data.each do |dt| 
           dt[:name] = dt[:name].to_s.include?(' ') ? dt[:name].to_s.downcase.tr!(" ", "_") : dt[:name].to_s.downcase
           p_ids << prd.id if dt[:name].to_s == key && value.include?(dt[:level]) 
@@ -137,22 +137,22 @@ module BxBlockCatalogue
     end
 
     def food_drink_filter(product, cao)
-      product = product.where.not(product_type: "cheese_and_oil")
+      product = product&.where.not(product_type: "cheese_and_oil")
       food_ids , drink_ids = [], []
       food_ids << BxBlockCategories::FilterCategory.where(name: cao[:"Packaged Food"]).pluck(:id) if check?(cao[:"Packaged Food"])
       drink_ids << BxBlockCategories::FilterCategory.where(name: cao[:"Packaged Drink"]).pluck(:id) if check?(cao[:"Packaged Drink"])
       if cao[:"Packaged Food"].present? && cao[:"Packaged Drink"].present?
         f_product, d_product = [], []
-        f_product = product.food.where(filter_category_id: food_ids.flatten.compact.uniq).ids if check?(food_ids.flatten)
-        d_product = product.drink.where(filter_category_id: drink_ids.flatten.compact.uniq).ids if check?(drink_ids.flatten)
+        f_product = product&.food&.where(filter_category_id: food_ids.flatten.compact.uniq).ids if check?(food_ids.flatten)
+        d_product = product&.drink&.where(filter_category_id: drink_ids.flatten.compact.uniq).ids if check?(drink_ids.flatten)
         ids = f_product + d_product
         product = ids.flatten.uniq
       elsif cao[:"Packaged Drink"].present?
-        product = product.drink.where(filter_category_id: drink_ids.flatten.compact.uniq).ids 
+        product = product&.drink&.where(filter_category_id: drink_ids.flatten.compact.uniq).ids 
       elsif cao[:"Packaged Food"].present?
-        product = product.food.where(filter_category_id: food_ids.flatten.compact.uniq).ids
+        product = product&.food&.where(filter_category_id: food_ids.flatten.compact.uniq).ids
       end
-      check?(product) ? product : product.where(id: 0)
+      check?(product) ? product : product&.where(id: 0)
     end
 
     def cheese_and_oil(product, cao)
