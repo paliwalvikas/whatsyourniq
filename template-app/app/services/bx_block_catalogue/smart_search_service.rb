@@ -137,22 +137,22 @@ module BxBlockCatalogue
     end
 
     def food_drink_filter(product, cao)
-      product = product.where.not(product_type: "cheese_and_oil")
+      product = product&.where.not(product_type: "cheese_and_oil")
       food_ids , drink_ids = [], []
       food_ids << BxBlockCategories::FilterCategory.where(name: cao[:"Packaged Food"]).pluck(:id) if check?(cao[:"Packaged Food"])
       drink_ids << BxBlockCategories::FilterCategory.where(name: cao[:"Packaged Drink"]).pluck(:id) if check?(cao[:"Packaged Drink"])
       if cao[:"Packaged Food"].present? && cao[:"Packaged Drink"].present?
         f_product, d_product = [], []
-        f_product = product.food.where(filter_category_id: food_ids.flatten.compact.uniq).ids if check?(food_ids.flatten)
-        d_product = product.drink.where(filter_category_id: drink_ids.flatten.compact.uniq).ids if check?(drink_ids.flatten)
+        f_product = product&.food&.where(filter_category_id: food_ids.flatten.compact.uniq).ids if check?(food_ids.flatten)
+        d_product = product&.drink&.where(filter_category_id: drink_ids.flatten.compact.uniq).ids if check?(drink_ids.flatten)
         ids = f_product + d_product
         product = ids.flatten.uniq
       elsif cao[:"Packaged Drink"].present?
-        product = product.drink.where(filter_category_id: drink_ids.flatten.compact.uniq).ids 
+        product = product&.drink&.where(filter_category_id: drink_ids.flatten.compact.uniq).ids 
       elsif cao[:"Packaged Food"].present?
-        product = product.food.where(filter_category_id: food_ids.flatten.compact.uniq).ids
+        product = product&.food&.where(filter_category_id: food_ids.flatten.compact.uniq).ids
       end
-      check?(product) ? product : product.where(id: 0)
+      check?(product) ? product : products&.where(id: 0)
     end
 
     def cheese_and_oil(product, cao)
