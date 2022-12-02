@@ -37,7 +37,7 @@ STORAGE_SECRET_ACCESS_KEY: "builderai"
 
 image:
   repository:  registry.gitlab.builder.ai/template-app
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: 8.8.8
 
 imagePullSecrets: []
