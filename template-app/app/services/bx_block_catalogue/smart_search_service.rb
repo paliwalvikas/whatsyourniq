@@ -46,7 +46,7 @@ module BxBlockCatalogue
       product.each do |prd|
         data = p_negative_not_good.include?(key) ?  prd.negative_not_good : prd.positive_good
         data = data.map{|i| eval(i) if i.present?}
-        data.each do |dt| 
+        data&.flatten.compact.each do |dt| 
           dt[:name] = dt[:name].to_s.include?(' ') ? dt[:name].to_s.downcase.tr!(" ", "_") : dt[:name].to_s.downcase
           p_ids << prd.id if dt[:name].to_s == key && value.include?(dt[:level]) 
         end
@@ -152,7 +152,7 @@ module BxBlockCatalogue
       elsif cao[:"Packaged Food"].present?
         product = product&.food&.where(filter_category_id: food_ids.flatten.compact.uniq).ids
       end
-      check?(product) ? product : product&.where(id: 0)
+      check?(product) ? product : []
     end
 
     def cheese_and_oil(product, cao)
