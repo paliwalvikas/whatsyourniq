@@ -82,11 +82,11 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       f.input :product_point
       f.input :product_rating
       f.input :category_id, as: :select, collection: BxBlockCategories::Category.all.pluck(:category_type, :id)
-      f.input :positive_good
+      # f.input :positive_good
       f.input :image, as: :file
       f.input :bar_code
       f.input :data_check
-      f.input :negative_not_good
+      # f.input :negative_not_good
       f.input :description
       f.input :ingredient_list
       f.input :food_drink_filter
