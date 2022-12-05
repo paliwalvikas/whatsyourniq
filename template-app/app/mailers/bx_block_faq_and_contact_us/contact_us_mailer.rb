@@ -14,7 +14,6 @@ module BxBlockFaqAndContactUs
             to: 's1214@yopmail.com',
             from: @account.email,
             subject: 'Thank you for contact us') do |format|
-            byebug
               format.html { render 'contact_us_email' }
             end
       end
