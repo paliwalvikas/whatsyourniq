@@ -6,7 +6,7 @@ FactoryBot.define do
     full_phone_number {917693063000}
     country_code {91}
     phone_number {5454365345}
-    email {"my_test123@gmail.com"}
+    email { Faker::Internet.email}
     activated {true}
     device_id {["fsdfewst4w3543gdftert"]}
     unique_auth_id {"fsdfsdwer453tewr4w35"}

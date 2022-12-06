@@ -8,7 +8,7 @@ RSpec.describe BxBlockCatalogue::FavouriteSearchesController, type: :controller 
     @token = BuilderJsonWebToken.encode(@account.id)
   end
 
-  describe "Post 'create' social login" do
+  describe "Post 'create' Favourite Search" do
   	it 'Create Favourite Search' do
       expect do
         post :create, params: { data: {niq_score: ['A']}}
