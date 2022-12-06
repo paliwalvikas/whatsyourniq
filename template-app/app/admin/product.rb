@@ -161,10 +161,10 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     column :product_name
     column :product_type
     column :filter_category_id do |obj|
-      obj.filter_category.name
+      obj&.filter_category&.name
     end
     column :filter_sub_category_id do |obj|
-      obj.filter_sub_category.name
+      obj&.filter_sub_category&.name
     end
     column :category_id do |obj|
       obj&.category&.category_type
@@ -175,7 +175,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     column :price_mrp
     column :price_post_discount
     column :ingredients do |obj|
-      obj.ingredient
+      obj&.ingredient
     end
     actions do |resource|
       link_to 'calculate_rating', '#', onclick: "calculateRating(#{resource.id});"
@@ -210,10 +210,10 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       end
 
       row :filter_category_id do |obj|
-        obj.filter_category.name
+        obj&.filter_category&.name
       end
       row :filter_sub_category_id do |obj|
-        obj.filter_sub_category.name
+        obj&.filter_sub_category&.name
       end
       row :ingredients do |obj|
         obj.ingredient
