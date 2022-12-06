@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :relation, class: BxBlockAddProfile::Relation do
-    relation {"son"}
+    relation {"Mother"}
   end
 end
