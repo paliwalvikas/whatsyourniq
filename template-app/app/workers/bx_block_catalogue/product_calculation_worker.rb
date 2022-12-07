@@ -11,7 +11,7 @@ module BxBlockCatalogue
       csv_row = []  
       csv_row << csv_headers
     
-      BxBlockCatalogue::Product.find_in_batches do |products|
+      BxBlockCatalogue::Product.where(data_check: "green").find_in_batches do |products|
         products.each do |product|
           if calculation_type == "calculate_np"
             # if !product.np_calculated? 
