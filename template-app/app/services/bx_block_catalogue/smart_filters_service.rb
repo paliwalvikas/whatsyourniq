@@ -28,7 +28,7 @@ module BxBlockCatalogue
     def food_type(data)
 			category = BxBlockCategories::Category.all
       category.each do |category|
-        product = BxBlockCatalogue::Product.where(category_id: category.id).where.not(filter_category_id: nil)
+        product = BxBlockCatalogue::Product&.green&.where(category_id: category.id).where.not(filter_category_id: nil)
         data << {count: product.count, food_type: category.category_type.titleize}
       end
       data = {count: total_count(data), food_type: data}
@@ -55,7 +55,7 @@ module BxBlockCatalogue
       cat= BxBlockCategories::Category.where.not(category_type: ['packaged_food','cooked_food'])
       cat.each do |c|
         filter = []
-        prod = BxBlockCatalogue::Product.where(category_id: c.id)
+        prod = BxBlockCatalogue::Product&.green&.where(category_id: c.id)
         u_f = filter_category_p(prod.pluck(:filter_category_id).uniq)
         u_f.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
         data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
@@ -94,7 +94,7 @@ module BxBlockCatalogue
 
   	def niq_score(params, data)
       product = fav_filter_product(params, 'niq_score')
-  		rating = BxBlockCatalogue::Product.order(product_rating: :asc).pluck(:product_rating).uniq.compact.delete_if(&:blank?) 
+  		rating = BxBlockCatalogue::Product&.green&.order(product_rating: :asc).pluck(:product_rating).uniq.compact.delete_if(&:blank?) 
   		rating.each do |rat|
   			data << {count: product.where(product_rating: rat).count, product_rating: rat }
   		end 
@@ -213,9 +213,9 @@ module BxBlockCatalogue
                     when 'health_preference'
                       {food_type: fav.food_type, product_category: fav.product_category, product_sub_category: fav.product_sub_category, niq_score: fav.niq_score, food_allergies: fav.food_allergies, food_preference: fav.food_preference, functional_preference: fav.functional_preference}
                     end if fav.present?
-        product = fav.present? ? BxBlockCatalogue::SmartSearchService.new.smart_search(fav_value) : BxBlockCatalogue::Product.where(id:0)
+        product = fav.present? ? BxBlockCatalogue::SmartSearchService.new.smart_search(fav_value) : BxBlockCatalogue::Product&.green&.where(id:0)
       else
-        product = BxBlockCatalogue::Product.where(category_id: BxBlockCategories::Category.where(category_type: "packaged_food").ids)
+        product = BxBlockCatalogue::Product&.green&.where(category_id: BxBlockCategories::Category.where(category_type: "packaged_food").ids)
       end
     end
 
@@ -226,7 +226,7 @@ module BxBlockCatalogue
     def find_product
       # food_type = params[:food_type].map{|val| value_is(val)}
       category = BxBlockCategories::Category.where(category_type: 'packaged_food')
-      product = BxBlockCatalogue::Product.where(category_id: category.ids)
+      product = BxBlockCatalogue::Product&.green&.where(category_id: category.ids)
   	end
 
     def value_is(val)
