@@ -2,7 +2,7 @@ module BxBlockCatalogue
   class ProductCalculationWorker  
     include Sidekiq::Worker
     include Sidekiq::Status::Worker
-    sidekiq_options retry: false
+    sidekiq_options retry: 3
 
     def perform(calculation_type)
       product_import_status = BxBlockCatalogue::ImportStatus.create(job_id: "Job: #{Time.now.strftime('%Y%m%d%H%M%S')}", calculation_status: "Pending")
@@ -10,8 +10,8 @@ module BxBlockCatalogue
       csv_headers = ["Pruduct ID", "Product Name", "Calculation Type", "Calculation Status"]
       csv_row = []  
       csv_row << csv_headers
-    
-      BxBlockCatalogue::Product.where(data_check: "green").find_in_batches do |products|
+
+      BxBlockCatalogue::Product.where(data_check: "green").in_batches.each do |products|
         products.each do |product|
           if calculation_type == "calculate_np"
             # if !product.np_calculated? 
