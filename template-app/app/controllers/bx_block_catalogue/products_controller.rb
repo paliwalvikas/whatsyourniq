@@ -7,6 +7,7 @@ module BxBlockCatalogue
     skip_before_action :validate_json_web_token,
                        only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data
                                 delete_all_products product_calculation regenerate_master_data question_listing]
+    skip_before_action :validate_json_web_token, only: %i[prod_health_preference delete_health_preference change_for_cal]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
