@@ -2,8 +2,6 @@ ActiveAdmin.register BxBlockCatalogue::RequestedProduct, as: "Requested_product"
   permit_params :product, :account, :description
   config.filters = false 
 
-  
-
   index title: "Requested_product" do
     selectable_column
     id_column
@@ -15,4 +13,25 @@ ActiveAdmin.register BxBlockCatalogue::RequestedProduct, as: "Requested_product"
     column :category
     actions
   end   
+
+   show do
+    attributes_table do
+      row :name
+      row :account_id
+      row :weight
+      row :refernce_url
+      row :status
+      row :category
+      row 'product_image' do |ad|
+        ad.product_image.each.map do |image, index|
+          image_tag(url_for(image),style: 'height:50px; width:50px')
+        end
+      end
+      row 'barcode_image' do |ad|
+        ad.barcode_image.each.map do |image, index|
+          image_tag(url_for(image),style: 'height:50px; width:50px')
+        end
+      end
+    end  
+  end
 end
