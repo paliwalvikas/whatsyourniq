@@ -1,6 +1,7 @@
 ActiveAdmin.register AccountBlock::Account, as: "Users" do
   permit_params :full_name, :email, :full_phone_number, :activated , :age, :gender
-
+  config.filters = false 
+  
   form do |f|
     f.inputs do
       f.input :full_name
@@ -15,8 +16,6 @@ ActiveAdmin.register AccountBlock::Account, as: "Users" do
 
   index title: 'users' do
   	id_column
-    column :total_female_count
-    column :total_male_count
     column :full_name
     column :email
     column :full_phone_number
