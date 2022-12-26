@@ -11,7 +11,7 @@ FactoryBot.define do
     category_id {"Packaged Foods"}
     positive_good {"Good"}
     negative_not_good {"No"}
-    bar_code {"B07P4286MZ"}
+    bar_code {"B07P428"+rand(1000).to_s}
     data_check {"green"}
     description {"Tropical mango and 100% pure honey"}
     ingredient_list {"Tropical mango and 100% pure honey"}

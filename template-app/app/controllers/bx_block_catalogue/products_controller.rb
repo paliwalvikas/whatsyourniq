@@ -8,6 +8,7 @@ module BxBlockCatalogue
                        only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data
                                 delete_all_products product_calculation regenerate_master_data question_listing]
     skip_before_action :validate_json_web_token, only: %i[prod_health_preference delete_health_preference change_for_cal]
+    before_action :find_fav_search, only: %i[niq_score product_smart_search ofline_smart_serach]
 
     def index
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
@@ -45,14 +46,18 @@ module BxBlockCatalogue
     end
 
     def niq_score
-      products = BxBlockCatalogue::Product.all
-      product = products.find_by(id: params[:product_id])
-      if product.present?
-        products = case_for_product(product)
-        products = products.order('products.product_rating ASC')
-        render json: ProductSerializer.new(products)
+      if params[:fav_search_id].present?
+        params[:limit] = 20
+        product_smart_search
       else
-        render json: { errors: 'Product not found' }
+        product = BxBlockCatalogue::Product.find_by(id: params[:product_id])
+        if product.present?
+          products = case_for_product(product)
+          products = products.order('products.product_rating ASC')
+          render json: ProductSerializer.new(products)
+        else
+          render json: { errors: 'Product not found' }
+        end
       end
     end
 
@@ -115,13 +120,10 @@ module BxBlockCatalogue
     end
 
     def product_smart_search
-      fav_s = BxBlockCatalogue::FavouriteSearch.find_by(id: params[:fav_search_id])
-      if fav_s.present?
-        products = BxBlockCatalogue::SmartSearchService.new.smart_search(fav_s)&.order('product_rating ASC')
+      if @fav_s.present?
+        products = BxBlockCatalogue::SmartSearchService.new.smart_search(@fav_s)&.order('product_rating ASC')
         options = serialization_options.deep_dup
-        params[:per] = 10
-        products_array = products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(params[:per]) : []
-
+        products_array = samrt_search_result(products)
         serializer = if valid_user.present?
                        ProductSerializer.new(products_array,
                                              params: { user: valid_user })
@@ -131,7 +133,8 @@ module BxBlockCatalogue
                        )
                      end
         begin
-          render json: { products: serializer, meta: page_meta(products_array) }
+          data = page_meta(products_array).present? ? page_meta(products_array) : {total_count: products_array.count}
+          render json: { products: serializer, meta: data }
         rescue AbstractController::DoubleRenderError
           nil
         end
@@ -228,6 +231,20 @@ module BxBlockCatalogue
 
     private
 
+    def samrt_search_result(products)
+      products = if params[:page].present?
+                  params[:per] = 10
+                  products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(params[:per]) : []
+                else
+                  params[:limit].present? ? products.limit(params[:limit]) : products
+                end
+      products
+    end
+
+    def find_fav_search
+      @fav_s = BxBlockCatalogue::FavouriteSearch.find_by(id: params[:fav_search_id])
+    end
+
     def case_for_product(product)
       filter_sub_category_id = product.filter_sub_category_id
       filter_category_id = product.filter_category_id
@@ -249,7 +266,7 @@ module BxBlockCatalogue
     def find_filter_products(rating, filter_sub_category_id, filter_category_id, product_id)
       products = BxBlockCatalogue::Product.where.not(id: product_id).where(product_rating: rating,
                                                                            filter_sub_category_id: filter_sub_category_id, filter_category_id: filter_category_id)
-      products.limit(5)
+      products.limit(20)
     end
 
     def product_param
