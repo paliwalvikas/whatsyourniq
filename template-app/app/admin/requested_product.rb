@@ -29,7 +29,7 @@ ActiveAdmin.register BxBlockCatalogue::RequestedProduct, as: "Requested_product"
       end
       row 'barcode_image' do |ad|
         ad.barcode_image.each.map do |image, index|
-          image_tag(url_for(image),style: 'height:50px; width:50px')
+          image_tag(url_for(image), :class => "img_preview", style: 'height:50px; width:50px')
         end
       end
     end  

@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module BxBlockCatalogue
   class ProductCompareSerializer < BuilderBase::BaseSerializer
-    attributes :id, :product_name, :product_type, :product_rating, :product_point, :positive_good, :negative_not_good, :bar_code, :data_check, :food_drink_filter, :image, :category_type, :filter_category, :filter_sub_category, :description, :ingredient_list, :created_at, :updated_at
-    
+    attributes :id, :product_name, :product_type, :product_rating, :product_point, :positive_good, :negative_not_good,
+               :bar_code, :data_check, :food_drink_filter, :image, :category_type, :filter_category, :filter_sub_category, :description, :ingredient_list, :created_at, :updated_at
+
     attribute :image do |object, _params|
       if object.image.attached?
         if Rails.env.development?
@@ -11,23 +14,23 @@ module BxBlockCatalogue
         end
       end
     end
-    
+
     attribute :category_type do |object|
       object.category&.category_type&.titleize
     end
 
     attribute :product_rating do |object|
-      object.product_rating.present? ? object.product_rating : "NA"
+      object.product_rating.present? ? object.product_rating : 'NA'
     end
 
     attribute :product_point do |object|
-      object.product_point.present? ? object.product_point : "NA"
+      object.product_point.present? ? object.product_point : 'NA'
     end
 
     attributes :compare_product do |object, user|
       if user[:user].present?
         compare = user[:user].compare_products.where(selected: true, product_id: object.id)
-        compare.present? 
+        compare.present?
       else
         false
       end
@@ -36,7 +39,7 @@ module BxBlockCatalogue
     attribute :added_to_fav do |object, user|
       if user[:user].present?
         compare = user[:user].favourite_products.where(product_id: object.id)
-        compare.present? 
+        compare.present?
       else
         false
       end
@@ -51,13 +54,17 @@ module BxBlockCatalogue
     end
 
     attribute :positive_good do |object, _params|
-      if _params[:good_ingredient].present? 
+      if _params[:status] == 'offline'
+        object.rda_value['good_ingredient']
+      elsif _params[:good_ingredient].present?
         _params[:good_ingredient]
       end
     end
 
     attribute :negative_not_good do |object, _params|
-      if _params[:not_so_good_ingredient].present?
+      if _params[:status] == 'offline'
+        object.rda_value['not_so_good_ingredient']
+      elsif _params[:not_so_good_ingredient].present?
         _params[:not_so_good_ingredient]
       end
     end

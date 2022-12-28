@@ -29,6 +29,7 @@ Rails.application.routes.draw do
         post :reported_product
         get :reported_product_list
         get :question_listing
+        get :total_product
       end
     end
     resources :compare_products
