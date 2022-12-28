@@ -76,19 +76,19 @@ module BxBlockCatalogue
     	end
 
     	def cognitive_health(ingr, val)
-    		check_greater?(ingr[:iron], val[:iron]) || check_greater?(ingr[:iodine], val[:lodine]) || check_greater?(ingr[:vit_b12], val[:vit_b12]) || ingredient_herbs(ingr) || (ingr[:omega_3].to_f > 40 || ingr[:d_h_a].to_f == 40) 
+    		(check_greater?(ingr[:iron], val[:iron]) || check_greater?(ingr[:iodine], val[:lodine]) || check_greater?(ingr[:vit_b12], val[:vit_b12]) ) || (ingredient_herbs(ingr) || (ingr[:omega_3].to_f > 40) || ingr[:d_h_a].to_f == 40) 
     	end
 
     	def holistic_nutrition(ing, val)
-    		(check_greater?(ing[:vit_b12], val[:vit_b12]) && check_greater?(ing[:vit_d], val[:vit_d]) && check_greater?(ing[:iron], val[:iron])) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:fibre], val[:fibre]) && (check_less?(ing[:total_sugar], val[:sugar]) && check_less?(ing[:sodium], 0.12) && check_less?(ing[:fat], val[:fat]))
+    		(check_greater?(ing[:vit_b12], val[:vit_b12]) && check_greater?(ing[:vit_d], val[:vit_d]) && check_greater?(ing[:iron], val[:iron])) && check_greater?(ing[:protein], val[:protein]) || check_greater?(ing[:fibre], val[:fibre]) && (check_less?(ing[:total_sugar], val[:sugar]) && check_less?(ing[:sodium], 0.12) && check_less?(ing[:fat], val[:fat]))
     	end
 
     	def weight_loss(ing, val)
-    		check_less?(ing[:energy], val[:energy]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:fibre], val[:fibre]) && micronutrients(ing, val, 'w')
+    		check_less?(ing[:energy], val[:energy]) && check_greater?(ing[:protein], val[:protein]) || check_greater?(ing[:fibre], val[:fibre]) || micronutrients(ing, val, 'w')
     	end
 
     	def weight_gain(ing, val)
-    		(ing[:energy].to_f > val[:energy] ) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:fibre], val[:fibre]) && micronutrients(ing, val, 'w')
+    		(ing[:energy].to_f > val[:energy] ) && check_greater?(ing[:protein], val[:protein]) || check_greater?(ing[:fibre], val[:fibre]) || micronutrients(ing, val, 'w')
     	end
 
     	def diabetes(ing, val, fibre)
@@ -96,11 +96,18 @@ module BxBlockCatalogue
     	end
 
     	def low_colesterol(ing, val)
-    		check_less?(ing[:cholestrol], val[:cholestrol]) && check_less?(ing[:saturate], val[:saturated_fat]) #pending
+    		check_less?(ing[:cholestrol], val[:cholestrol]) && check_less?(ing[:saturate], val[:saturated_fat]) && energy_from_saturated_fat(ing)
     	end
 
+      def energy_from_saturated_fat(ing)
+        saturate_fat = ing.saturate.to_f
+        energy_from = saturate_fat * 9
+        percent = (energy_from / ing.energy.to_f) * 100
+        value = percent < 10
+      end
+
     	def heart_friendly(ing, val, fibre)
-    		check_less?(ing[:cholestrol], val[:cholestrol]) && check_less?(ing[:saturate], val[:saturated_fat]) && check_greater?(ing[:fibre], fibre) && check_less?(ing[:total_sugar], val[:sugar]) #pending
+    		check_less?(ing[:cholestrol], val[:cholestrol]) && check_less?(ing[:saturate], val[:saturated_fat]) && check_greater?(ing[:fibre], fibre) && check_less?(ing[:total_sugar], val[:sugar]) &&energy_from_saturated_fat(ing)
     	end
 
     	def energy_and_vitality(ing, val)

@@ -1,5 +1,7 @@
 module BxBlockContentManagement
   class AboutContentsController < ApplicationController
+    skip_before_action :validate_json_web_token, only: [:about_us_contents]
+
     def about_us_contents
       about_contents = BxBlockContentManagement::AboutContent.all
       
