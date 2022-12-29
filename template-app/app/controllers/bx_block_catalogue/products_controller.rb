@@ -6,24 +6,31 @@ module BxBlockCatalogue
     include BuilderJsonWebToken::JsonWebTokenValidation
     skip_before_action :validate_json_web_token,
                        only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data
-                                delete_all_products product_calculation regenerate_master_data question_listing]
-    skip_before_action :validate_json_web_token, only: %i[prod_health_preference delete_health_preference change_for_cal]
+                                delete_all_products product_calculation regenerate_master_data question_listing prod_health_preference delete_health_preference change_for_cal]
     before_action :find_fav_search, only: %i[niq_score product_smart_search ofline_smart_serach]
     before_action :product_found, only: %i[niq_score index]
 
-    def index
-      if @product.present?
-        CalculateProductRating.new.calculation(@product)
-        data = CalculateRda.new.rda_calculation(@product)
+    def show
+      if product = BxBlockCatalogue::Product.find_by(id: params[:id])
+        CalculateProductRating.new.calculation(product)
+        data = CalculateRda.new.rda_calculation(product)
         begin
           render json: ProductCompareSerializer.new(@product,
                                                     params: { good_ingredient: data[:good_ingredient],
-                                                              not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
+                                                              not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user }, niq_score: niq_score)
         rescue AbstractController::DoubleRenderError
           nil
         end
       else
         render json: { errors: 'Product not found' }
+      end
+    end
+
+    def index
+      products = BxBlockCatalogue::Product.where(data_check: 'green')
+      if products.present?
+        render json: ProductCompareSerializer.new(products,
+                                                  params: { status: 'offline' })
       end
     end
 
@@ -34,15 +41,6 @@ module BxBlockCatalogue
         render json: { message: 'Calculated successfully!' }
       else
         render json: { error: 'Something went wrong!' }
-      end
-    end
-
-    def show
-      product = BxBlockCatalogue::Product.find_by(id: params[:id])
-      if product.present?
-        render json: ProductSerializer.new(product, params: { user: valid_user })
-      else
-        render json: { errors: 'Product not present' }
       end
     end
 
@@ -128,7 +126,7 @@ module BxBlockCatalogue
                        )
                      end
         begin
-          data = page_meta(products_array).present? ? page_meta(products_array) : {total_count: products_array.count}
+          data = page_meta(products_array).present? ? page_meta(products_array) : { total_count: products_array.count }
           render json: { products: serializer, meta: data }
         rescue AbstractController::DoubleRenderError
           nil
@@ -185,7 +183,8 @@ module BxBlockCatalogue
       products.each do |product|
         CalculateProductRating.new.calculation(product)
         p_data = product.compare_product_good_not_so_good_ingredients
-        data << ProductSerializer.new(product, params: { good_ingredient: p_data[:good_ingredient], user: current_user })
+        data << ProductSerializer.new(product,
+                                      params: { good_ingredient: p_data[:good_ingredient], user: current_user })
       end
       data
     end
@@ -222,6 +221,10 @@ module BxBlockCatalogue
 
     def reported_product_list
       render json: BxBlockCatalogue::ReportedProductSerializer.new(current_user.reported_products)
+    end
+
+    def total_product
+      render json: { total_product_count: BxBlockCatalogue::Product.count }
     end
 
     private

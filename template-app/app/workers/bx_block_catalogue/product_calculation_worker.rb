@@ -29,6 +29,8 @@ module BxBlockCatalogue
           elsif calculation_type == "calculate_ratings"
             # if !product.calculated?  
               status = CalculateProductRating.new.calculation(product) if product.bar_code.present?
+             data = CalculateRda.new.rda_calculation(product)
+              product.update_columns(rda_value: data)
               csv_row << ["#{product.id}", "#{product.product_name}", "#{calculation_type}", "Success"] if status
               product_import_status.file_status = CSV.generate do |csv|
                 csv_row.each do |r_data|
