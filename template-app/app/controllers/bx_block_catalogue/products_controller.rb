@@ -9,7 +9,7 @@ module BxBlockCatalogue
                                 delete_all_products product_calculation regenerate_master_data question_listing prod_health_preference delete_health_preference change_for_cal]
     before_action :find_fav_search, only: %i[niq_score product_smart_search ofline_smart_serach]
     before_action :product_found, only: %i[niq_score index]
-    
+
     def show
       if product = BxBlockCatalogue::Product.find_by(id: params[:id])
         CalculateProductRating.new.calculation(product)
@@ -229,7 +229,6 @@ module BxBlockCatalogue
 
     private
 
-<<<<<<< Updated upstream
     def smart_search_result(products)
       products = if params[:page].present?
                   params[:per] = 10
@@ -238,15 +237,6 @@ module BxBlockCatalogue
                   products
                 end
       products
-=======
-    def samrt_search_result(products)
-      if params[:page].present?
-        params[:per] = 10
-        products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(params[:per]) : []
-      else
-        params[:limit].present? ? products.limit(params[:limit]) : products
-      end
->>>>>>> Stashed changes
     end
 
     def niq_list_smart_search
