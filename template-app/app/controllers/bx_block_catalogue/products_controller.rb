@@ -11,16 +11,13 @@ module BxBlockCatalogue
     before_action :product_found, only: %i[niq_score index]
 
     def show
-      if product = BxBlockCatalogue::Product.find_by(id: params[:id])
+      product = BxBlockCatalogue::Product.find_by(id: params[:id])
+      if product.present?
         CalculateProductRating.new.calculation(product)
         data = CalculateRda.new.rda_calculation(product)
-        begin
-          render json: ProductCompareSerializer.new(@product,
+          render json: ProductCompareSerializer.new(product,
                                                     params: { good_ingredient: data[:good_ingredient],
-                                                              not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user }, niq_score: niq_score)
-        rescue AbstractController::DoubleRenderError
-          nil
-        end
+                                                              not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
       else
         render json: { errors: 'Product not found' }
       end
