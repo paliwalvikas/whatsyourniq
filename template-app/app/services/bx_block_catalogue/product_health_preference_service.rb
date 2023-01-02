@@ -12,6 +12,7 @@ module BxBlockCatalogue
 
     	def health_preference(product, search)
       	ingredient = product.ingredient
+        return unless ingredient.present?
   	    ash = {vit_a: 300, vit_d: 4.5, vit_b1: 2.163, vit_c: 24, vit_e: 3, vit_b6: 0.57, vit_b12: 0.75, iron: 5.7, zinc: 5.1,selenium: 12, copper: 0.6, protein: 10.8, fibre: 6, calcium: 300, folate: 90, vit_b2: 0.6, iodine: 42, sugar: 5, fat: 3, gut_h: 6, h_protein: 10.8, energy: 40, cholestrol: 20, saturated_fat: 1.5, lodine: 42}
     		case product.product_type
   	    when 'solid'
