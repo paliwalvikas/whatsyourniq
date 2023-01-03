@@ -21,7 +21,7 @@ module AccountBlock
     has_many :add_profiles, class_name: 'BxBlockAddProfile::AddProfile', dependent: :destroy
     has_many :requested_products, class_name: 'BxBlockCatalogue::RequestedProduct', foreign_key: 'account_id', dependent: :destroy
     has_many :reported_products, class_name: 'BxBlockCatalogue::ReportedProduct', foreign_key: 'account_id', dependent: :destroy
-    
+    has_many :chat_answers, class_name: 'BxBlockChat::ChatAnswer', dependent: :destroy
     before_save :image_process, if: :image_url
     enum status: %i[regular suspended deleted]
     enum gender: %i[female male other]
