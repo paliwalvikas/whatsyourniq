@@ -24,10 +24,10 @@ module BuilderJsonWebToken
       # JWT::ExpiredSignature appears to be a subclass of JWT::DecodeError
       case exception
       when JWT::ExpiredSignature
-        return render json: { errors: [token: 'Token has Expired'] },
+        return render json: { errors: [token: I18n.t('concerns.builder_json_web_token.json_web_token_validation.token_has_expired')] },
           status: :unauthorized
       when JWT::DecodeError
-        return render json: { errors: [token: 'Invalid token'] },
+        return render json: { errors: [token: I18n.t('concerns.builder_json_web_token.json_web_token_validation.invalid_token')] },
           status: :bad_request
       end
     end

@@ -1,0 +1,255 @@
+hi:
+  application:
+    errors:
+      record_not_found: 'रिकॉर्ड नहीं मिला'
+  controllers:
+    account_block:
+      accounts:
+        account_not_found: 'खाता नहीं मिला'
+        account_already_activated: 'खाता पहले से ही सक्रिय है'
+        account_activated_successfully: 'खाता सफलतापूर्वक सक्रिय किया गया'
+        phone_not_found: 'फ़ोन नंबर नहीं मिला'
+        pin_has_expired: 'यह पिन समाप्त हो गया है, कृपया एक नए पिन कोड का अनुरोध करें।'
+        phone_already_activated: 'फ़ोन नंबर पहले से ही सक्रिय है'
+        phone_confirmed_successfully: 'फ़ोन नंबर की सफलतापूर्वक पुष्टि की गई'
+        invalid_pin_phone: 'फ़ोन नंबर के लिए अमान्य पिन'
+        account_already_registered: 'खाता पहले से पंजीकृत है'
+        invalid_account_type: 'अमान्य खाता प्रकार'
+        account_updated_successfully: 'खाता सफलतापूर्वक अपडेट किया गया'
+        account_not_updated: 'खाता अपडेट नहीं किया गया'
+    builder_base:
+      application_controller:
+        record_not_found: 'रिकॉर्ड नहीं मिला'
+    bx_block_add_profile:
+      add_profiles_controller:
+        profile_successfully_deleted: 'प्रोफ़ाइल सफलतापूर्वक हटाई गई'
+        unable_calculate_bmi: 'बीएमआई की गणना करने में असमर्थ'
+        provide_requierd_details: 'कृपया आवश्यक विवरण प्रदान करें'
+        profile_not_exists: 'प्रदान की गई आईडी के लिए प्रोफ़ाइल मौजूद नहीं है'
+    bx_block_advanced_search:
+      searchs_controller:
+        successfully_loaded: 'सफलतापूर्वक लोड किया गया'
+    bx_block_catalogue:
+      catalogues_controller:
+        catalogue_not_exists: 'प्रदान की गई आईडी के लिए कैटलॉग मौजूद नहीं है'
+      compare_products_controller:
+        no_product_found: 'कोई उत्पाद नहीं मिला'
+        record_deleted: 'रिकॉर्ड हटाया गया'
+        compare_product_not_exists: 'प्रदान किए गए आईडी के लिए तुलना उत्पाद मौजूद नहीं है'
+      favourite_products_controller:
+        product_not_found: 'उत्पाद नहीं मिला'
+        product_successfully_deleted: 'उत्पाद सफलतापूर्वक हटा दिया गया'
+      orders_controller:
+        no_bucket_present: 'कोई बकेट मौजूद नहीं है, कृपया एक बकेट बनाएं'
+        food_already_present: 'भोजन पहले से मौजूद है'
+        order_not_present: 'आदेश मौजूद नहीं है'
+        order_successfully_deleted: 'आदेश सफलतापूर्वक हटा दिया गया'
+        product_successfully_removed: 'उत्पाद सफलतापूर्वक निकाला गया'
+        food_bucket_not_found: 'खाने की बाल्टी नहीं मिली'
+        basket_name_already_present: 'बास्केट का नाम पहले से मौजूद है'
+        basket_not_present: 'टोकरी मौजूद नहीं है'
+        food_basket_not_found: 'खाने की टोकरी नहीं मिली'
+      products_controller:
+        calculated_successfully: 'गणना सफलतापूर्वक!'
+        something_went_wrong: 'कुछ गलत हो गया!'
+        updated: 'अद्यतन'
+        deleted: 'हटाए गए'
+        deleted_successfully: 'सफलतापूर्वक मिटाया गया!'
+        please_add_product: 'कृपया एक और उत्पाद जोड़ें'
+        success: 'सफलता'
+        request_not_send: 'अनुरोध नहीं भेजा'
+        failed_to_report: 'रिपोर्ट करने में विफल कृपया पुन: प्रयास करें'
+        you_already_reported: 'आप पहले ही इस उत्पाद की रिपोर्ट कर चुके हैं'
+    bx_block_categories:
+      categories_controller:
+        wrong_input_data: 'गलत इनपुट डेटा'
+        record_can_not_be_deleted: 'कैटलॉग के संदर्भ के कारण रिकॉर्ड को हटाया नहीं जा सकता'
+        record: 'अभिलेख'
+        category_does_not_exists: 'प्रदान की गई आईडी वाली श्रेणी मौजूद नहीं है'
+      sub_categories_controller:
+        record_not_deleted_reference: 'कैटलॉग के संदर्भ के कारण रिकॉर्ड को हटाया नहीं जा सकता'
+        sub_category_not_exists: 'प्रदान की गई आईडी वाली उपश्रेणी मौजूद नहीं है'
+    bx_block_content_management:
+      about_contents_controller:
+        about_content_not_exist: 'हमारे बारे में सामग्री मौजूद नहीं है।'
+      contents_controller:
+        content_created_successfully: 'सामग्री सफलतापूर्वक बनाई गई'
+        content_reindexed_successfully: 'सामग्री को सफलतापूर्वक पुन: अनुक्रमित किया गया!'
+        successfully_run_seeds: 'सफलतापूर्वक! बीज चलाओ'
+        can_not_find_category: 'प्रदान की गई आईडी वाली श्रेणी नहीं ढूंढ सकता'
+        can_not_find_sub_category: 'प्रदान की गई आईडी के साथ उप_श्रेणी नहीं ढूंढ सकता'
+        can_not_find_content_type: 'प्रदान की गई आईडी के साथ सामग्री प्रकार नहीं ढूंढ सकता'
+        can_not_find_language: 'प्रदान की गई आईडी के साथ भाषा नहीं ढूंढ सकता'
+        use_correct_api: 'कृपया सही api_access_key का उपयोग करें।'
+    bx_block_custom_ads:
+      advertisements_controller:
+        successfully_loded: 'सफलतापूर्वक डाला गया'
+        successfully_created: 'सफलतापूर्वक बनाया गया'
+        advertisement_not_found: 'विज्ञापन नहीं मिला'
+    bx_block_email_notifications:
+      email_notifications_controller:
+        email_notification_not_found: 'ईमेल अधिसूचना नहीं मिली।'
+    bx_block_faq_and_contact_us:
+      contact_us_controller:
+        thank_you_contact_us: 'हमसे संपर्क करने के लिए धन्यवाद'
+      faqs_controller:
+        no_record_found: 'कोई रिकॉर्ड नहीं मिला'
+        record_successfully_deleted: 'रिकॉर्ड सफलतापूर्वक हटाया गया।'
+    bx_block_followers:
+      application_controller:
+        please_login_again: 'कृपया फिर भाग लें।'
+      follows_controller:
+        list_following_users: 'निम्नलिखित उपयोगकर्ताओं की सूची।'
+        not_following_user: 'किसी भी उपयोगकर्ता का अनुसरण नहीं कर रहा है।'
+        following_this_user: 'इस उपयोगकर्ता का अनुसरण करें।'
+        not_following_this_user: 'इस उपयोगकर्ता का अनुसरण नहीं कर रहा है।'
+        you_already_follow: 'आप पहले से ही पालन करें।'
+        user_does_not_exist: 'उपयोगकर्ता मौजूद नहीं है।'
+        you_not_follow_yourself: 'आप स्वयं का अनुसरण नहीं कर सकते।'
+        successfully_followed: 'सफलतापूर्वक पालन किया।'
+        successfully_unfollowed: 'सफलतापूर्वक अनफ़ॉलो किया गया.'
+        parameter_missing: 'पैरामीटर गायब है।'
+    bx_block_forgot_password:
+      otp_confirmations_controller:
+        otp_has_expired: 'ओटीपी समाप्त हो गया है, कृपया एक नए के लिए अनुरोध करें।'
+        invalid_token: 'अमान्य टोकन'
+        token_invalid: 'टोकन अमान्य'
+        otp_validation_success: 'ओटीपी सत्यापन सफल रहा'
+        invalid_otp_code: 'अमान्य ओटीपी कोड'
+        token_and_otp : 'टोकन और ओटीपी कोड की जरूरत होती है'
+      otps_controller:
+        account_not_found: 'खाता नहीं मिला'
+        email_phone_required: 'ईमेल या फोन नंबर की आवश्यकता है'
+      passwords_controller:
+        code_not_validated: 'ओटीपी कोड मान्य नहीं है'
+        password_change_failed: 'संकेत शब्द बदलने में असफल'
+        token_password_required: 'टोकन और नए पासवर्ड की आवश्यकता है'
+    bx_block_login:
+      logins_controller:
+        invalid_password: 'अवैध पासवर्ड'
+        account_not_found_activated: 'खाता नहीं मिला, या सक्रिय नहीं हुआ'
+        login_failed: 'लॉगिन विफल'
+        invalid_account_type: 'अमान्य खाता प्रकार'
+        your_account_not_verfied: 'आपका खाता सत्यापित नहीं है, कृपया इसे लॉगिन के लिए सत्यापित करें'
+    bx_block_notifications:
+      application_controller:
+        please_login_again: 'कृपया फिर भाग लें।'
+      notifications_controller:
+        list_of_notifications: 'सूचनाओं की सूची।'
+        no_notification_found: 'कोई सूचना नहीं मिली।'
+        success: 'सफलता।'
+        notification_created: 'अधिसूचना बनाई गई।'
+        notification_marked_read: 'अधिसूचना को पढ़ा गया के रूप में चिह्नित किया गया।'
+        deleted: 'मिटाया गया।'
+    bx_block_push_notifications:
+      push_notifications_controller:
+        there_is_no_push: 'कोई पुश सूचना नहीं है।'
+        not_found: 'पता नहीं चला'
+        push_notification_not_found: 'पुश सूचना नहीं मिली'
+    bx_block_upload_media:
+      upload_media_controller:
+        successfully_updated: 'सफलतापूर्वक उत्परिवर्तित'
+  models:
+    account_block:
+      account:
+        invalid_unrecognized_phone: 'अमान्य या अपरिचित फ़ोन नंबर'
+      sms_otp:
+        is_your_otp_please: 'आपका ओटीपी है। कृपया इसे किसी के साथ साझा न करें।'
+        thank_you_super_foods: 'शुक्रिया। सुपरफूड्स वैली प्राइवेट लिमिटेड।'
+    bx_block_catalogue:
+      compare_product:
+        you_are_not_able: 'आप अधिक उत्पाद जोड़ने में सक्षम नहीं हैं'
+      favourite_search:
+        please_uniq_filters: 'कृपया यूनिक फ़िल्टर चुनें'
+    bx_block_categories:
+      sub_category:
+        please_select_categories: 'कृपया श्रेणियों या माता-पिता का चयन करें।'
+    bx_block_content_management:
+      author:
+        should_not_greater_then: 'तब बड़ा नहीं होना चाहिए'
+        words: 'शब्दों'
+      bookmark:
+        content_with_this_account: 'इस खाते की सामग्री पहले ही ले ली जा चुकी है'
+      content:
+        must_shorter_than: 'से छोटा होना चाहिए'
+        characters_maximum: 'वर्ण अधिकतम'
+        can_not_change_draft: 'ड्राफ़्ट में बदला नहीं जा सकता.'
+        can_not_be_updated: 'अपडेट नहीं किया जा सकता'
+        can_not_changed_published: 'प्रकाशित होने के बाद बदला नहीं जा सकता।'
+        can_not_published_approved: 'यदि सामग्री स्वीकृत नहीं थी तो प्रकाशित नहीं किया जा सकता।'
+      content_video:
+        can_not_more: '30 सेकंड से अधिक नहीं हो सकता'
+        can_not_less: '30 सेकंड से कम नहीं हो सकता'
+      exam:
+        can_not_greater: 'से बड़ा नहीं हो सकता'
+      follow:
+        content_provider_with_this: 'इस खाते के साथ सामग्री प्रदाता पहले ही ले लिया गया है'
+    bx_block_language_options:
+      application_message:
+        translation_message_not_blank: 'EN अनुवाद संदेश रिक्त नहीं हो सकता'
+        translation_not_present: 'कुंजी के लिए अनुवाद मौजूद नहीं है:'
+        locale: 'स्थान:'
+  concerns:
+    builder_json_web_token:
+      json_web_token_validation:
+        token_has_expired: 'टोकन समाप्त हो गया है'
+        invalid_token: 'अमान्य टोकन'
+  services:
+    account_block:
+      password_validation:
+        password_should_minimum: 'पासवर्ड कम से कम 8 अक्षरों का होना चाहिए'
+        contain_uppercase_lowercase: 'में अपरकेस और लोअरकेस वर्ण दोनों शामिल हैं'
+        least_one_digit: 'कम से कम एक अंक, और एक विशेष वर्ण'
+    bx_block_content_management:
+      base:
+        in: 'में'
+        their_was_error: 'सेव करने में उनकी गलती हुई थी'
+        with: 'साथ'
+        in_row_with: 'एसएन के साथ पंक्ति में:'
+        errors: 'त्रुटियां:'
+        missing_headers_sheet: 'शीट में हेडर नहीं हैं'
+      interface:
+        not_implemented: 'लागू नहीं किया गया'
+        please_add_method: 'कृपया अपने मॉड्यूल में विधि जोड़ें।'
+      partner_import_service:
+        can_find_category: 'इस नाम की श्रेणी नहीं खोजी जा सकती'
+        can_find_sub_category: 'इस नाम की उप श्रेणी नहीं खोजी जा सकती'
+        can_find_content_type: 'इस नाम के साथ सामग्री प्रकार नहीं ढूँढ सकता'
+      sub_category_import_service:
+        can_find_parent: 'माता-पिता को नाम के साथ नहीं ढूंढ सकता'
+        can_not_find_category: 'नाम के साथ श्रेणी नहीं ढूँढ सकता'
+    bx_block_language_options:
+      import_data_service:
+        please_add_translations: 'कृपया अनुवाद पत्रक जोड़ें'
+      translation_data_import_service:
+        no_data_present: 'अनुवाद पत्रक में कोई डेटा मौजूद नहीं है'
+        missing_headers: 'लापता शीर्षलेख:'
+        in_translations_sheet: 'अनुवाद पत्रक में'
+        key_not_present: 'कुंजी अनुवाद शीट में मौजूद नहीं है'
+        key: 'चाभी -'
+        serial_number_not: 'सीरियल नंबर अनुवाद शीट में मौजूद नहीं है'
+        some_error_occured: 'पंक्ति में अनुप्रयोग संदेश डेटा में कुछ त्रुटि हुई-'
+    bx_block_push_notifications:
+      provider:
+        unsupported_push: 'असमर्थित पुश सूचना प्रदाता:'
+        you_must_specify: 'आपको एक पुश सूचना प्रदाता निर्दिष्ट करना होगा।'
+    bx_block_sms:
+      provider:
+        supported: 'समर्थित'
+        unsupported_sms: 'असमर्थित एसएमएस प्रदाता:'
+        you_must_specify_provider: 'आपको एक एसएमएस प्रदाता निर्दिष्ट करना होगा।'
+  activerecord:
+    errors:
+      models:
+        account_block/sms_account:
+          attributes:
+            full_phone_number:
+              blank: 'खाली नहीं हो सकता'
+        bx_block_catalogue/favourite_product:
+          attributes:
+            product:
+              required: 'मौजूद होना चाहिए'
+        bx_block_catalogue/compare_product:
+          attributes:
+            product_id:
+              taken: 'पहले से ही लिया जा चुका है'

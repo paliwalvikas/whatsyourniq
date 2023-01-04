@@ -14,7 +14,7 @@ module AccountBlock
     end
 
     def valid_phone_number
-      return errors.add(:full_phone_number, 'Invalid or Unrecognized Phone Number') unless Phonelib.valid?(full_phone_number)
+      return errors.add(:full_phone_number, I18n.t('models.account_block.account.invalid_unrecognized_phone')) unless Phonelib.valid?(full_phone_number)
     end
 
   end

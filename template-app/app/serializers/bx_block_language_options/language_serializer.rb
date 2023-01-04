@@ -1,5 +1,5 @@
 module BxBlockLanguageOptions
   class LanguageSerializer < BuilderBase::BaseSerializer
-    attributes :id, :name, :language_code, :created_at, :updated_at
+    attributes :id, :language_type, :locale, :sequence, :created_at, :updated_at
   end
 end

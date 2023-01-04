@@ -20,8 +20,8 @@ module AccountBlock
     end
 
     def send_pin_via_sms
-      message = "<#> #{self.pin} is your OTP. Please do not share it with anyone. #{self.hash_key}. Thank you. SuperFoods valley Private Limited."
-      txt = BxBlockSms::SendSms.new("+#{self.full_phone_number}", message)
+      # message =  "#{self.pin}" I18n.t('models.account_block.sms_otp.is_your_otp_please') "#{self.hash_key}." I18n.t('models.account_block.sms_otp.thank_you_super_foods')
+      txt = BxBlockSms::SendSms.new("+#{self.full_phone_number}", message = nil)
       txt.call
     end
 
@@ -34,7 +34,7 @@ module AccountBlock
 
     def valid_phone_number
       unless Phonelib.valid?(full_phone_number)
-        errors.add(:full_phone_number, "Invalid or Unrecognized Phone Number")
+        errors.add(:full_phone_number, I18n.t('models.account_block.account.invalid_unrecognized_phone'))
       end
     end
   end

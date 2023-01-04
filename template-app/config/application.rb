@@ -39,5 +39,13 @@ module App
     config.middleware.use ActionDispatch::Session::CookieStore, 
     config.session_options
     config.middleware.use Rack::MethodOverride
+    
+    # config.autoloader = :classic
+    # config.load_defaults 5.2
+    # config.autoloader = :zeitwerk
+
+    config.i18n.load_path += Dir[File.expand_path("config/locales") + "/*.yml"]
+    config.i18n.default_locale = :en
+    config.i18n.available_locales = [:en, :hi, :kn]
   end
 end
