@@ -20,8 +20,8 @@ module AccountBlock
     end
 
     def send_pin_via_sms
-      # message =  "#{self.pin}" I18n.t('models.account_block.sms_otp.is_your_otp_please') "#{self.hash_key}." I18n.t('models.account_block.sms_otp.thank_you_super_foods')
-      txt = BxBlockSms::SendSms.new("+#{self.full_phone_number}", message = nil)
+      message =  "#{self.pin}" + I18n.t('models.account_block.sms_otp.is_your_otp_please') + "#{self.hash_key}." + I18n.t('models.account_block.sms_otp.thank_you_super_foods')
+      txt = BxBlockSms::SendSms.new("+#{self.full_phone_number}", message)
       txt.call
     end
 
