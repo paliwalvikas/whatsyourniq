@@ -2,10 +2,15 @@ require 'rails_helper'
 
 RSpec.describe "BxBlockCatalogue::FavouriteProduct", type: :request do
 	describe  "GET /bx_block_catalogue/favourite_products" do
-    let(:favourite_product) { create(:favourite_product) }
+    let(:category) { create(:category) }
+    let(:filter_category) { create(:filter_category) }
+    let(:filter_sub_category) { create(:filter_sub_category, filter_category_id: filter_category.id) }
+    let(:product) {
+      create(:product, category_id: category.id, filter_category_id: filter_category.id, filter_sub_category_id: filter_sub_category.id)
+    }
+    let(:favourite_product) { create(:favourite_product, product_id: product.id) }
 
     it "should not respond with BxBlockCatalogue::FavouriteProduct when with token" do           
-     
       token = Support::ApiHelper.authenticated_user(favourite_product.account)
       headers = { "ACCEPT" => "application/json" }
       get "/bx_block_catalogue/favourite_products", :params => {
