@@ -6,9 +6,7 @@ module BxBlockCatalogue
                :bar_code, :data_check, :food_drink_filter, :image, :category_type, :filter_category, :filter_sub_category, :description, :ingredient_list, :created_at, :updated_at
 
     attribute :image do |object, _params|
-      if _params[:status] == 'offline'
-        nil
-      elsif object.image.attached?
+      if object.image.attached?
         if Rails.env.development?
           Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)
         else
@@ -56,7 +54,7 @@ module BxBlockCatalogue
     end
 
     attribute :positive_good do |object, _params|
-      if (_params[:status] == 'offline') && object&.rda_value&.[]('good_ingredient').present?
+      if _params[:status] == 'offline'
         object.rda_value['good_ingredient']
       elsif _params[:good_ingredient].present?
         _params[:good_ingredient]
@@ -64,7 +62,7 @@ module BxBlockCatalogue
     end
 
     attribute :negative_not_good do |object, _params|
-      if (_params[:status] == 'offline') && object&.rda_value&.[]('not_so_good_ingredient').present?
+      if _params[:status] == 'offline'
         object.rda_value['not_so_good_ingredient']
       elsif _params[:not_so_good_ingredient].present?
         _params[:not_so_good_ingredient]
