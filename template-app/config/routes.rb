@@ -30,6 +30,10 @@ Rails.application.routes.draw do
         get :reported_product_list
         get :question_listing
         get :total_product
+        get :show_reported_product
+        get :show_requested_product
+        patch :updated_reported_product
+        patch :updated_requested_product 
       end
     end
     resources :compare_products

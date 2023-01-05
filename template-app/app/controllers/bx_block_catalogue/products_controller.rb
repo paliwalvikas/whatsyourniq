@@ -94,7 +94,7 @@ module BxBlockCatalogue
           nil
         end
       else
-        render json: { errors: 'Product Not Found' }, status: :ok
+        render json: { errors: 'Product not found' }, status: :unprocessable_entity
       end
     end
 
@@ -134,7 +134,7 @@ module BxBlockCatalogue
     end
 
     def calculation_for_rda
-      if product = Product.find_by(id: params[:id])
+      if (product = Product.find_by(id: params[:id]))
         render json: { data: CalculateRda.rda_calculation.new(product) }
       else
         render json: { errors: 'Product not found' }
@@ -224,6 +224,44 @@ module BxBlockCatalogue
       render json: { total_product_count: BxBlockCatalogue::Product.count }
     end
 
+    def show_reported_product
+      reported_product = current_user.reported_products.where(id: params[:id]).first
+      if reported_product.present?
+        render json: BxBlockCatalogue::ReportedProductSerializer.new(reported_product)
+      else
+        render json: { errors: 'Not Found' }, status: :unprocessable_entity
+      end
+    end
+
+    def updated_reported_product
+      reported_product = current_user.reported_products.where(id: params[:id]).first
+      if reported_product.present?
+        reported_product.update(reported_product_params)
+        render json: BxBlockCatalogue::ReportedProductSerializer.new(reported_product)
+      else
+        render json: { error: 'Not Found' }, status: :unprocessable_entity
+      end
+    end
+
+    def show_requested_product
+      requested_product = current_user.requested_products.where(id: params[:id]).first
+      if requested_product.present?
+        render json: RequestedProductSerializer.new(requested_product), status: :ok
+      else
+        render json: { error: 'Not Found' }, status: :unprocessable_entity
+      end
+    end
+
+    def updated_requested_product
+      requested_product = current_user.requested_products.where(id: params[:id]).first
+      if requested_product.present?
+        requested_product.update(requested_product_params)
+        render json: RequestedProductSerializer.new(requested_product), status: :ok
+      else
+        render json: { error: 'Not Found' }, status: :unprocessable_entity
+      end
+    end
+
     private
 
     def smart_search_result(products)
@@ -284,11 +322,11 @@ module BxBlockCatalogue
     end
 
     def requested_product_params
-      params.permit(:name, :refernce_url, :weight, :status, :category_id, barcode_image: [], product_image: [])
+      params.permit(:id, :name, :refernce_url, :weight, :status, :category_id, barcode_image: [], product_image: [])
     end
 
     def reported_product_params
-      params.permit(:description, :product_id, ans_ids: [])
+      params.permit(:id, :description, :product_id, ans_ids: [])
     end
 
     def check_already_reported
