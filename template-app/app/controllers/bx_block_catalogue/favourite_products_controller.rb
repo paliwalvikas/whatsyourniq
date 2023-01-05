@@ -42,7 +42,8 @@ module BxBlockCatalogue
         products = BxBlockCatalogue::Product.where(id: p_ids, product_rating: params[:product_rating])
         fav_prod = current_user&.favourite_products&.where(product_id: products.ids)&.joins(:product).order("products.product_rating asc")
         render json: FavouriteProductSerializer.new(fav_prod).serializable_hash,
-               status: :ok
+               status: :ok,
+               message: "Products successfully found"
       else
         render json:  { message: "Product not found" },
                status: :unprocessable_entity
@@ -50,10 +51,10 @@ module BxBlockCatalogue
     end
 
     def fav_search
-      query = search_query
+      query = search_query if params[:query].present?
       prd_id = current_user&.favourite_products&.select(:product_id)
       products = BxBlockCatalogue::Product.where(id: prd_id)&.where(query)
-      if products.present? 
+      if products.present? && params[:query].present?
         return render json: FavouriteProductSerializer.new(FavouriteProduct.where(product_id: products&.ids), params: {user: current_user})
       else
         render json: { errors: 'Product Not Found' }, status: :ok

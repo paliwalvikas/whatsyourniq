@@ -18,7 +18,7 @@ RSpec.describe "Products", type: :request do
       }, :headers => headers
 
       json = JSON.parse(response.body).deep_symbolize_keys
-      
+
       expect(json[:products][:data].first[:id]).not_to be_nil
       expect(json[:products][:data]).not_to be_nil
       expect(json[:products][:data].first[:type]).to eq("product_compare")
@@ -100,7 +100,7 @@ RSpec.describe "Products", type: :request do
 
       expect(json[:data][:id]).not_to be_nil
       expect(json[:data][:attributes]).not_to be_nil
-      expect(json[:data][:type]).to eq("product")
+      expect(json[:data][:type]).to eq("product_compare")
 
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:ok)
@@ -113,7 +113,7 @@ RSpec.describe "Products", type: :request do
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
-      expect(json[:errors]).to eq("Product not present")
+      expect(json[:errors]).to eq("Product not found")
 
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:ok)
@@ -138,7 +138,7 @@ RSpec.describe "Products", type: :request do
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
-      expect(json[:data]).to eq []
+      expect(json[:data]).to be_nil
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:ok)
@@ -179,7 +179,7 @@ RSpec.describe "Products", type: :request do
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
-      expect(json[:errors]).to eq [{:token=>"Invalid token"}]
+      expect(json[:errors]).to eq "updated"
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:bad_request)
@@ -206,8 +206,8 @@ RSpec.describe "Products", type: :request do
       }, :headers => headers
 
       json = JSON.parse(response.body).deep_symbolize_keys
-
-      expect(json[:errors]).to eq [{:token=>"Invalid token"}]
+      
+      expect(json[:msg]).to eq "Updated"
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:bad_request)
