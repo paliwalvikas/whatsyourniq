@@ -19,7 +19,7 @@ module BxBlockCatalogue
                                                   params: { good_ingredient: data[:good_ingredient],
                                                             not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
       else
-        render json: { errors: 'Product not found' }
+        render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
       end
     end
 
@@ -36,19 +36,28 @@ module BxBlockCatalogue
       product = BxBlockCatalogue::Product.find_by(id: params[:id])
       if product.present?
         CalculateProductRating.new.calculation(product) || CalculateRda.rda_calculation.new(product)
-        render json: { message: 'Calculated successfully!' }
+        render json: { message: I18n.t('controllers.bx_block_catalogue.products_controller.calculated_successfully') }
       else
-        render json: { error: 'Something went wrong!' }
+        render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.something_went_wrong') }
       end
     end
 
+    def show
+      product = BxBlockCatalogue::Product.find_by(id: params[:id])
+      if product.present?
+        render json: ProductSerializer.new(product, params: { user: valid_user })
+      else
+        render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
+      end
+    end
+    
     def niq_score
       products = niq_list_smart_search
       if products.present?
         products = products.order('products.product_rating ASC')
         products_niq_score = ProductSerializer.new(products)
       else
-        render json: { errors: 'Product not found' }
+        render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
       end
     end
 
@@ -58,17 +67,17 @@ module BxBlockCatalogue
         CalculateRda.new.negative_and_positive(product) unless product.np_calculated?
       end
       BxBlockCategories::FilterCategory.where(name: "Malt/cereal based bev's").update(name: 'Malt/cereal based bevs')
-      render json: { errors: 'updated' }
+      render json: { errors: I18n.t('controllers.bx_block_catalogue.products_controller.updated') }
     end
 
     def change_for_cal
       Product.update_all(np_calculated: false)
-      render json: { msg: 'Updated' }
+      render json: { msg: I18n.t('controllers.bx_block_catalogue.products_controller.updated') }
     end
 
     def delete_health_preference
       BxBlockCatalogue::HealthPreference.destroy_all
-      render json: { errors: 'Deleted' }
+      render json: { errors: I18n.t('controllers.bx_block_catalogue.products_controller.deleted') }
     end
 
     def search
@@ -97,13 +106,14 @@ module BxBlockCatalogue
         end
       else
         render json: [], status: :ok
+        # render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }, status: :ok
       end
     end
 
     def delete_old_data
       Product.delete_all
       Ingredient.delete_all
-      render json: { message: 'deleted successfully!' }
+      render json: { message: I18n.t('controllers.bx_block_catalogue.products_controller.deleted_successfully') }
     end
 
     def smart_search_filters
@@ -131,7 +141,7 @@ module BxBlockCatalogue
           nil
         end
       else
-        render json: { errors: 'Product not found' }
+        render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
       end
     end
 
@@ -139,7 +149,7 @@ module BxBlockCatalogue
       if product = Product.find_by(id: params[:id])
         render json: { data: CalculateRda.rda_calculation.new(product) }
       else
-        render json: { errors: 'Product not found' }
+        render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
       end
     end
 
@@ -150,17 +160,17 @@ module BxBlockCatalogue
         if data.present?
           render json: { data: data }
         else
-          render json: { message: 'Product not found' }
+          render json: { message: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
         end
       else
-        render json: { message: 'Please add one more product' }
+        render json: { message: I18n.t('controllers.bx_block_catalogue.products_controller.please_add_product') }
       end
     end
 
     def regenerate_master_data
       request = BxBlockCatalogue::MasterDataTableService.new.call
       if request.errors.messages.empty?
-        render json: { message: 'Success' }, status: :ok
+        render json: { message: I18n.t('controllers.bx_block_catalogue.products_controller.success') }, status: :ok
       else
         render json: { message: request.errors.messages }, status: :unprocessable_entity
       end
@@ -172,7 +182,7 @@ module BxBlockCatalogue
           CalculateProductRating.new.calculation(product) if product.bar_code.present?
         end
       end
-      flash[:success] = 'product calculation successfully'
+      flash[:success] = I18n.t('controllers.bx_block_catalogue.products_controller.calculated_successfully')
       redirect_to '/admin'
     end
 
@@ -193,7 +203,7 @@ module BxBlockCatalogue
       if requested_product.save
         render json: RequestedProductSerializer.new(requested_product), status: :ok
       else
-        render json: { error: 'request not send ' }, status: :unprocessable_entity
+        render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.request_not_send') }, status: :unprocessable_entity
       end
     end
 
@@ -211,10 +221,10 @@ module BxBlockCatalogue
         if reported_product.present?
           render json: BxBlockCatalogue::ReportedProductSerializer.new(reported_product)
         else
-          render json: { error: 'failed to report please try again ' }, status: :unprocessable_entity
+          render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.failed_to_report') }, status: :unprocessable_entity
         end
       else
-        render json: { error: 'you have already reported this product ' }, status: :unprocessable_entity
+        render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.you_already_reported') }, status: :unprocessable_entity
       end
     end
 

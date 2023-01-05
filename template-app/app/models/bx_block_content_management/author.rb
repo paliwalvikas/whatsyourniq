@@ -4,7 +4,7 @@ module BxBlockContentManagement
     has_many :contents, class_name: "BxBlockContentManagement::Content", dependent: :destroy
     validates :name, :bio, presence: true
     validates :bio, :length => {
-      :maximum   => 500, :too_long  => "should not greater then %{count} words"
+      :maximum   => 500, :too_long  => I18n.t('models.bx_block_content_management.author.should_not_greater_then') "%{count}" I18n.t('models.bx_block_content_management.author.works')
     }
     has_one :image, as: :attached_item, dependent: :destroy
 

@@ -8,7 +8,7 @@ module BxBlockCustomForm
         @seller = SellerAccount.where(
           "firm_name LIKE ?", "%#{params[:search_term]}%"
         )
-        render json: {seller: @seller, full_messages: "Successfully Loaded"}
+        render json: {seller: @seller, full_messages: I18n.t('controllers.bx_block_custom_ads.advertisements_controller.successfully_loded')}
       elsif params[:lat].present? && params[:long].present?
         @seller_whole = SellerAccount.within(
           2,
@@ -23,11 +23,11 @@ module BxBlockCustomForm
         render json: {
           seller_whole: @seller_whole,
           seller_retail: @seller_retail,
-          message: "Successfully Loaded"
+          message: I18n.t('controllers.bx_block_custom_ads.advertisements_controller.successfully_loded')
         }
       else
         @seller = SellerAccount.all
-        render json: {seller: @seller, full_messages: "Successfully Loaded"}
+        render json: {seller: @seller, full_messages: I18n.t('controllers.bx_block_custom_ads.advertisements_controller.successfully_loded')}
       end
     end
 

@@ -16,7 +16,7 @@ module BxBlockAdvancedSearch
         @sellers = BxBlockCustomForm::SellerAccount.all
       end
 
-      render json: {sellers: @sellers, full_messages: "Successfully Loaded"}
+      render json: {sellers: @sellers, full_messages: I18n.t('controllers.bx_block_advanced_search.searchs_controller.successfully_loaded')}
     end
 
     def sorting
@@ -29,7 +29,7 @@ module BxBlockAdvancedSearch
         @seller = BxBlockCustomForm::SellerAccount.all
       end
 
-      render json: { sellers: @seller, full_messages: "Successfully Loaded" }
+      render json: { sellers: @seller, full_messages: I18n.t('controllers.bx_block_advanced_search.searchs_controller.successfully_loaded')}
     end
   end
 end

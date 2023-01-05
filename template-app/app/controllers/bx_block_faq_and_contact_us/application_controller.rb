@@ -9,7 +9,7 @@ module BxBlockFaqAndContactUs
     private
     
     def not_found
-      return render :json => {'errors' => ['Record not found']}, :status => :not_found
+      return render :json => {'errors' => [I18n.t('controllers.builder_base.application_controller.record_not_found')]}, :status => :not_found
     end
 
     def current_user

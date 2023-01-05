@@ -9,7 +9,7 @@ module BxBlockAdvancedSearch
     private
 
     def not_found
-      render :json => {'errors' => ['Record not found']}, :status => :not_found
+      render :json => {'errors' => [I18n.t('controllers.builder_base.application_controller.record_not_found')]}, :status => :not_found
     end
   end
 end

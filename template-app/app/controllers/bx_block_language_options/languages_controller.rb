@@ -3,16 +3,9 @@ module BxBlockLanguageOptions
     skip_before_action :validate_json_web_token, only: [:index, :get_all_translations, :last_translation_time]
 
     def index
-      case params[:type]
-      when 'content_languages'
-        languages = BxBlockLanguageOptions::Language.content_languages
-      when 'app_languages'
-        languages = BxBlockLanguageOptions::Language.app_languages
-      else
-        languages = BxBlockLanguageOptions::Language.all
-      end
-      serializer = LanguageSerializer.new(languages)
-      render json: serializer, status: :ok
+      languages = BxBlockLanguageOptions::Language.order(:sequence)
+      serializer = BxBlockLanguageOptions::LanguageSerializer.new(languages)
+      render :json => serializer.serializable_hash
     end
 
     def set_app_language

@@ -21,7 +21,7 @@ module BxBlockContentManagement
               'lower(name) = ?', strip_downcase(sheet_content[:parent_name])
             )
             add_errors(
-              "can't find parent with name '#{sheet_content[:parent_name]}'",
+              I18n.t('services.bx_block_content_management.sub_category_import_service.can_find_parent') + "'#{sheet_content[:parent_name]}'",
               sheet_content[:name], sheet_content[:sn], 'sub category', 'name'
             ) unless parent.present?
           end

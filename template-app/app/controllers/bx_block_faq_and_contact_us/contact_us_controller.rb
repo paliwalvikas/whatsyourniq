@@ -15,7 +15,7 @@ module BxBlockFaqAndContactUs
         # ContactUsMailer.with(contact_us).contact_us_email(contact_us).deliver
         # BxBlockFaqAndContactUs::ContactUsMailer.new.contact_us_mail(contact_us).deliver
         render json: ContactUsSerializer.new(contact_us),
-                      status: :created, message: 'Thank you for contact us'
+                      status: :created, message: I18n.t('controllers.bx_block_faq_and_contact_us.contact_us_controller.thank_you_contact_us')
       else
         render json: { error: contact_us.errors }
       end

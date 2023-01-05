@@ -29,7 +29,7 @@ module BxBlockContentManagement
         render json: {errors: content[:errors], status: 404}
       else
         render json: {content: ContentSerializer.new(content).serializable_hash, success: true,
-                      message: "Content created successfully!"}
+                      message: I18n.t('controllers.bx_block_content_management.contents_controller.content_created_successfully')}
       end
     end
 
@@ -54,12 +54,12 @@ module BxBlockContentManagement
 
     def reindex_contents
       BxBlockContentManagement::Content.reindex
-      render json: { message: "Content reindexed Successfully!" }
+      render json: { message: I18n.t('controllers.bx_block_content_management.contents_controller.content_reindexed_successfully') }
     end
 
     def run_seeds
       load Rails.root + "db/seeds.rb"
-      render json: { message: "Successfully! run seeds" }
+      render json: { message: I18n.t('controllers.bx_block_content_management.contents_controller.successfully_run_seedsss') }
     end
 
     private
@@ -73,7 +73,7 @@ module BxBlockContentManagement
     def set_category
       @category = BxBlockCategories::Category.find_by(id: params[:category_id])
       unless @category.present?
-        return render json: {error: "can't find category with this id '#{params[:category_id]}'"}
+        return render json: {error: I18n.t('controllers.bx_block_content_management.contents_controller.can_not_find_category')}
       end
     end
 
@@ -90,21 +90,21 @@ module BxBlockContentManagement
     def set_sub_category
       @sub_category = BxBlockCategories::SubCategory.find_by(id: params[:sub_category_id])
       unless @sub_category.present?
-        return render json: {error: "can't find sub category with this id '#{params[:sub_category_id]}'"}
+        return render json: {error: I18n.t('controllers.bx_block_content_management.contents_controller.can_not_find_sub_category')}
       end
     end
 
     def set_content_type
       @content_type = BxBlockContentManagement::ContentType.find_by(id: params[:content_type_id])
       unless @content_type.present?
-        return render json: {error: "can't find content type with this id '#{params[:content_type_id]}'"}
+        return render json: {error: I18n.t('controllers.bx_block_content_management.contents_controller.can_not_find_content_type')}
       end
     end
 
     def set_language
       @language = BxBlockLanguageOptions::Language.find_by(id: params[:language_id])
       unless @language.present?
-        return render json: {error: "can't find language with this id '#{params[:language_id]}'"}
+        return render json: {error: I18n.t('controllers.bx_block_content_management.contents_controller.can_not_find_language')}
       end
     end
 
@@ -144,7 +144,7 @@ module BxBlockContentManagement
 
     def authorize_request
       return render json: {data: [
-        {account: "Please use correct api_access_key."},
+        {account: I18n.t('controllers.bx_block_content_management.contents_controller.use_correct_api')},
       ]}, status: 401 unless Rails.application.secrets.api_access_key == params[:api_access_key]
     end
   end

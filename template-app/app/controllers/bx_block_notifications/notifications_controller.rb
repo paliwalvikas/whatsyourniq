@@ -8,23 +8,23 @@ module BxBlockNotifications
       @notifications = Notification.where('account_id = ?', current_user.id)
       if @notifications.present?
         render json: NotificationSerializer.new(@notifications, meta: {
-            message: "List of notifications."}).serializable_hash, status: :ok
+            message: I18n.t('controllers.bx_block_notifications.notifications_controller.list_of_notifications')}).serializable_hash, status: :ok
       else
-        render json: {errors: [{message: 'No notification found.'},]}, status: :ok
+        render json: {errors: [{message: I18n.t('controllers.bx_block_notifications.notifications_controller.no_notification_found')},]}, status: :ok
       end
     end
 
     def show
       @notification = Notification.find(params[:id])
       render json: NotificationSerializer.new(@notification, meta: {
-          message: "Success."}).serializable_hash, status: :ok
+          message: I18n.t('controllers.bx_block_notifications.notifications_controller.success')}).serializable_hash, status: :ok
     end
 
     def create
       @notification = Notification.new(notification_paramas)
       if @notification.save
         render json: NotificationSerializer.new(@notification, meta: {
-            message: "Notification created."}).serializable_hash, status: :created
+            message: I18n.t('controllers.bx_block_notifications.notifications_controller.notification_created')}).serializable_hash, status: :created
       else
         render json: {errors: format_activerecord_errors(@notification.errors)},
                status: :unprocessable_entity
@@ -35,7 +35,7 @@ module BxBlockNotifications
       @notification = Notification.find(params[:id])
       if @notification.update(is_read: true, read_at: DateTime.now)
         render json: NotificationSerializer.new(@notification, meta: {
-          message: "Notification marked as read."}).serializable_hash, status: :ok
+          message: I18n.t('controllers.bx_block_notifications.notifications_controller.notification_marked_read')}).serializable_hash, status: :ok
       else
         render json: {errors: format_activerecord_errors(@notification.errors)},
                status: :unprocessable_entity
@@ -45,7 +45,7 @@ module BxBlockNotifications
     def destroy
       @notification = Notification.find(params[:id])
       if @notification.destroy
-        render json: {message: "Deleted."}, status: :ok
+        render json: {message: I18n.t('controllers.bx_block_notifications.notifications_controller.deleted')}, status: :ok
       else
         render json: {errors: format_activerecord_errors(@notification.errors)},
                status: :unprocessable_entity

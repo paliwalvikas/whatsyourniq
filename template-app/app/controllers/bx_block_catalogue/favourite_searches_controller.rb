@@ -12,7 +12,7 @@ module BxBlockCatalogue
                  .serializable_hash,
         status: :ok
       else
-        render json: {message: "Record not found."}
+        render json: {message: I18n.t('controllers.builder_base.application_controller.record_not_found')}
       end
     end
 

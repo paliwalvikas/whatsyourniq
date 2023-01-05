@@ -3,13 +3,13 @@ module BxBlockAddProfile
     before_action :find_profile, only: %i[show update calculate_bmi destroy]
 
     def index
-      serializer = AddProfileSerializer.new(current_user.add_profiles, serialization_options).serializable_hash
+      serializer = AddProfileSerializer.new(current_user&.add_profiles, serialization_options).serializable_hash
 
       render json: serializer, status: :ok
     end
 
     def create
-      add_prfile = current_user.add_profiles.new(profile_params)
+      add_prfile = current_user&.add_profiles.new(profile_params)
       save_result = add_prfile.save
 
       if save_result
@@ -41,7 +41,7 @@ module BxBlockAddProfile
 
     def destroy
       @add_profile.destroy
-      render json: { success: true, message: "Profile successfully deleted" }, status: :ok
+      render json: { success: true, message: I18n.t('controllers.bx_block_add_profile.add_profiles_controller.profile_successfully_deleted') }, status: :ok
     end
 
     def calculate_bmi
@@ -68,12 +68,12 @@ module BxBlockAddProfile
           render json: serializer, status: :ok
         else
           render json: {
-            message: "Unable to Calculate BMI"
+            message: I18n.t('controllers.bx_block_add_profile.add_profiles_controller.unable_calculate_bmi')
           }, status: :unprocessable_entity
         end
       else
         render json: {
-          message: "Please provide the requierd details"
+          message: I18n.t('controllers.bx_block_add_profile.add_profiles_controller.provide_requierd_details')
         }, status: :unprocessable_entity
       end
     end
@@ -96,7 +96,7 @@ module BxBlockAddProfile
 
       unless @add_profile.present?
         return render json: {
-            message: "Profile doesn't exists for provided Id"
+            message: I18n.t('controllers.bx_block_add_profile.add_profiles_controller.profile_not_exists')
           }, status: :unprocessable_entity
       end
     end
