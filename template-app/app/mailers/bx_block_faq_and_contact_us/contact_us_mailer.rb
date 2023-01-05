@@ -6,14 +6,14 @@ module BxBlockFaqAndContactUs
         mail(
             to: 'consumer@superfoodsvalley.com',
             from: @account.email,
-            subject: 'Thank you for contact us') do |format|
+            subject: 'Contact Request') do |format|
               format.html { render 'contact_us_email' }
             end
       elsif @account.contact_type == 'for_business_enterprise'
           mail(
-            to: 's1214@yopmail.com',
+            to: 'business@superfoodsvalley.com',
             from: @account.email,
-            subject: 'Thank you for contact us') do |format|
+            subject: 'Contact Request') do |format|
               format.html { render 'contact_us_email' }
             end
       end
