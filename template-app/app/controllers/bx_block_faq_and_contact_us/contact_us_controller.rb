@@ -12,8 +12,7 @@ module BxBlockFaqAndContactUs
     def create
       contact_us = ContactUs.new(con_us_params)
       if contact_us.save
-        # ContactUsMailer.with(contact_us).contact_us_email(contact_us).deliver
-        # BxBlockFaqAndContactUs::ContactUsMailer.new.contact_us_mail(contact_us).deliver
+        ContactUsMailer.with(contact_us).contact_us_email(contact_us).deliver
         render json: ContactUsSerializer.new(contact_us),
                       status: :created, message: 'Thank you for contact us'
       else
