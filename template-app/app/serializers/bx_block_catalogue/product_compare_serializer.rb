@@ -6,11 +6,15 @@ module BxBlockCatalogue
                :bar_code, :data_check, :food_drink_filter, :image, :category_type, :filter_category, :filter_sub_category, :description, :ingredient_list, :created_at, :updated_at
 
     attribute :image do |object, _params|
-      if object.image.attached?
-        if Rails.env.development?
-          Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)
-        else
-          object.image&.service_url&.split('?')&.first
+      if _params[:status] == 'offline'
+        nil
+      else
+        if object.image.attached?
+          if Rails.env.development?
+            Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)
+          else
+            object.image&.service_url&.split('?')&.first
+          end
         end
       end
     end
