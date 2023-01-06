@@ -6,7 +6,7 @@ module BxBlockCatalogue
     include BuilderJsonWebToken::JsonWebTokenValidation
     skip_before_action :validate_json_web_token,
                        only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data
-                                delete_all_products product_calculation regenerate_master_data question_listing prod_health_preference delete_health_preference change_for_cal]
+                                 product_calculation regenerate_master_data question_listing prod_health_preference delete_health_preference change_for_cal]
     before_action :find_fav_search, only: %i[niq_score product_smart_search ofline_smart_serach]
     before_action :product_found, only: %i[niq_score index]
 
@@ -25,10 +25,10 @@ module BxBlockCatalogue
 
     def index
       products = BxBlockCatalogue::Product.where(data_check: 'green')
-      if products.present?
-        render json: ProductCompareSerializer.new(products,
-                                                  params: { status: 'offline' })
-      end
+      return unless products.present?
+      products = Kaminari.paginate_array(products).page(params[:page]).per(params[:per_page])
+      catalogues = ProductCompareSerializer.new(products, params: { status: 'offline' })
+      render json: { products: catalogues, meta: page_meta(products) }
     end
 
     def update
