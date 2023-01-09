@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
-ActiveAdmin.register BxBlockCatalogue::RequestedProduct, as: 'Requested_product' do
+ActiveAdmin.register BxBlockCatalogue::RequestedProduct, as: "Requested_product" do
   permit_params :product, :account, :description
-  config.filters = false
+  config.filters = false 
 
-  index title: 'Requested_product' do
+  index title: "Requested_product" do
     selectable_column
     id_column
     column :name
@@ -14,9 +12,9 @@ ActiveAdmin.register BxBlockCatalogue::RequestedProduct, as: 'Requested_product'
     column :status
     column :category
     actions
-  end
+  end   
 
-  show do
+   show do
     attributes_table do
       row :name
       row :account_id
@@ -25,15 +23,15 @@ ActiveAdmin.register BxBlockCatalogue::RequestedProduct, as: 'Requested_product'
       row :status
       row :category
       row 'product_image' do |ad|
-        ad.product_image.each.map do |image, _index|
-          image_tag(url_for(image), class: 'img_preview', style: 'height:50px; width:50px')
+        ad.product_image.each.map do |image, index|
+          image_tag(url_for(image), :class => "img_preview", style: 'height:50px; width:50px')
         end
       end
       row 'barcode_image' do |ad|
-        ad.barcode_image.each.map do |image, _index|
-          image_tag(url_for(image), class: 'barcode_img_preview', style: 'height:50px; width:50px')
+        ad.barcode_image.each.map do |image, index|
+          image_tag(url_for(image), :class => "img_preview", style: 'height:50px; width:50px')
         end
       end
-    end
+    end  
   end
 end

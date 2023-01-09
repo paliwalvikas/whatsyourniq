@@ -5,7 +5,7 @@ module BxBlockChat
     validates :option, presence: true, allow_blank: false
     belongs_to :chat, class_name: "BxBlockChat::Chat"
 
-   	has_one :chat_answer, class_name: "BxBlockChat::ChatAnswer", dependent: :destroy
+   	has_many :chat_answers, class_name: "BxBlockChat::ChatAnswer", dependent: :destroy
   end  
 end
 

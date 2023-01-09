@@ -11,7 +11,7 @@ FactoryBot.define do
     city { Faker::Address.city}
     state { Faker::Address.state }
     activity_level {'medium'}
-    contact_no { Faker::Base.numerify('+91##########') }
+    contact_no { Faker::Base.numerify('91##########') }
     relation_id {FactoryBot.create(:relation).id}
     # image {Faker::LoremFlickr.unique.image}
     account_id { FactoryBot.create(:social_account).id }
