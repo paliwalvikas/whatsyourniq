@@ -18,7 +18,7 @@ RSpec.describe AccountBlock::AccountsController, type: :controller do
     it 'Check exsisting account'do
       post :create, params: { data: {type: "social_account", attributes: {email: social_account.email}}}
       account = JSON.parse(response.body)
-      expect(account['data']['attributes']['email']).to eq 'my_test123@gmail.com'
+      expect(account['data']['attributes']['email']).to eq social_account.email
     end
   end
 

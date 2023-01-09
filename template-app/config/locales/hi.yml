@@ -60,6 +60,7 @@ hi:
         request_not_send: 'अनुरोध नहीं भेजा'
         failed_to_report: 'रिपोर्ट करने में विफल कृपया पुन: प्रयास करें'
         you_already_reported: 'आप पहले ही इस उत्पाद की रिपोर्ट कर चुके हैं'
+        incorrect_data: 'गलत आंकड़े!'
     bx_block_categories:
       categories_controller:
         wrong_input_data: 'गलत इनपुट डेटा'

@@ -1,12 +1,4 @@
-# frozen_string_literal: true
 
-# # This file should contain all the record creation needed to seed the database with its default values.
-# # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-# #
-# # Examples:
-# #
-# #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-# #   Character.create(name: 'Luke', movie: movies.first)
 # AdminUser.create(email: 'ft@example.com', password: 'password', password_confirmation: 'password') unless AdminUser.find_by(email: 'ft@example.com')
 
 # BxBlockCheeseAndOil::PositiveIngredient.create(point: 0.0, fruit_veg: { 'value' => '40.0', 'sign' => 'less_than_equals_to' },fibre: { 'value' => '0.9', 'sign' => 'less_than_equals_to' }, protein: { 'value' => '1.6', 'sign' => 'less_than_equals_to' })
@@ -104,7 +96,7 @@
 # BxBlockBeverage::BeverageMicroIngredient.create(point: 0.2, vit_a: { 'lower_limit' => '25.0','upper_limit'=>'50.0', 'sign' => 'in_between' },vit_c: { 'lower_limit' => '2.0','upper_limit'=>'4.0', 'sign' => 'in_between' }, vit_d: { 'lower_limit' => '0.375','upper_limit'=>'0.75' ,'sign' => 'in_between' },vit_b6:{'lower_limit'=>'0.025','upper_limit'=>'0.5','sign'=>'in_between'},vit_b12:{'lower_limit'=>'0.062','upper_limit'=>'0.125','sign'=>'in_between'},vit_b9:{'lower_limit'=>'8.0','upper_limit'=>'15.0','sign'=>'in_between'},vit_b2:{'lower_limit'=>'0.05','upper_limit'=>'0.1','sign'=>'in_between'},vit_b3:{'lower_limit'=>'0.375','upper_limit'=>'0.75','sign'=>'in_between'},vit_b1:{'lower_limit'=>'0.375','upper_limit'=>'0.75','sign'=>'in_between'},vit_b5:{'lower_limit'=>'0.125','upper_limit'=>'0.25','sign'=>'in_between'},vit_b7:{'lower_limit'=>'1.0','upper_limit'=>'2.0','sign'=>'in_between'},calcium:{'lower_limit'=>'25.0','upper_limit'=>'50.0','sign'=>'in_between'},iron:{'lower_limit'=>'0.5','upper_limit'=>'1.0','sign'=>'in_between'},magnesium:{'lower_limit'=>'10.0','upper_limit'=>'19.0','sign'=>'in_between'},zinc:{'lower_limit'=>'0.425','upper_limit'=>'0.85','sign'=>'in_between'},iodine:{'lower_limit'=>'3.75','upper_limit'=>'7.5','sign'=>'in_between'},potassium:{'lower_limit'=>'100.0','upper_limit'=>'200.0','sign'=>'in_between'},phosphorus:{'lower_limit'=>'25.0','upper_limit'=>'50.0','sign'=>'in_between'},manganese:{'lower_limit'=>'0.1','upper_limit'=>'0.2','sign'=>'in_between'},copper:{'lower_limit'=>'0.05','upper_limit'=>'0.1','sign'=>'in_between'},selenium:{'lower_limit'=>'1.0','upper_limit'=>'2.0','sign'=>'in_between'},chloride:{'lower_limit'=>'62.5','upper_limit'=>'125.0','sign'=>'in_between'},chromium:{'lower_limit'=>'1.5','upper_limit'=>'3.0','sign'=>'in_between'})
 # BxBlockBeverage::BeverageMicroIngredient.create(point: 1.0, vit_a: { 'value' => '150', 'sign' => 'greater_than' },vit_c: { 'value' => '12', 'sign' => 'greater_than' }, vit_d: { 'value' => '2.25', 'sign' => 'greater_than' }, vit_b6: { 'value' => '0.285', 'sign' => 'greater_than' }, vit_b12: { 'value' => '0.375', 'sign' => 'greater_than' }, vit_b9: { 'value' => '45', 'sign' => 'greater_than' }, vit_b2: { 'value' => '0.3', 'sign' => 'greater_than' }, vit_b3: { 'value' => '2.1', 'sign' => 'greater_than' }, vit_b1: { 'value' => '2.16', 'sign' => 'greater_than' }, vit_b5: { 'value' => '0.75', 'sign' => 'greater_than' }, vit_b7: { 'value' => '6', 'sign' => 'greater_than' }, calcium: { 'value' => '150', 'sign' => 'greater_than' }, iron: { 'value' => '2.85', 'sign' => 'greater_than' }, magnesium: { 'value' => '58', 'sign' => 'greater_than' }, zinc: { 'value' => '2.55', 'sign' => 'greater_than' }, iodine: { 'value' => '22.5', 'sign' => 'greater_than' }, potassium: { 'value' => '525', 'sign' => 'greater_than' }, phosphorus: { 'value' => '150', 'sign' => 'greater_than' }, manganese: { 'value' => '0.6', 'sign' => 'greater_than' }, copper: { 'value' => '0.25', 'sign' => 'greater_than' }, selenium: { 'value' => '6', 'sign' => 'greater_than' }, chloride: { 'value' => '442.5', 'sign' => 'greater_than' }, chromium: { 'value' => '7.5', 'sign' => 'greater_than' })
 
-# AdminUser.create!(email: 'ft@example.com', password: 'password', password_confirmation: 'password') unless AdminUser.find_by(email: 'ft@example.com')
+AdminUser.create!(email: 'ft@example.com', password: 'password', password_confirmation: 'password') unless AdminUser.find_by(email: 'ft@example.com')
 
 # def calculation
 # 	vitamins = 0
@@ -131,3 +123,21 @@
 # BxBlockCatalogue::Product.all.destroy_all
 # BxBlockCatalogue::Ingredient.all.delete_all
 
+products = BxBlockCatalogue::Product.where(data_check: 'red')
+if products.present?
+  products.update_all(product_point: nil, product_rating: nil)
+  puts "===================== record updatedd ==================="
+end
+ 
+# BxBlockCatalogue::Product.where(data_check: "green").in_batches.each do |products|
+#   products.each do |object|
+#     if object.image.attached?
+#       if Rails.env.development?
+#         image = Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)
+#       else
+#         image = object.image&.service_url&.split('?')&.first
+#       end
+#       object.update_columns(image_url: image)
+#     end
+#   end
+# end

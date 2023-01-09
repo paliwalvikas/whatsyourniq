@@ -6,7 +6,7 @@ module BxBlockCatalogue
     include BuilderJsonWebToken::JsonWebTokenValidation
     skip_before_action :validate_json_web_token,
                        only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data
-                                 product_calculation regenerate_master_data question_listing prod_health_preference delete_health_preference change_for_cal]
+                                product_calculation regenerate_master_data question_listing prod_health_preference delete_health_preference change_for_cal]
     before_action :find_fav_search, only: %i[niq_score product_smart_search ofline_smart_serach]
     before_action :product_found, only: %i[niq_score index]
 
@@ -15,9 +15,9 @@ module BxBlockCatalogue
       if product.present?
         CalculateProductRating.new.calculation(product)
         data = CalculateRda.new.rda_calculation(product)
-          render json: ProductCompareSerializer.new(product,
-                                                    params: { good_ingredient: data[:good_ingredient],
-                                                              not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
+        render json: ProductCompareSerializer.new(product,
+                                                  params: { good_ingredient: data[:good_ingredient],
+                                                            not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
       else
         render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
       end
@@ -26,6 +26,7 @@ module BxBlockCatalogue
     def index
       products = BxBlockCatalogue::Product.where(data_check: 'green')
       return unless products.present?
+
       products = Kaminari.paginate_array(products).page(params[:page]).per(params[:per_page])
       catalogues = ProductCompareSerializer.new(products, params: { status: 'offline' })
       render json: { products: catalogues, meta: page_meta(products) }
@@ -33,11 +34,11 @@ module BxBlockCatalogue
 
     def update
       product = BxBlockCatalogue::Product.find_by(id: params[:id])
-      if product.present?
+      if product.present? && product.data_check != 'red'
         CalculateProductRating.new.calculation(product) || CalculateRda.rda_calculation.new(product)
         render json: { message: I18n.t('controllers.bx_block_catalogue.products_controller.calculated_successfully') }
       else
-        render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.something_went_wrong') }
+        render json: { errors: I18n.t('controllers.bx_block_catalogue.products_controller.incorrect_data') }
       end
     end
 
@@ -276,24 +277,22 @@ module BxBlockCatalogue
     private
 
     def smart_search_result(products)
-      products = if params[:page].present?
-                  params[:per] = 10
-                  products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(params[:per]) : []
-                else
-                  products
-                end
-      products
+      if params[:page].present?
+        params[:per] = 10
+        products.present? ? Kaminari.paginate_array(products).page(params[:page]).per(params[:per]) : []
+      else
+        products
+      end
     end
 
     def niq_list_smart_search
-      products =  if params[:fav_search_id].present? && params[:product_id].present? && @product.present?
-                    data = BxBlockCatalogue::SmartSearchService.new.smart_search(@fav_s)&.order('product_rating ASC')
-                    products = smart_search_result(data)
-                    products&.where.not(id: params[:product_id]).limit(20)
-                  elsif params[:product_id].present? && @product.present?
-                    case_for_product(@product) if @product.present?
-                  end
-      products
+      if params[:fav_search_id].present? && params[:product_id].present? && @product.present?
+        data = BxBlockCatalogue::SmartSearchService.new.smart_search(@fav_s)&.order('product_rating ASC')
+        products = smart_search_result(data)
+        products&.where&.not(id: params[:product_id])&.limit(20)
+      elsif params[:product_id].present? && @product.present?
+        case_for_product(@product) if @product.present?
+      end
     end
 
     def find_fav_search
@@ -303,19 +302,18 @@ module BxBlockCatalogue
     def case_for_product(product)
       filter_sub_category_id = product.filter_sub_category_id
       filter_category_id = product.filter_category_id
-      val = case product.product_rating
-            when 'A'
-              find_filter_products(['A'], filter_sub_category_id, filter_category_id, product.id)
-            when 'B'
-              find_filter_products(['A'], filter_sub_category_id, filter_category_id, product.id)
-            when 'C'
-              find_filter_products(%w[A B], filter_sub_category_id, filter_category_id, product.id)
-            when 'D'
-              find_filter_products(%w[A B C], filter_sub_category_id, filter_category_id, product.id)
-            when 'E'
-              find_filter_products(%w[A B C], filter_sub_category_id, filter_category_id, product.id)
-            end
-      val
+      case product.product_rating
+      when 'A'
+        find_filter_products(['A'], filter_sub_category_id, filter_category_id, product.id)
+      when 'B'
+        find_filter_products(['A'], filter_sub_category_id, filter_category_id, product.id)
+      when 'C'
+        find_filter_products(%w[A B], filter_sub_category_id, filter_category_id, product.id)
+      when 'D'
+        find_filter_products(%w[A B C], filter_sub_category_id, filter_category_id, product.id)
+      when 'E'
+        find_filter_products(%w[A B C], filter_sub_category_id, filter_category_id, product.id)
+      end
     end
 
     def find_filter_products(rating, filter_sub_category_id, filter_category_id, product_id)

@@ -60,6 +60,7 @@ kn:
         request_not_send: 'ವಿನಂತಿಯನ್ನು ಕಳುಹಿಸಬೇಡಿ'
         failed_to_report: 'ವರದಿ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ'
         you_already_reported: 'ನೀವು ಈಗಾಗಲೇ ಈ ಉತ್ಪನ್ನವನ್ನು ವರದಿ ಮಾಡಿರುವಿರಿ'
+        incorrect_data: 'ತಪ್ಪಾದ ಡೇಟಾ!'
     bx_block_categories:
       categories_controller:
         wrong_input_data: 'ತಪ್ಪಾದ ಇನ್ಪುಟ್ ಡೇಟಾ'

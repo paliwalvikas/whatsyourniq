@@ -60,6 +60,7 @@ en:
         request_not_send: 'Request not send'
         failed_to_report: 'Failed to report please try again'
         you_already_reported: 'You have already reported this product'
+        incorrect_data: 'Incorrect data!'
     bx_block_categories:
       categories_controller:
         wrong_input_data: 'Wrong input data'
@@ -253,4 +254,23 @@ en:
           attributes:
             product_id:
               taken: 'Already taken'
+        account_block/email_account:
+          attributes:
+            email:
+              blank: 'can not be blank'
+        account_block/email_otp:
+          attributes:
+            email:
+              blank: 'can not be blank'
+        account_block/social_account:
+          attributes:
+            email:
+              blank: 'can not be blank'
+            unique_auth_id:
+              blank: 'can not be blank'
+        bx_block_add_profile/relation:
+          attributes:
+            relation:
+            blank: 'can not be blank'
+
               
