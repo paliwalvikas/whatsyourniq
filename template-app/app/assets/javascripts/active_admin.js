@@ -24,3 +24,27 @@ function calculateRating(product_id) {
 function reload() {
   (window.location = "/admin/import_statuses").reload(true);
 }
+
+function generateModel(e){
+  var modal = document.createElement("div");
+  modal.classList.add("modal");
+
+  var modalContent = document.createElement("div");
+  modalContent.classList.add("modal-content");
+
+  var modalBody = document.createElement("div");
+  modalBody.classList.add("modal-body");
+  modalBody.innerHTML = '<img class="img_preview" src='+ e.src +'>';
+
+  modalContent.appendChild(modalBody);
+  modal.appendChild(modalContent);
+
+  document.body.appendChild(modal);
+  modal.style.display = "block";
+
+  modal.addEventListener("click", function(event) {
+    if (event.target == modal) {
+      modal.remove();
+    }
+  });
+}
