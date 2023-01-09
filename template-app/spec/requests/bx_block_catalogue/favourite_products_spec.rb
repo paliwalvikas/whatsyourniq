@@ -63,12 +63,11 @@ RSpec.describe "BxBlockCatalogue::FavouriteProduct", type: :request do
     	token = Support::ApiHelper.authenticated_user(favourite_product.account)
       headers = { "ACCEPT" => "application/json" }
       get "/bx_block_catalogue/fav_search", :params =>  {
-        token: token,
-        query: "THE HONEY SHOP" 
+        token: token 
       }, :headers => headers
-
-      json = JSON.parse(response.body).deep_symbolize_keys
       
+      json = JSON.parse(response.body).deep_symbolize_keys
+    
       expect(json[:errors]).to eq  'Product Not Found' 
       
       expect(response.content_type).to eq("application/json; charset=utf-8")

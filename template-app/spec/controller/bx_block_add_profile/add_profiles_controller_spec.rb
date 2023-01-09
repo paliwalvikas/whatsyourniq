@@ -12,7 +12,7 @@ RSpec.describe BxBlockAddProfile::AddProfilesController, type: :controller do
   	it 'Create Add Profile' do
       expect do
         post :create, params: {token: BuilderJsonWebToken.encode( FactoryBot.create(:social_account).id), :full_name => "Prity Soni", :age => 25, :gender => 'female', :email => Faker::Internet.email , :height => 5.90, :weight => 50.34, :address => Faker::Address.full_address, :pincode => '460001',
-        :city => 'betul', :state => "Madhya Pradesh", :activity_level => 'high', :contact_no => Faker::Base.numerify('+91##########'), :relation_id => FactoryBot.create(:relation).id}
+        :city => 'betul', :state => "Madhya Pradesh", :activity_level => 'high', :contact_no => Faker::Base.numerify('91#######')+SecureRandom.random_number(100..999).to_s , :relation_id => FactoryBot.create(:relation).id}
       end.to change { BxBlockAddProfile::AddProfile.count }
     end
   end

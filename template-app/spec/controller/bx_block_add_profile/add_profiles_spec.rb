@@ -5,7 +5,7 @@ RSpec.describe "AddProfiles", type: :request do
     let(:relation) { create(:relation) }
     let(:account) { create(:account) }
     let(:add_profile) {
-      create(:add_profile, relation_id: relation.id, account_id: account.id)
+      create(:add_profile) #, relation_id: relation.id, account_id: account.id)
     }
     
     it "should not respond to AddProfiles#calculate_bmi without token" do                             
