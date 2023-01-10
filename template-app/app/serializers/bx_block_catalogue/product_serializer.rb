@@ -1,6 +1,6 @@
 module BxBlockCatalogue
   class ProductSerializer < BuilderBase::BaseSerializer
-    attributes :id, :product_name, :product_type, :product_rating, :product_point, :positive_good, :negative_not_good, :bar_code, :data_check, :food_drink_filter, :image, :category_type, :filter_category, :filter_sub_category, :description, :ingredient_list, :created_at, :updated_at
+    attributes :id, :product_name, :product_type, :price_mrp, :price_post_discount , :product_rating, :product_point, :positive_good, :negative_not_good, :bar_code, :data_check, :food_drink_filter, :image, :category_type, :filter_category, :filter_sub_category, :description, :ingredient_list, :created_at, :updated_at
     
     attribute :image do |object, _params|
       if object.image.attached?
