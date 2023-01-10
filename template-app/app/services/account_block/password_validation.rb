@@ -21,9 +21,9 @@ module AccountBlock
       end
 
       def rules
-        'Password should be a minimum of 8 characters long,' \
-        ' contain both uppercase and lowercase characters, at' \
-        ' least one digit, and one special character ' \
+        I18n.t('services.account_block.password_validation.password_should_minimum') +
+        I18n.t('services.account_block.password_validation.contain_uppercase_lowercase') +
+        I18n.t('services.account_block.password_validation.least_one_digit') +
         '(!@#$&*?<>\',[]}{=-)(^%`~+.:;_).'
       end
     end

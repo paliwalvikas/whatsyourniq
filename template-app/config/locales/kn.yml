@@ -1,0 +1,256 @@
+kn:
+  application:
+    errors:
+      record_not_found: 'ದಾಖಲೆ ಸಿಕ್ಕಿಲ್ಲ'
+  controllers:
+    account_block:
+      accounts:
+        account_not_found: 'ಖಾತೆ ಕಂಡುಬಂದಿಲ್ಲ'
+        account_already_activated: 'ಖಾತೆಯನ್ನು ಈಗಾಗಲೇ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ'
+        account_activated_successfully: 'ಖಾತೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ'
+        phone_not_found: 'ಫೋನ್ ಸಂಖ್ಯೆ ಕಂಡುಬಂದಿಲ್ಲ'
+        pin_has_expired: 'ಈ ಪಿನ್ ಅವಧಿ ಮೀರಿದೆ, ದಯವಿಟ್ಟು ಹೊಸ ಪಿನ್ ಕೋಡ್ ಅನ್ನು ವಿನಂತಿಸಿ.'
+        phone_already_activated: 'ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಈಗಾಗಲೇ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ'
+        phone_confirmed_successfully: 'ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ದೃಢೀಕರಿಸಲಾಗಿದೆ'
+        invalid_pin_phone: 'ಫೋನ್ ಸಂಖ್ಯೆಗೆ ಅಮಾನ್ಯವಾದ ಪಿನ್'
+        account_already_registered: 'ಖಾತೆಯನ್ನು ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಲಾಗಿದೆ'
+        invalid_account_type: 'ಅಮಾನ್ಯ ಖಾತೆ ಪ್ರಕಾರ'
+        account_updated_successfully: 'ಖಾತೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ'
+        account_not_updated: 'ಖಾತೆಯನ್ನು ನವೀಕರಿಸಲಾಗಿಲ್ಲ'
+    builder_base:
+      application_controller:
+        record_not_found: 'ದಾಖಲೆ ಸಿಕ್ಕಿಲ್ಲ'
+    bx_block_add_profile:
+      add_profiles_controller:
+        profile_successfully_deleted: 'ಪ್ರೊಫೈಲ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ'
+        unable_calculate_bmi: 'BMI ಅನ್ನು ಲೆಕ್ಕಾಚಾರ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ'
+        provide_requierd_details: 'ದಯವಿಟ್ಟು ಅಗತ್ಯವಿರುವ ವಿವರಗಳನ್ನು ಒದಗಿಸಿ'
+        profile_not_exists: 'ಒದಗಿಸಿದ ಐಡಿಗಾಗಿ ಪ್ರೊಫೈಲ್ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ'
+    bx_block_advanced_search:
+      searchs_controller:
+        successfully_loaded: 'ಯಶಸ್ವಿಯಾಗಿ ಲೋಡ್ ಮಾಡಲಾಗಿದೆ'
+    bx_block_catalogue:
+      catalogues_controller:
+        catalogue_not_exists: 'ಒದಗಿಸಿದ ಐಡಿಗಾಗಿ ಕ್ಯಾಟಲಾಗ್ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ'
+      compare_products_controller:
+        no_product_found: 'ಯಾವುದೇ ಉತ್ಪನ್ನ ಕಂಡುಬಂದಿಲ್ಲ'
+        record_deleted: 'ದಾಖಲೆ ಅಳಿಸಲಾಗಿದೆ'
+        compare_product_not_exists: 'ಒದಗಿಸಿದ ಐಡಿಗಾಗಿ ಹೋಲಿಕೆ ಉತ್ಪನ್ನವು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ'
+      favourite_products_controller:
+        product_not_found: 'ಉತ್ಪನ್ನ ಕಂಡುಬಂದಿಲ್ಲ'
+        product_successfully_deleted: 'ಉತ್ಪನ್ನವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ'
+      orders_controller:
+        no_bucket_present: 'ಯಾವುದೇ ಬಕೆಟ್ ಇಲ್ಲ ದಯವಿಟ್ಟು ಒಂದನ್ನು ರಚಿಸಿ'
+        food_already_present: 'ಆಹಾರ ಈಗಾಗಲೇ ಪ್ರಸ್ತುತವಾಗಿದೆ'
+        order_not_present: 'ಆದೇಶವು ಪ್ರಸ್ತುತವಾಗಿಲ್ಲ'
+        order_successfully_deleted: 'ಆರ್ಡರ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ'
+        product_successfully_removed: 'ಉತ್ಪನ್ನವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ತೆಗೆದುಹಾಕಲಾಗಿದೆ'
+        food_bucket_not_found: 'ಆಹಾರ ಬಕೆಟ್ ಕಂಡುಬಂದಿಲ್ಲ'
+        basket_name_already_present: 'ಬಾಸ್ಕೆಟ್ ಹೆಸರು ಈಗಾಗಲೇ ಪ್ರಸ್ತುತವಾಗಿದೆ'
+        basket_not_present: 'ಬಾಸ್ಕೆಟ್ ಪ್ರಸ್ತುತ ಇಲ್ಲ'
+        food_basket_not_found: 'ಆಹಾರದ ಬುಟ್ಟಿ ಕಂಡುಬಂದಿಲ್ಲ'
+      products_controller:
+        calculated_successfully: 'ಯಶಸ್ವಿಯಾಗಿ ಲೆಕ್ಕಾಚಾರ ಮಾಡಲಾಗಿದೆ!'
+        something_went_wrong: 'ಏನೋ ತಪ್ಪಾಗಿದೆ!'
+        updated: 'ನವೀಕರಿಸಲಾಗಿದೆ'
+        deleted: 'ಅಳಿಸಲಾಗಿದೆ'
+        deleted_successfully: 'ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ!'
+        please_add_product: 'ದಯವಿಟ್ಟು ಇನ್ನೂ ಒಂದು ಉತ್ಪನ್ನವನ್ನು ಸೇರಿಸಿ'
+        success: 'ಯಶಸ್ಸು'
+        request_not_send: 'ವಿನಂತಿಯನ್ನು ಕಳುಹಿಸಬೇಡಿ'
+        failed_to_report: 'ವರದಿ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ'
+        you_already_reported: 'ನೀವು ಈಗಾಗಲೇ ಈ ಉತ್ಪನ್ನವನ್ನು ವರದಿ ಮಾಡಿರುವಿರಿ'
+        incorrect_data: 'ತಪ್ಪಾದ ಡೇಟಾ!'
+    bx_block_categories:
+      categories_controller:
+        wrong_input_data: 'ತಪ್ಪಾದ ಇನ್ಪುಟ್ ಡೇಟಾ'
+        record_can_not_be_deleted: 'ಕ್ಯಾಟಲಾಗ್‌ನ ಉಲ್ಲೇಖದಿಂದಾಗಿ ದಾಖಲೆಯನ್ನು ಅಳಿಸಲಾಗುವುದಿಲ್ಲ'
+        record: 'ದಾಖಲೆ'
+        category_does_not_exists: 'ಒದಗಿಸಿದ ಐಡಿಯೊಂದಿಗೆ ವರ್ಗವು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ'
+      sub_categories_controller:
+        record_not_deleted_reference: 'ಕ್ಯಾಟಲಾಗ್ನ ಉಲ್ಲೇಖದ ಕಾರಣದಿಂದಾಗಿ ದಾಖಲೆಯನ್ನು ಅಳಿಸಲಾಗುವುದಿಲ್ಲ'
+        sub_category_not_exists: 'ಒದಗಿಸಿದ ಐಡಿಯೊಂದಿಗೆ ಉಪವರ್ಗವು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ'
+    bx_block_content_management:
+      about_contents_controller:
+        about_content_not_exist: 'ನಮ್ಮ ಬಗ್ಗೆ ವಿಷಯ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.'
+      contents_controller:
+        content_created_successfully: 'ವಿಷಯವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ'
+        content_reindexed_successfully: 'ವಿಷಯವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಮರುಇಂಡೆಕ್ಸ್ ಮಾಡಲಾಗಿದೆ!'
+        successfully_run_seeds: 'ಯಶಸ್ವಿಯಾಗಿ! ಬೀಜಗಳನ್ನು ಓಡಿಸಿ'
+        can_not_find_category: 'ಒದಗಿಸಿದ ಐಡಿಯೊಂದಿಗೆ ವರ್ಗವನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗಲಿಲ್ಲ'
+        can_not_find_sub_category: 'ಒದಗಿಸಿದ ಐಡಿಯೊಂದಿಗೆ ಉಪ_ವರ್ಗವನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗಲಿಲ್ಲ'
+        can_not_find_content_type: 'ಒದಗಿಸಿದ ಐಡಿಯೊಂದಿಗೆ ವಿಷಯ ಪ್ರಕಾರವನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗುವುದಿಲ್ಲ'
+        can_not_find_language: 'ಒದಗಿಸಿದ ಐಡಿಯೊಂದಿಗೆ ಭಾಷೆಯನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗುವುದಿಲ್ಲ'
+        use_correct_api: 'ದಯವಿಟ್ಟು ಸರಿಯಾದ api_access_key ಬಳಸಿ.'
+    bx_block_custom_ads:
+      advertisements_controller:
+        successfully_loded: 'ಯಶಸ್ವಿಯಾಗಿ ಲೋಡ್ ಮಾಡಲಾಗಿದೆ'
+        successfully_created: 'ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ'
+        advertisement_not_found: 'ಜಾಹೀರಾತು ಕಂಡುಬಂದಿಲ್ಲ'
+    bx_block_email_notifications:
+      email_notifications_controller:
+        email_notification_not_found: 'ಇಮೇಲ್ ಅಧಿಸೂಚನೆ ಕಂಡುಬಂದಿಲ್ಲ.'
+    bx_block_faq_and_contact_us:
+      contact_us_controller:
+        thank_you_contact_us: 'ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿದ್ದಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು'
+      faqs_controller:
+        no_record_found: 'ಯಾವುದೇ ದಾಖಲೆ ಕಂಡುಬಂದಿಲ್ಲ'
+        record_successfully_deleted: 'ದಾಖಲೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ.'
+    bx_block_followers:
+      application_controller:
+        please_login_again: 'ದಯವಿಟ್ಟು ಮತ್ತೆ ಲಾಗಿನ್ ಮಾಡಿ.'
+      follows_controller:
+        list_following_users: 'ಕೆಳಗಿನ ಬಳಕೆದಾರರ ಪಟ್ಟಿ.'
+        not_following_user: 'ಯಾವುದೇ ಬಳಕೆದಾರರನ್ನು ಅನುಸರಿಸುತ್ತಿಲ್ಲ.'
+        following_this_user: 'ಈ ಬಳಕೆದಾರರನ್ನು ಅನುಸರಿಸುತ್ತಿದೆ.'
+        not_following_this_user: 'ಈ ಬಳಕೆದಾರರನ್ನು ಅನುಸರಿಸುತ್ತಿಲ್ಲ.'
+        you_already_follow: 'ನೀವು ಈಗಾಗಲೇ ಅನುಸರಿಸುತ್ತೀರಿ.'
+        user_does_not_exist: 'ಬಳಕೆದಾರ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.'
+        you_not_follow_yourself: 'ನೀವು ನಿಮ್ಮನ್ನು ಅನುಸರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.'
+        successfully_followed: 'ಯಶಸ್ವಿಯಾಗಿ ಅನುಸರಿಸಲಾಗಿದೆ.'
+        successfully_unfollowed: 'ಯಶಸ್ವಿಯಾಗಿ ಅನುಸರಿಸದಿರುವುದು.'
+        parameter_missing: 'ಪ್ಯಾರಾಮೀಟರ್ ಕಾಣೆಯಾಗಿದೆ.'
+    bx_block_forgot_password:
+      otp_confirmations_controller:
+        otp_has_expired: 'OTP ಅವಧಿ ಮುಗಿದಿದೆ, ದಯವಿಟ್ಟು ಹೊಸದನ್ನು ವಿನಂತಿಸಿ.'
+        invalid_token: 'ಅಮಾನ್ಯ ಟೋಕನ್'
+        token_invalid: 'ಟೋಕನ್ ಅಮಾನ್ಯವಾಗಿದೆ'
+        otp_validation_success: 'OTP ಮೌಲ್ಯೀಕರಣ ಯಶಸ್ವಿಯಾಗಿದೆ'
+        invalid_otp_code: 'ಅಮಾನ್ಯ OTP ಕೋಡ್'
+        token_and_otp : 'ಟೋಕನ್ ಮತ್ತು OTP ಕೋಡ್ ಅಗತ್ಯವಿದೆ'
+      otps_controller:
+        account_not_found: 'ಖಾತೆ ಕಂಡುಬಂದಿಲ್ಲ'
+        email_phone_required: 'ಇಮೇಲ್ ಅಥವಾ ಫೋನ್ ಸಂಖ್ಯೆ ಅಗತ್ಯವಿದೆ'
+      passwords_controller:
+        code_not_validated: 'OTP ಕೋಡ್ ಮೌಲ್ಯೀಕರಿಸಲಾಗಿಲ್ಲ'
+        password_change_failed: 'ಪಾಸ್ವರ್ಡ್ ಬದಲಾವಣೆ ವಿಫಲವಾಗಿದೆ'
+        token_password_required: 'ಟೋಕನ್ ಮತ್ತು ಹೊಸ ಪಾಸ್ವರ್ಡ್ ಅಗತ್ಯವಿದೆ'
+    bx_block_login:
+      logins_controller:
+        invalid_password: 'ಅಮಾನ್ಯವಾದ ಪಾಸ್ವರ್ಡ್'
+        account_not_found_activated: 'ಖಾತೆ ಕಂಡುಬಂದಿಲ್ಲ, ಅಥವಾ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿಲ್ಲ'
+        login_failed: 'ಪ್ರವೇಶ ವಿಫಲವಾಯಿತು'
+        invalid_account_type: 'ಅಮಾನ್ಯ ಖಾತೆ ಪ್ರಕಾರ'
+        your_account_not_verfied: 'ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಪರಿಶೀಲಿಸಲಾಗಿಲ್ಲ, ದಯವಿಟ್ಟು ಲಾಗಿನ್ಗಾಗಿ ಅದನ್ನು ಪರಿಶೀಲಿಸಿ'
+    bx_block_notifications:
+      application_controller:
+        please_login_again: 'ದಯವಿಟ್ಟು ಮತ್ತೆ ಲಾಗಿನ್ ಮಾಡಿ.'
+      notifications_controller:
+        list_of_notifications: 'ಅಧಿಸೂಚನೆಗಳ ಪಟ್ಟಿ.'
+        no_notification_found: 'ಯಾವುದೇ ಅಧಿಸೂಚನೆ ಕಂಡುಬಂದಿಲ್ಲ.'
+        success: 'ಯಶಸ್ಸು.'
+        notification_created: 'ಅಧಿಸೂಚನೆಯನ್ನು ರಚಿಸಲಾಗಿದೆ.'
+        notification_marked_read: 'ಅಧಿಸೂಚನೆಯನ್ನು ಓದಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ.'
+        deleted: 'ಅಳಿಸಲಾಗಿದೆ.'
+    bx_block_push_notifications:
+      push_notifications_controller:
+        there_is_no_push: 'ಯಾವುದೇ ಪುಶ್ ಅಧಿಸೂಚನೆ ಇಲ್ಲ.'
+        not_found: 'ಸಿಕ್ಕಿಲ್ಲ'
+        push_notification_not_found: 'ಪುಶ್ ಅಧಿಸೂಚನೆ ಕಂಡುಬಂದಿಲ್ಲ'
+    bx_block_upload_media:
+      upload_media_controller:
+        successfully_updated: 'ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ'
+  models:
+    account_block:
+      account:
+        invalid_unrecognized_phone: 'ಅಮಾನ್ಯ ಅಥವಾ ಗುರುತಿಸದ ಫೋನ್ ಸಂಖ್ಯೆ'
+      sms_otp:
+        is_your_otp_please: 'ನಿಮ್ಮ OTP ಆಗಿದೆ. ದಯವಿಟ್ಟು ಯಾರೊಂದಿಗೂ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ.'
+        thank_you_super_foods: 'ಧನ್ಯವಾದ. ಸೂಪರ್ಫುಡ್ಸ್ ವ್ಯಾಲಿ ಪ್ರೈವೆಟ್ ಲಿಮಿಟೆಡ್.'
+    bx_block_catalogue:
+      compare_product:
+        you_are_not_able: 'ನೀವು ಹೆಚ್ಚಿನ ಉತ್ಪನ್ನವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ'
+      favourite_search:
+        please_uniq_filters: 'ದಯವಿಟ್ಟು ಅನನ್ಯ ಫಿಲ್ಟರ್ಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ'
+    bx_block_categories:
+      sub_category:
+        please_select_categories: 'ದಯವಿಟ್ಟು ವರ್ಗಗಳನ್ನು ಅಥವಾ ಪೋಷಕರನ್ನು ಆಯ್ಕೆಮಾಡಿ.'
+    bx_block_content_management:
+      author:
+        should_not_greater_then: 'ಆಗ ಹೆಚ್ಚಿರಬಾರದು'
+        words: 'ಪದಗಳು'
+      bookmark:
+        content_with_this_account: 'ಈ ಖಾತೆಯೊಂದಿಗೆ ವಿಷಯವನ್ನು ಈಗಾಗಲೇ ತೆಗೆದುಕೊಳ್ಳಲಾಗಿದೆ'
+      content:
+        must_shorter_than: 'ಗಿಂತ ಚಿಕ್ಕದಾಗಿರಬೇಕು'
+        characters_maximum: 'ಗರಿಷ್ಠ ಅಕ್ಷರಗಳು'
+        can_not_change_draft: 'ಡ್ರಾಫ್ಟ್ಗೆ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.'
+        can_not_be_updated: 'ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ'
+        can_not_changed_published: 'ಪ್ರಕಟಿಸಿದ ನಂತರ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.'
+        can_not_published_approved: 'ವಿಷಯವನ್ನು ಅನುಮೋದಿಸದಿದ್ದರೆ ಪ್ರಕಟಿಸಲಾಗುವುದಿಲ್ಲ.'
+      content_video:
+        can_not_more: '30 ಸೆಕೆಂಡುಗಳಿಗಿಂತ ಹೆಚ್ಚು ಇರುವಂತಿಲ್ಲ'
+        can_not_less: '30 ಸೆಕೆಂಡುಗಳಿಗಿಂತ ಕಡಿಮೆ ಇರುವಂತಿಲ್ಲ'
+      exam:
+        can_not_greater: 'ಗಿಂತ ಹೆಚ್ಚಿರಲಾರದು'
+      follow:
+        content_provider_with_this: 'ಈ ಖಾತೆಯೊಂದಿಗೆ ವಿಷಯ ಪೂರೈಕೆದಾರರನ್ನು ಈಗಾಗಲೇ ತೆಗೆದುಕೊಳ್ಳಲಾಗಿದೆ'
+    bx_block_language_options:
+      application_message:
+        translation_message_not_blank: 'EN ಅನುವಾದ ಸಂದೇಶವನ್ನು ಖಾಲಿ ಇರುವಂತಿಲ್ಲ'
+        translation_not_present: 'ಕೀಲಿಗಾಗಿ ಅನುವಾದವು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ:'
+        locale: 'ಸ್ಥಳ:'
+  concerns:
+    builder_json_web_token:
+      json_web_token_validation:
+        token_has_expired: 'ಟೋಕನ್ ಅವಧಿ ಮೀರಿದೆ'
+        invalid_token: 'ಅಮಾನ್ಯ ಟೋಕನ್'
+  services:
+    account_block:
+      password_validation:
+        password_should_minimum: 'ಪಾಸ್ವರ್ಡ್ ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳ ಉದ್ದವಿರಬೇಕು'
+        contain_uppercase_lowercase: 'ನಲ್ಲಿ ದೊಡ್ಡಕ್ಷರ ಮತ್ತು ಸಣ್ಣ ಅಕ್ಷರಗಳನ್ನು ಒಳಗೊಂಡಿರುತ್ತದೆ'
+        least_one_digit: 'ಕನಿಷ್ಠ ಒಂದು ಅಂಕೆ, ಮತ್ತು ಒಂದು ವಿಶೇಷ ಅಕ್ಷರ'
+    bx_block_content_management:
+      base:
+        in: 'ರಲ್ಲಿ'
+        their_was_error: 'ಉಳಿಸುವಲ್ಲಿ ಅವರ ದೋಷ ಸಂಭವಿಸಿದೆ'
+        with: 'ಜೊತೆಗೆ'
+        in_row_with: 'sn ಜೊತೆ ಸಾಲಿನಲ್ಲಿ:'
+        errors: 'ದೋಷಗಳು:'
+        missing_headers_sheet: 'ಹಾಳೆಯಲ್ಲಿ ಹೆಡರ್ ಕಾಣೆಯಾಗಿದೆ'
+      interface:
+        not_implemented: 'ಅನುಷ್ಠಾನಗೊಂಡಿಲ್ಲ'
+        please_add_method: 'ದಯವಿಟ್ಟು ನಿಮ್ಮ ಮಾಡ್ಯೂಲ್ಗೆ ವಿಧಾನವನ್ನು ಸೇರಿಸಿ.'
+      partner_import_service:
+        can_find_category: 'ಈ ಹೆಸರಿನೊಂದಿಗೆ ವರ್ಗವನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗಲಿಲ್ಲ'
+        can_find_sub_category: 'ಈ ಹೆಸರಿನೊಂದಿಗೆ ಉಪ ವರ್ಗವನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗಲಿಲ್ಲ'
+        can_find_content_type: 'ಈ ಹೆಸರಿನೊಂದಿಗೆ ವಿಷಯ ಪ್ರಕಾರವನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗಲಿಲ್ಲ'
+      sub_category_import_service:
+        can_find_parent: 'ಹೆಸರಿನೊಂದಿಗೆ ಪೋಷಕರನ್ನು ಹುಡುಕಲು ಸಾಧ್ಯವಿಲ್ಲ'
+        can_not_find_category: 'ಹೆಸರಿನೊಂದಿಗೆ ವರ್ಗವನ್ನು ಕಂಡುಹಿಡಿಯಲಾಗುವುದಿಲ್ಲ'
+    bx_block_language_options:
+      import_data_service:
+        please_add_translations: 'ದಯವಿಟ್ಟು ಅನುವಾದದ ಹಾಳೆಯನ್ನು ಸೇರಿಸಿ'
+      translation_data_import_service:
+        no_data_present: 'ಅನುವಾದ ಹಾಳೆಯಲ್ಲಿ ಯಾವುದೇ ಡೇಟಾ ಇಲ್ಲ'
+        missing_headers: 'ಕಾಣೆಯಾದ ಹೆಡರ್ಗಳು:'
+        in_translations_sheet: 'ಅನುವಾದ ಹಾಳೆಯಲ್ಲಿ'
+        key_not_present: 'ಅನುವಾದ ಹಾಳೆಯಲ್ಲಿ ಕೀ ಇಲ್ಲ'
+        key: 'ಕೀ -'
+        serial_number_not: 'ಅನುವಾದ ಹಾಳೆಯಲ್ಲಿ ಸರಣಿ ಸಂಖ್ಯೆ ಇರುವುದಿಲ್ಲ'
+        some_error_occured: 'ಸಾಲಿನಲ್ಲಿರುವ ಅಪ್ಲಿಕೇಶನ್ ಸಂದೇಶ ಡೇಟಾದಲ್ಲಿ ಕೆಲವು ದೋಷ ಸಂಭವಿಸಿದೆ-'
+    bx_block_push_notifications:
+      provider:
+        unsupported_push: 'ಬೆಂಬಲವಿಲ್ಲದ ಪುಶ್ ಅಧಿಸೂಚನೆಗಳ ಪೂರೈಕೆದಾರ:'
+        you_must_specify: 'ನೀವು ಪುಶ್ ಅಧಿಸೂಚನೆಗಳ ಪೂರೈಕೆದಾರರನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಬೇಕು.'
+    bx_block_sms:
+      provider:
+        supported: 'ಬೆಂಬಲಿತವಾಗಿದೆ'
+        unsupported_sms: 'ಬೆಂಬಲಿತವಲ್ಲದ SMS ಒದಗಿಸುವವರು:'
+        you_must_specify_provider: 'ನೀವು SMS ಒದಗಿಸುವವರನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಬೇಕು.'
+  activerecord:
+    errors:
+      models:
+        account_block/sms_account:
+          attributes:
+            full_phone_number:
+              blank: 'ಖಾಲಿ ಇರುವಂತಿಲ್ಲ'
+        bx_block_catalogue/favourite_product:
+          attributes:
+            product:
+              required: 'ಅಸ್ತಿತ್ವದಲ್ಲಿರಬೇಕು'
+        bx_block_catalogue/compare_product:
+          attributes:
+            product_id:
+              taken: 'ಈಗಾಗಲೇ ತೆಗೆದುಕೊಳ್ಳಲಾಗಿದೆ'

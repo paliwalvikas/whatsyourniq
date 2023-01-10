@@ -8,7 +8,7 @@ module BxBlockCatalogue
       if list_of_product.present?
         render json: CompareProductSerializer.new(list_of_product)
       else
-        render json: {error: "No product found"}, status: :unprocessable_entity
+        render json: {error: I18n.t('controllers.bx_block_catalogue.compare_products_controller.no_product_found')}, status: :unprocessable_entity
       end
     end
 
@@ -54,7 +54,7 @@ module BxBlockCatalogue
 
     def destroy_all
       compare_products = BxBlockCatalogue::CompareProduct.destroy_all
-      render json: { message: "record deleted", product: compare_products }
+      render json: { message: I18n.t('controllers.bx_block_catalogue.compare_products_controller.record_deleted'), product: compare_products }
     end
 
     private
@@ -68,7 +68,7 @@ module BxBlockCatalogue
 
       if @product.nil?
         render json: {
-            message: "Compare product with id #{params[:id]} doesn't exists"
+            message: I18n.t('controllers.bx_block_catalogue.compare_products_controller.compare_product_not_exists')
         }, status: :not_found
       end
     end

@@ -11,7 +11,7 @@ module BxBlockContentManagement
       if about_contents.any?
         render json: AboutContentSerializer.new(about_contents).serializable_hash, status: :ok
       else
-        render json: { message: 'About us content does not exist.' }, status: :unprocessable_entity
+        render json: { message: I18n.t('controllers.bx_block_content_management.about_contents_controller.about_content_not_exist') }, status: :unprocessable_entity
       end
     end
   end

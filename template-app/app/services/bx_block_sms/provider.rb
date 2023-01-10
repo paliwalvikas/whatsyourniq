@@ -23,15 +23,16 @@ module BxBlockSms
       end
 
       def provider_name
-        ENV["PROVIDER"]
+        # ENV["PROVIDER"]
+        "TEST"
       end
 
       def unsupported_message(provider)
-        supported_prov_msg = "Supported: #{SUPPORTED.join(", ")}."
+        supported_prov_msg = I18n.t('services.bx_block_sms.provider.supported') + "#{SUPPORTED.join(", ")}."
         if provider
-          "Unsupported SMS provider: #{provider}. #{supported_prov_msg}"
+          I18n.t('services.bx_block_sms.provider.unsupported_sms') + "#{provider}. #{supported_prov_msg}"
         else
-          "You must specify a SMS provider. #{supported_prov_msg}"
+          I18n.t('services.bx_block_sms.provider.you_must_specify_provider') + "#{supported_prov_msg}"
         end
       end
     end

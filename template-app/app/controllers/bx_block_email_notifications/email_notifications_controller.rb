@@ -10,7 +10,7 @@ module BxBlockEmailNotifications
         render json: EmailNotificationSerializer.new(email_notification).serializable_hash,
                status: :ok
       else
-        render json: {errors: [{message: 'Email Notification not found.'},]}, status: :not_found
+        render json: {errors: [{message: I18n.t('controllers.bx_block_email_notifications.email_notifications_controller.email_notification_not_found')},]}, status: :not_found
       end
     end
 
@@ -26,7 +26,7 @@ module BxBlockEmailNotifications
         render json: EmailNotificationSerializer.new(email_notification).serializable_hash,
                status: :ok
       else
-        render json: {errors: [{message: 'Notification not found.'},]}, status: :not_found
+        render json: {errors: [{message: I18n.t('controllers.bx_block_email_notifications.email_notifications_controller.email_notification_not_found')},]}, status: :not_found
       end
     end
   end

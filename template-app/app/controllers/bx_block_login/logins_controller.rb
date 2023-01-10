@@ -12,10 +12,10 @@ module BxBlockLogin
              user = AccountBlock::EmailAccountSerializer.new(@account)
            end
          else
-          render json: { errors: "invalid password" }
+          render json: { errors: I18n.t('controllers.bx_block_login.logins_controller.invalid_password') }
         end 
       else 
-        render json: { errors: "account not found" }
+        render json: { errors: I18n.t('controllers.bx_block_forgot_password.otps_controller.account_not_found') }
       end 
 
       when 'social_account'
@@ -23,7 +23,7 @@ module BxBlockLogin
         if @account
           check_account_activated
         else
-          render json: { errors: "account not found" }
+          render json: { errors: I18n.t('controllers.bx_block_forgot_password.otps_controller.account_not_found') }
         end
 
       when 'sms_account'
@@ -34,7 +34,7 @@ module BxBlockLogin
         output.on(:account_not_found) do |account|
           render json: {
             errors: [{
-              failed_login: 'Account not found, or not activated',
+              failed_login: I18n.t('controllers.bx_block_login.logins_controller.account_not_found_activated'),
             }],
           }, status: :unprocessable_entity
         end
@@ -42,7 +42,7 @@ module BxBlockLogin
         output.on(:failed_login) do |account|
           render json: {
             errors: [{
-              failed_login: 'Login Failed',
+              failed_login: I18n.t('controllers.bx_block_login.logins_controller.login_failed'),
             }],
           }, status: :unauthorized
         end
@@ -59,7 +59,7 @@ module BxBlockLogin
       else
         render json: {
           errors: [{
-            account: 'Invalid Account Type',
+            account: I18n.t('controllers.bx_block_login.logins_controller.invalid_account_type'),
           }],
         }, status: :unprocessable_entity
       end
@@ -77,7 +77,7 @@ module BxBlockLogin
         end 
         render json: {user: user, meta: {token: encode(@account.id)}}
       else
-        render json: { errors: "your account is not verfied, please verify it for login", id: @account.id}
+        render json: { errors: I18n.t('controllers.bx_block_login.logins_controller.your_account_not_verfied'), id: @account.id}
       end
     end
 

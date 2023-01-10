@@ -4,7 +4,7 @@ module BxBlockCategories
 
     def create
       if params[:sub_category].blank? || params[:sub_category][:name].blank?
-        raise 'Wrong input data'
+        raise I18n.t('controllers.bx_block_categories.categories_controller.wrong_input_data')
       end
 
       sub_category = SubCategory.new(name: params[:sub_category][:name])
@@ -57,7 +57,7 @@ module BxBlockCategories
           render json: { success: true }, status: :ok
         end
       rescue ActiveRecord::InvalidForeignKey
-        message = "Record can't be deleted due to reference to catalogue"
+        message = I18n.t('controllers.bx_block_categories.sub_categories_controller.record_not_deleted_reference')
 
         render json: {
           error: { message: message }
@@ -97,7 +97,7 @@ module BxBlockCategories
 
       if @sub_category.nil?
         render json: {
-            message: "SubCategory with id #{params[:id]} doesn't exists"
+            message: I18n.t('controllers.bx_block_categories.sub_categories_controller.sub_category_not_exists')
         }, status: :not_found
       end
     end

@@ -1,33 +1,276 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t 'hello'
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t('hello') %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# The following keys must be escaped otherwise they will not be retrieved by
-# the default I18n backend:
-#
-# true, false, on, off, yes, no
-#
-# Instead, surround them with single quotes.
-#
-# en:
-#   'true': 'foo'
-#
-# To learn more, please read the Rails Internationalization guide
-# available at https://guides.rubyonrails.org/i18n.html.
-
 en:
-  hello: "Hello world"
+  application:
+    errors:
+      record_not_found: 'Record not found'
+  controllers:
+    account_block:
+      accounts:
+        account_not_found: 'Account Not Found'
+        account_already_activated: 'Account Already Activated'
+        account_activated_successfully: 'Account Activated Successfully'
+        phone_not_found: 'Phone Number Not Found'
+        pin_has_expired: 'This Pin has expired, please request a new pin code.'
+        phone_already_activated: 'Phone Number Already Activated'
+        phone_confirmed_successfully: 'Phone Number Confirmed Successfully'
+        invalid_pin_phone: 'Invalid Pin for Phone Number'
+        account_already_registered: 'Account already registered'
+        invalid_account_type: 'Invalid Account Type'
+        account_updated_successfully: 'Account updated successfully'
+        account_not_updated: 'Account not updated'
+    builder_base:
+      application_controller:
+        record_not_found: 'Record not found'
+    bx_block_add_profile:
+      add_profiles_controller:
+        profile_successfully_deleted: 'Profile successfully deleted'
+        unable_calculate_bmi: 'Unable to Calculate BMI'
+        provide_requierd_details: 'Please provide the requierd details'
+        profile_not_exists: 'Profile does not exists for provided Id'
+    bx_block_advanced_search:
+      searchs_controller:
+        successfully_loaded: 'Successfully Loaded'
+    bx_block_catalogue:
+      catalogues_controller:
+        catalogue_not_exists: 'Catalogue does not exists for provided Id'
+      compare_products_controller:
+        no_product_found: 'No product found'
+        record_deleted: 'Record deleted'
+        compare_product_not_exists: 'Compare product does not exists for provided Id'
+      favourite_products_controller:
+        product_not_found: 'Product not found'
+        product_successfully_deleted: 'Product successfully deleted'
+      orders_controller:
+        no_bucket_present: 'No bucket present please create one'
+        food_already_present: 'Food Already Present'
+        order_not_present: 'Order not present'
+        order_successfully_deleted: 'Order successfully deleted'
+        product_successfully_removed: 'Product successfully removed'
+        food_bucket_not_found: 'Food Bucket Not Found'
+        basket_name_already_present: 'Basket Name Already Present'
+        basket_not_present: 'Basket Not Present'
+        food_basket_not_found: 'Food Basket not found'
+      products_controller:
+        calculated_successfully: 'Calculated successfully!'
+        something_went_wrong: 'Something went wrong!'
+        updated: 'Updated'
+        deleted: 'Deleted'
+        deleted_successfully: 'Deleted successfully!'
+        please_add_product: 'Please add one more product'
+        success: 'Success'
+        request_not_send: 'Request not send'
+        failed_to_report: 'Failed to report please try again'
+        you_already_reported: 'You have already reported this product'
+        incorrect_data: 'Incorrect data!'
+    bx_block_categories:
+      categories_controller:
+        wrong_input_data: 'Wrong input data'
+        record_can_not_be_deleted: 'Record can not be deleted due to reference to a catalogue '
+        record: 'record'
+        category_does_not_exists: 'Category with provided id does not exists'
+      sub_categories_controller:
+        record_not_deleted_reference: 'Record can not be deleted due to reference to catalogue'
+        sub_category_not_exists: 'SubCategory with provided id does not exists'
+    bx_block_content_management:
+      about_contents_controller:
+        about_content_not_exist: 'About us content does not exist.'
+      contents_controller:
+        content_created_successfully: 'Content created successfully'
+        content_reindexed_successfully: 'Content reindexed Successfully!'
+        successfully_run_seeds: 'Successfully! run seeds'
+        can_not_find_category: 'Can not find category with provided id'
+        can_not_find_sub_category: 'Can not find sub_category with provided id'
+        can_not_find_content_type: 'Can not find content type with provided id'
+        can_not_find_language: 'Can not find language with provided id'
+        use_correct_api: 'Please use correct api_access_key.'
+    bx_block_custom_ads:
+      advertisements_controller:
+        successfully_loded: 'Successfully loded'
+        successfully_created: 'Successfully created'
+        advertisement_not_found: 'Advertisement not found'
+    bx_block_email_notifications:
+      email_notifications_controller:
+        email_notification_not_found: 'Email Notification not found.'
+    bx_block_faq_and_contact_us:
+      contact_us_controller:
+        thank_you_contact_us: 'Thank you for contact us'
+      faqs_controller:
+        no_record_found: 'No record found'
+        record_successfully_deleted: 'Record Successfully Deleted.'
+    bx_block_followers:
+      application_controller:
+        please_login_again: 'Please login again.'
+      follows_controller:
+        list_following_users: 'List of following users.'
+        not_following_user: 'Not following to any user.'
+        following_this_user: 'Following this user.'
+        not_following_this_user: 'Not following this user.'
+        you_already_follow: 'You already follow.'
+        user_does_not_exist: 'User does not exist.'
+        you_not_follow_yourself: 'You cannot follow yourself.'
+        successfully_followed: 'Successfully followed.'
+        successfully_unfollowed: 'Successfully unfollowed.'
+        parameter_missing: 'Parameter missing.'
+    bx_block_forgot_password:
+      otp_confirmations_controller:
+        otp_has_expired: 'OTP has expired, please request a new one.'
+        invalid_token: 'Invalid token'
+        token_invalid: 'Token invalid'
+        otp_validation_success: 'OTP validation success'
+        invalid_otp_code: 'Invalid OTP code'
+        token_and_otp : 'Token and OTP code are required'
+      otps_controller:
+        account_not_found: 'Account not found'
+        email_phone_required: 'Email or phone number required'
+      passwords_controller:
+        code_not_validated: 'OTP code not validated'
+        password_change_failed: 'Password change failed'
+        token_password_required: 'Token and new password are required'
+    bx_block_login:
+      logins_controller:
+        invalid_password: 'Invalid password'
+        account_not_found_activated: 'Account not found, or not activated'
+        login_failed: 'Login Failed'
+        invalid_account_type: 'Invalid Account Type'
+        your_account_not_verfied: 'Your account is not verfied, please verify it for login'
+    bx_block_notifications:
+      application_controller:
+        please_login_again: 'Please login again.'
+      notifications_controller:
+        list_of_notifications: 'List of notifications.'
+        no_notification_found: 'No notification found.'
+        success: 'Success.'
+        notification_created: 'Notification created.'
+        notification_marked_read: 'Notification marked as read.'
+        deleted: 'Deleted.'
+    bx_block_push_notifications:
+      push_notifications_controller:
+        there_is_no_push: 'There is no push notification.'
+        not_found: 'Not Found'
+        push_notification_not_found: 'Push Notification Not Found'
+    bx_block_upload_media:
+      upload_media_controller:
+        successfully_updated: 'Successfully Updated'
+  models:
+    account_block:
+      account:
+        invalid_unrecognized_phone: 'Invalid or Unrecognized Phone Number'
+      sms_otp:
+        is_your_otp_please: 'is your OTP. Please do not share it with anyone.'
+        thank_you_super_foods: 'Thank you. SuperFoods valley Private Limited.'
+    bx_block_catalogue:
+      compare_product:
+        you_are_not_able: 'You are not able to add more product'
+      favourite_search:
+        please_uniq_filters: 'Please select uniq filters'
+    bx_block_categories:
+      sub_category:
+        please_select_categories: 'Please select categories or a parent.'
+    bx_block_content_management:
+      author:
+        should_not_greater_then: 'Should not greater then'
+        words: 'words'
+      bookmark:
+        content_with_this_account: 'content with this account is already taken'
+      content:
+        must_shorter_than: 'Must be shorter than'
+        characters_maximum: 'Characters maximum'
+        can_not_change_draft: 'Can not be change to draft.'
+        can_not_be_updated: 'Can not be updated'
+        can_not_changed_published: 'Can not be changed after published.'
+        can_not_published_approved: 'Can not be published if content was not approved.'
+      content_video:
+        can_not_more: 'Can not be more than 30 seconds'
+        can_not_less: 'Can not be less than 30 seconds'
+      exam:
+        can_not_greater: 'Can not be greater than to'
+      follow:
+        content_provider_with_this: 'Content provider with this account is already taken.'
+    bx_block_language_options:
+      application_message:
+        translation_message_not_blank: 'EN translation message can not be blank'
+        translation_not_present: 'Translation not present for key:'
+        locale: 'locale:'
+  concerns:
+    builder_json_web_token:
+      json_web_token_validation:
+        token_has_expired: 'Token has Expired'
+        invalid_token: 'Invalid token'
+  services:
+    account_block:
+      password_validation:
+        password_should_minimum: 'Password should be a minimum of 8 characters long'
+        contain_uppercase_lowercase: ' contain both uppercase and lowercase characters, at'
+        least_one_digit: ' least one digit, and one special character '
+    bx_block_content_management:
+      base:
+        in: 'In'
+        their_was_error: 'Their was error occurred in saving'
+        with: 'with'
+        in_row_with: 'in row with sn:'
+        errors: 'errors:'
+        missing_headers_sheet: 'Missing headers in sheet'
+      interface:
+        not_implemented: 'Not implemented'
+        please_add_method: 'please add method to your module.'
+      partner_import_service:
+        can_find_category: 'Can not find category with this name'
+        can_find_sub_category: 'Can not find sub category with this name'
+        can_find_content_type: 'Can not find content type with this name'
+      sub_category_import_service:
+        can_find_parent: 'can not find parent with name'
+        can_not_find_category: 'can not find category with name'
+    bx_block_language_options:
+      import_data_service:
+        please_add_translations: 'Please add translations sheet'
+      translation_data_import_service:
+        no_data_present: 'No data present in translations sheet'
+        missing_headers: 'missing headers:'
+        in_translations_sheet: 'in translations sheet'
+        key_not_present: 'key not present in translations sheet'
+        key: 'key -'
+        serial_number_not: 'serial number not present in translations sheet'
+        some_error_occured: 'Some error occured in Application Message data in row-'
+    bx_block_push_notifications:
+      provider:
+        unsupported_push: 'Unsupported Push Notifications provider:'
+        you_must_specify: 'You must specify a Push Notifications provider.'
+    bx_block_sms:
+      provider:
+        supported: 'Supported'
+        unsupported_sms: 'Unsupported SMS provider:'
+        you_must_specify_provider: 'You must specify a SMS provider.'
+  activerecord:
+    errors:
+      models:
+        account_block/sms_account:
+          attributes:
+            full_phone_number:
+              blank: 'can not be blank'
+        bx_block_catalogue/favourite_product:
+          attributes:
+            product:
+              required: 'must exist'
+        bx_block_catalogue/compare_product:
+          attributes:
+            product_id:
+              taken: 'Already taken'
+        account_block/email_account:
+          attributes:
+            email:
+              blank: 'can not be blank'
+        account_block/email_otp:
+          attributes:
+            email:
+              blank: 'can not be blank'
+        account_block/social_account:
+          attributes:
+            email:
+              blank: 'can not be blank'
+            unique_auth_id:
+              blank: 'can not be blank'
+        bx_block_add_profile/relation:
+          attributes:
+            relation:
+            blank: 'can not be blank'
+
+              

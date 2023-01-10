@@ -10,7 +10,7 @@ module BxBlockPushNotifications
         render json: serializer.serializable_hash, status: :ok
       else
         render json: {
-          errors: 'There is no push notification.'
+          errors: I18n.t('controllers.bx_block_push_notifications.push_notifications_controller.there_is_no_push')
         }, status: :not_found
       end
     end
@@ -38,7 +38,7 @@ module BxBlockPushNotifications
       push_notification = BxBlockPushNotifications::PushNotification.find_by(
         id: params[:id], push_notificable_id: current_user.id
       )
-      return render json: { message: "Not Found" },
+      return render json: { message: I18n.t('controllers.bx_block_push_notifications.push_notifications_controller.not_found') },
         status: :not_found if push_notification.blank?
 
       if push_notification.update(push_notifications_params)
@@ -58,7 +58,7 @@ module BxBlockPushNotifications
       push_notification = current_user.push_notifications.find(params[:id])
 
       if push_notification.blank?
-        render json: { message: "Push Notification Not Found" },
+        render json: { message: I18n.t('controllers.bx_block_push_notifications.push_notifications_controller.push_notification_not_found') },
         status: :not_found
       else
         render json: BxBlockPushNotifications::PushNotificationSerializer.new(push_notification)

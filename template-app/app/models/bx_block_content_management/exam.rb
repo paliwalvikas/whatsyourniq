@@ -14,7 +14,7 @@ module BxBlockContentManagement
 
     def check_to_and_from
       if self.to.present? && self.from.present? && self.to < self.from
-        errors.add(:from, "can't be greater than to")
+        errors.add(:from, I18n.t('models.bx_block_content_management.exam.can_not_greater'))
       end
     end
   end

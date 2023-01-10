@@ -13,7 +13,7 @@ module BxBlockCatalogue
 
     def only_three_record 
       if AccountBlock::Account.find_by(id: self.account_id).compare_products.where(selected: true).count >= 3
-        errors.add(:selected, "You are not able to add more product")
+        errors.add(:selected, I18n.t('models.bx_block_catalogue.compare_product.you_are_not_able'))
       end
     end
 

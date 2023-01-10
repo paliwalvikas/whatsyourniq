@@ -7,7 +7,7 @@ module BxBlockContentManagement
 
     rescue_from ActiveRecord::RecordNotFound, :with => :not_found
 
-    around_action :set_locale
+    # around_action :set_locale
 
     before_action :update_current_user
 
@@ -31,12 +31,12 @@ module BxBlockContentManagement
       account = AccountBlock::Account.find(account_id)
     end
 
-    def set_locale
-      lang = params[:language] || I18n.default_locale
-      Globalize.with_locale(lang) do
-        yield
-      end
-    end
+    # def set_locale
+    #   lang = params[:language] || I18n.default_locale
+    #   Globalize.with_locale(lang) do
+    #     yield
+    #   end
+    # end
 
     def format_activerecord_errors(errors)
       [{ error: errors.full_messages.first }]

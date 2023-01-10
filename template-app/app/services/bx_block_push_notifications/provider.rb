@@ -25,9 +25,9 @@ module BxBlockPushNotifications
       def unsupported_message(provider)
         supported_prov_msg = "Supported: #{SUPPORTED.join(", ")}."
         if provider
-          "Unsupported Push Notifications provider: #{provider}. #{supported_prov_msg}"
+          I18n.t('services.bx_block_push_notifications.provider.unsupported_push') + "#{provider}. #{supported_prov_msg}"
         else
-          "You must specify a Push Notifications provider. #{supported_prov_msg}"
+          I18n.t('services.bx_block_push_notifications.provider.you_must_specify') + "#{supported_prov_msg}"
         end
       end
     end

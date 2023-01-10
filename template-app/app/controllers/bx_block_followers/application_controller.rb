@@ -12,7 +12,7 @@ module BxBlockFollowers
         @current_user = AccountBlock::Account.find(@token.id)
       rescue ActiveRecord::RecordNotFound => e
         return render json: {errors: [
-          {message: 'Please login again.'},
+          {message: I18n.t('controllers.bx_block_followers.application_controller.please_login_again')},
         ]}, status: :unprocessable_entity
       end
     end
@@ -20,7 +20,7 @@ module BxBlockFollowers
     private
 
     def not_found
-      render :json => {'errors' => ['Record not found']}, :status => :not_found
+      render :json => {'errors' => [I18n.t('controllers.builder_base.application_controller.record_not_found')]}, :status => :not_found
     end
     def format_activerecord_errors(errors)
         result = []

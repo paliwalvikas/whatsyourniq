@@ -100,25 +100,25 @@ module BxBlockContentManagement
       def max_tag_char_length
         self.tag_list.each do |tag|
           if tag.length > MAX_TAG_CHARACTERS
-            errors[:tag] << "#{tag} must be shorter than #{MAX_TAG_CHARACTERS} characters maximum"
+            errors[:tag] << "#{tag}" I18n.t('models.bx_block_content_management.content.must_shorter_than') "#{MAX_TAG_CHARACTERS}" I18n.t('models.bx_block_content_management.content.characters_maximum')
           end
         end
       end
 
       def validate_status
         if self.draft? && will_save_change_to_status?
-          errors.add(:status, "can't be change to draft.")
+          errors.add(:status, I18n.t('models.bx_block_content_management.content.can_not_change_draft'))
         end
       end
 
       def validate_content_type
-        errors.add(:content_type_id, "can't be updated") if will_save_change_to_content_type_id?
+        errors.add(:content_type_id, I18n.t('models.bx_block_content_management.content.can_not_be_updated') if will_save_change_to_content_type_id?
       end
 
       def validate_publish_date
         if status_in_database == 'publish' && will_save_change_to_publish_date? && publish_date_in_database.present? &&
             publish_date_in_database <= DateTime.current
-          errors.add(:publish_date, "can't be changed after published.")
+          errors.add(:publish_date, I18n.t('models.bx_block_content_management.content.can_not_changed_published'))
         end
       end
 
@@ -128,7 +128,7 @@ module BxBlockContentManagement
 
       def validate_approve_status
         if will_save_change_to_status? && self.publish? && !self.approve?
-          errors.add(:status, "can't be published if content was not approved.")
+          errors.add(:status, I18n.t('models.bx_block_content_management.content.can_not_published_approved'))
         end
       end
   end
