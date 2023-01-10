@@ -2,6 +2,7 @@ module BxBlockCatalogue
   class FavouriteProductsController < ApplicationController
     before_action :find_fav_prod, only: [:update]
     before_action :find_product, only: [:destroy]
+    before_action :filter_for_fav, only: [:filter_fav_product]
 
     def index
       fav_prod = current_user.favourite_products.all
@@ -36,20 +37,6 @@ module BxBlockCatalogue
       end
     end
 
-    def filter_fav_product
-      p_ids = current_user&.favourite_products.select(:product_id)
-      if params[:product_rating].present? && p_ids.present?
-        products = BxBlockCatalogue::Product.where(id: p_ids, product_rating: params[:product_rating])
-        fav_prod = current_user&.favourite_products&.where(product_id: products.ids)&.joins(:product).order("products.product_rating asc")
-        render json: FavouriteProductSerializer.new(fav_prod).serializable_hash,
-               status: :ok,
-               message: "Products successfully found"
-      else
-        render json:  { message: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') },
-               status: :unprocessable_entity
-      end
-    end
-
     def fav_search
       query = search_query if params[:query].present?
       prd_id = current_user&.favourite_products&.select(:product_id)
@@ -70,7 +57,54 @@ module BxBlockCatalogue
       end
     end
 
+    def filter_fav_product
+      if @fav.present?
+        render json: FavouriteProductSerializer.new(@fav).serializable_hash,
+               status: :ok,
+               message: "Products successfully found"
+      else
+        render json:  { message: "Product not found" },
+               status: :unprocessable_entity
+      end
+    end
+
     private
+
+    def filter_for_fav
+      p_ids = current_user&.favourite_products.select(:product_id)
+      product = BxBlockCatalogue::Product.where(id: p_ids)
+      if (params[:min].present? || params[:max].present?) && params[:product_rating].present?
+        product = niq_filter(product)
+        product = price_filter(product) 
+      elsif params[:product_rating].present? 
+        product = niq_filter(product)
+      elsif params[:min].present? || params[:max].present?
+        product = price_filter(product)
+      end
+      fav_prod = current_user&.favourite_products&.where(product_id: product&.ids)&.joins(:product).order("products.product_rating asc")
+      @fav = fav_prod
+    end
+
+    def niq_filter(product)
+      products = product.where(product_rating: params[:product_rating])
+    end
+
+    def price_filter(product)
+      ids = []
+      p_prd = product.where(price_mrp: nil)&.select(:id, :price_post_discount)
+      products = product.where.not(price_mrp: nil).select(:id, :price_mrp)
+      if params[:min].present? && params[:max].present?
+        ids << products.where(price_mrp: [params[:min].to_i..params[:max].to_i])&.ids
+        ids << p_prd.where(price_post_discount: [params[:min].to_i..params[:max].to_i])&.ids
+      elsif params[:min].present?
+        ids << products.where(price_mrp: params[:min].to_i..).ids
+        ids << p_prd.where(price_post_discount: params[:min].to_i..)&.ids
+      elsif params[:max].present?
+        ids << products.where(price_mrp: 0..params[:max].to_i)&.ids
+        ids << p_prd.where(price_post_discount: 0..params[:max].to_i)&.ids
+      end
+      product.where(id: ids.flatten)
+    end
 
     def search_query
       query = params[:query].split(' ')
