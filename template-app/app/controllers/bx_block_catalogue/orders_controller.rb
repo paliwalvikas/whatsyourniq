@@ -14,13 +14,13 @@ module BxBlockCatalogue
         serializer = BxBlockCatalogue::OrderSerializer.new(order_items, params: { user: current_user })
         render json: serializer
       else
-        render json: { error: 'no bucket present please create one' }
+        render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.no_bucket_present') }
       end
     end
 
     def create
       order_item = @order.order_items.find_by(order_item_params)
-      return render json: { error: 'Food Already Present' } if order_item.present?
+      return render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.food_already_present') } if order_item.present?
 
       if @order.order_items.create(order_item_params)
         render json: BxBlockCatalogue::OrderSerializer.new(@order)
@@ -38,22 +38,22 @@ module BxBlockCatalogue
         serializer = BxBlockCatalogue::OrderSerializer.new(order, params: { user: current_user })
         render json: { nutrition_value: data, product: serializer }
       else
-        render json: { error: 'Order not present' }
+        render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.order_not_present') }
       end
     end
 
     def destroy
       @order.destroy
-      render json: { message: 'Order successfully deleted' }
+      render json: { message: I18n.t('controllers.bx_block_catalogue.orders_controller.order_successfully_deleted') }
     end
 
     def remove_product
       order_item = @order.order_items.find_by(product_id: params[:product_id])
       if order_item.present?
         order_item.destroy
-        render json: { message: 'Product successfully removed', success: 1 }
+        render json: { message: I18n.t('controllers.bx_block_catalogue.orders_controller.product_successfully_removed'), success: 1 }
       else
-        render json: { message: 'Product Not Found' , success: 0}
+        render json: { message: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') , success: 0}
       end
     end
 
@@ -63,7 +63,7 @@ module BxBlockCatalogue
         order.update(order_params)
         render json: BxBlockCatalogue::OrderSerializer.new(order)
       else
-        render json: { message: 'Food Bucket Not Found' }
+        render json: { message: I18n.t('controllers.bx_block_catalogue.orders_controller.food_bucket_not_found') }
       end
     end
 
@@ -82,11 +82,11 @@ module BxBlockCatalogue
                  current_user.orders.find_by_id(order_item_params[:order_id])
                else
                  order = current_user.orders.find_by(order_params)
-                 return render json: { error: 'Basket Name Already Present' } if order.present?
+                 return render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.basket_name_already_present') } if order.present?
 
                  current_user.orders.create(order_params)
                end
-      render json: { error: 'Basket Not Present' } unless @order.present?
+      render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.basket_not_present') } unless @order.present?
     end
 
     def get_product
@@ -94,7 +94,7 @@ module BxBlockCatalogue
       if @order.present?
         @order
       else
-        render json: { error: 'Food Basket not found', success: 0 }
+        render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.food_basket_not_found'), success: 0 }
       end
     end
   end

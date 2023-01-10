@@ -9,7 +9,7 @@ module BxBlockCatalogue
       if fav_prod.present?
         render json: FavouriteProductSerializer.new(fav_prod), status: :ok
       else
-        render json:  { message: "Product not found" },
+        render json:  { message: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') },
                status: :unprocessable_entity
       end
     end
@@ -32,7 +32,7 @@ module BxBlockCatalogue
                          .serializable_hash,
                status: :ok
       else
-        render json:  { message: "Product not found" },
+        render json:  { message: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') },
                status: :unprocessable_entity
       end
     end
@@ -44,15 +44,15 @@ module BxBlockCatalogue
       if products.present? && params[:query].present?
         return render json: FavouriteProductSerializer.new(FavouriteProduct.where(product_id: products&.ids), params: {user: current_user})
       else
-        render json: { errors: 'Product Not Found' }, status: :ok
+        render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }, status: :ok
       end
     end
 
     def destroy
       if @fav_prod.present? && @fav_prod.destroy
-        render json: { success: true, message: "Product successfully deleted" }, status: :ok
+        render json: { success: true, message: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_successfully_deleted') }, status: :ok
       else
-        render json:  { message: "Product not found" },
+        render json:  { message: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') },
                status: :unprocessable_entity
       end
     end

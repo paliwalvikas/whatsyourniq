@@ -8,7 +8,7 @@ module BxBlockForgotPassword
         rescue JWT::DecodeError => e
           return render json: {
             errors: [{
-              token: 'Invalid token',
+              token: I18n.t('controllers.bx_block_forgot_password.otp_confirmations_controller.invalid_token'),
             }],
           }, status: :bad_request
         end
@@ -19,7 +19,7 @@ module BxBlockForgotPassword
         rescue ActiveRecord::RecordNotFound => e
           return render json: {
             errors: [{
-              otp: 'Token invalid',
+              otp: I18n.t('controllers.bx_block_forgot_password.otp_confirmations_controller.token_invalid'),
             }],
           }, status: :unprocessable_entity
         end
@@ -28,7 +28,7 @@ module BxBlockForgotPassword
         unless otp.activated?
           return render json: {
             errors: [{
-              otp: 'OTP code not validated',
+              otp: I18n.t('controllers.bx_block_forgot_password.passwords_controller.code_not_validated'),
             }],
           }, status: :unprocessable_entity
         else
@@ -60,7 +60,7 @@ module BxBlockForgotPassword
             else
               render json: {
                 errors: [{
-                  profile: 'Password change failed',
+                  profile: I18n.t('controllers.bx_block_forgot_password.passwords_controller.password_change_failed')
                 }],
               }, status: :unprocessable_entity
             end
@@ -69,7 +69,7 @@ module BxBlockForgotPassword
       else
         return render json: {
           errors: [{
-            otp: 'Token and new password are required',
+            otp: I18n.t('controllers.bx_block_forgot_password.passwords_controller.token_password_required'),
           }],
         }, status: :unprocessable_entity
       end

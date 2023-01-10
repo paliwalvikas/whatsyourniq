@@ -12,20 +12,20 @@ module AccountBlock
           @sms_otp = SmsOtp.find(@token.id)
         rescue ActiveRecord::RecordNotFound => e
           return render json: {errors: [
-            {phone: 'Phone Number Not Found'},
+            {phone: I18n.t('controllers.account_block.accounts.phone_not_found')},
           ]}, status: :unprocessable_entity
         end
         if @sms_otp.valid_until < Time.current
           @sms_otp.destroy
 
           return render json: {errors: [
-            {pin: 'This Pin has expired, please request a new pin code.'},
+            {pin: I18n.t('controllers.account_block.accounts.pin_has_expired')},
           ]}, status: :unauthorized
         end
 
         if @sms_otp.activated?
           return render json: ValidateAvailableSerializer.new(@sms_otp, meta: {
-            message: 'Phone Number Already Activated',
+            message: I18n.t('controllers.account_block.accounts.phone_already_activated'),
           }).serializable_hash, status: :ok
         end
 
@@ -33,15 +33,15 @@ module AccountBlock
           @sms_otp.activated = true
           @sms_otp.save
           @account = AccountBlock::SmsAccount.find_by(full_phone_number: @sms_otp.full_phone_number)
-          @account.register = true
-          @account.additional_details = true unless @account.full_name.nil?
+          # @account.register = true
+          @account.additional_details = true unless @account&.full_name.nil?
           render json: SmsAccountSerializer.new(@account, meta: {
-            message: 'Phone Number Confirmed Successfully',
+            message: I18n.t('controllers.account_block.accounts.phone_confirmed_successfully'),
             token: BuilderJsonWebToken.encode(@account.id), register: @account.register, additional_details: @account.additional_details
           }).serializable_hash, status: :ok
         else
           return render json: {errors: [
-            {pin: 'Invalid Pin for Phone Number'},
+            {pin: I18n.t('controllers.account_block.accounts.invalid_pin_phone')},
           ]}, status: :unprocessable_entity
         end
       end

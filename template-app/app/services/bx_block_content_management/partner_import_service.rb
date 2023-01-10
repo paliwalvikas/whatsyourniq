@@ -20,7 +20,7 @@ module BxBlockContentManagement
             category = BxBlockCategories::Category.find_by('lower(name) = ?', strip_downcase(category_name))
             unless category.present?
               add_errors(
-                "can't find category with this name",
+                I18n.t('services.bx_block_content_management.partner_import_service.can_find_category'),
                 sheet_content[:name], sheet_content[:sn], 'partner', 'name'
               )
             else
@@ -36,7 +36,7 @@ module BxBlockContentManagement
             )
             unless sub_category.present?
               add_errors(
-                "can't find sub category with this name",
+                I18n.t('services.bx_block_content_management.partner_import_service.can_find_sub_category'),
                 sheet_content[:name], sheet_content[:sn], 'partner', 'name'
               )
             else
@@ -52,7 +52,7 @@ module BxBlockContentManagement
             )
             unless content_type.present?
               add_errors(
-                "can't find content type with this name",
+                I18n.t('services.bx_block_content_management.partner_import_service.can_find_content_type'),
                 sheet_content[:name], sheet_content[:sn], 'partner', 'name'
               )
             else

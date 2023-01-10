@@ -36,7 +36,7 @@ module BxBlockUploadMedia
           media = BxBlockUploadMedia::Media.find_by(id: m[:id])
           media.update(status: m[:status], presigned_url: m[:presigned_url])
         end
-        render json: {status: :ok, message: "Successfully Updated"}
+        render json: {status: :ok, message: I18n.t('controllers.bx_block_upload_media.upload_media_controller.successfully_updated')}
       rescue Exception => e
         render json: OpenStruct.new(success?: false, errors: e)
       end

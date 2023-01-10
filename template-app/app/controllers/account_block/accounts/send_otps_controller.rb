@@ -11,7 +11,7 @@ module AccountBlock
           activated: true)
 
         return render json: {errors: [{
-          account: 'Account already activated',
+          account: I18n.t('controllers.account_block.accounts.account_already_activated'),
         }]}, status: :unprocessable_entity unless account.nil?
 
         @sms_otp = SmsOtp.new(jsonapi_deserialize(params))

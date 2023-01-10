@@ -8,13 +8,13 @@ module BxBlockForgotPassword
         rescue JWT::ExpiredSignature
           return render json: {
             errors: [{
-              pin: 'OTP has expired, please request a new one.',
+              pin: I18n.t('controllers.bx_block_forgot_password.otp_confirmations_controller.otp_has_expired'),
             }],
           }, status: :unauthorized
         rescue JWT::DecodeError => e
           return render json: {
             errors: [{
-              token: 'Invalid token',
+              token: I18n.t('controllers.bx_block_forgot_password.otp_confirmations_controller.invalid_token'),
             }],
           }, status: :bad_request
         end
@@ -25,7 +25,7 @@ module BxBlockForgotPassword
         rescue ActiveRecord::RecordNotFound => e
           return render json: {
             errors: [{
-              otp: 'Token invalid',
+              otp: I18n.t('controllers.bx_block_forgot_password.otp_confirmations_controller.token_invalid'),
             }],
           }, status: :unprocessable_entity
         end
@@ -36,20 +36,20 @@ module BxBlockForgotPassword
           otp.save
           render json: {
             messages: [{
-              otp: 'OTP validation success',
+              otp: I18n.t('controllers.bx_block_forgot_password.otp_confirmations_controller.otp_validation_success'),
             }],
           }, status: :created
         else
           return render json: {
             errors: [{
-              otp: 'Invalid OTP code',
+              otp: I18n.t('controllers.bx_block_forgot_password.otp_confirmations_controller.invalid_otp_code'),
             }],
           }, status: :unprocessable_entity
         end
       else
         return render json: {
           errors: [{
-            otp: 'Token and OTP code are required',
+            otp: I18n.t('controllers.bx_block_forgot_password.otp_confirmations_controller.token_and_otp'),
           }],
         }, status: :unprocessable_entity
       end

@@ -14,7 +14,7 @@ module BxBlockForgotPassword
           ).first
         return render json: {
           errors: [{
-            otp: 'Account not found',
+            otp: I18n.t('controllers.bx_block_forgot_password.otps_controller.account_not_found'),
           }],
         }, status: :not_found if account.nil?
 
@@ -37,7 +37,7 @@ module BxBlockForgotPassword
         )
         return render json: {
           errors: [{
-            otp: 'Account not found',
+            otp: I18n.t('controllers.bx_block_forgot_password.otps_controller.account_not_found'),
           }],
         }, status: :not_found if account.nil?
 
@@ -52,7 +52,7 @@ module BxBlockForgotPassword
       else
         return render json: {
           errors: [{
-            otp: 'Email or phone number required',
+            otp: I18n.t('controllers.bx_block_forgot_password.otps_controller.email_phone_required'),
           }],
         }, status: :unprocessable_entity
       end

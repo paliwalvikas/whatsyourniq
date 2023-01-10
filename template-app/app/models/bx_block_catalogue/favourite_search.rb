@@ -63,7 +63,7 @@ module BxBlockCatalogue
     end
 
     def error_msg
-      errors.add(:message, 'please select uniq filters')
+      errors.add(:message, I18n.t('models.bx_block_catalogue.favourite_search.please_uniq_filters'))
     end
 
     def check?

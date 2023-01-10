@@ -33,7 +33,7 @@ module AccountBlock
         if account.present?
           account.register = true
           account.additional_details = true unless account.full_name.nil?
-          render json: SocialAccountSerializer.new(account, meta: { token: encode(account.id), message: 'Account already registered', register: account.register, additional_details: account.additional_details }),
+          render json: SocialAccountSerializer.new(account, meta: { token: encode(account.id), message: I18n.t('controllers.account_block.accounts.account_already_registered'), register: account.register, additional_details: account.additional_details }),
                  status: :ok
         else
           account = SocialAccount.new(social_params)
@@ -44,7 +44,7 @@ module AccountBlock
         end
       else
         render json: { errors: [
-          { account: 'Invalid Account Type' }
+          { account: I18n.t('controllers.account_block.accounts.invalid_account_type') }
         ] }, status: :unprocessable_entity
       end
     end
@@ -54,10 +54,10 @@ module AccountBlock
       if account.present?
         account.update(update_params)
         account.additional_details = true
-        render json: AccountSerializer.new(account, meta: { message: 'Account updated successfully', additional_details: account.additional_details }),
+        render json: AccountSerializer.new(account, meta: { message: I18n.t('controllers.account_block.accounts.account_updated_successfully'), additional_details: account.additional_details }),
                status: :ok
       else
-        render json: { message: 'account not updated' }
+        render json: { message: I18n.t('controllers.account_block.accounts.account_not_updated') }
       end
     end
 

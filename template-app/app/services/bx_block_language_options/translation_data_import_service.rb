@@ -4,12 +4,12 @@ module BxBlockLanguageOptions
       arr = []
       translations_data = xlsx.sheet("translations_sheet")
       unless translations_data.count > 1
-        return {success: false, error: "No data present in translations sheet"}
+        return {success: false, error: I18n.t('services.bx_block_language_options.translation_data_import_service.no_data_present')}
       end
 
       success, missing_headers = validate_headers(translations_data.first)
       unless success
-        return {success: false, error: "missing headers: #{missing_headers} in translations sheet"}
+        return {success: false, error: I18n.t('services.bx_block_language_options.translation_data_import_service.missing_headers') + "#{missing_headers}" + I18n.t('services.bx_block_language_options.translation_data_import_service.in_translations_sheet')
       end
 
       translations_data.each(headers) do |row|
@@ -19,12 +19,12 @@ module BxBlockLanguageOptions
       arr[1..].each do |arr2|
         return {
           success: false,
-          error: "key not present in translations sheet"
+          error: I18n.t('services.bx_block_language_options.translation_data_import_service.key_not_present')
         } unless arr2[:key].present?
 
         return {
           success: false,
-          error: "key -#{ arr2[:key] } serial number not present in translations sheet"
+          error: I18n.t('services.bx_block_language_options.translation_data_import_service.key') + "#{ arr2[:key] }" + I18n.t('services.bx_block_language_options.translation_data_import_service.serial_number_not')
         } unless arr2[:sn].present?
 
         application_message = BxBlockLanguageOptions::ApplicationMessage.find_or_initialize_by(name: arr2[:key])
@@ -35,7 +35,7 @@ module BxBlockLanguageOptions
             unless translation.save
               return {
                 success: false,
-                error: "Some error occured in Application Message data in row- #{arr2[:sn]} ->" \
+                error: I18n.t('services.bx_block_language_options.translation_data_import_service.some_error_occured') + "#{arr2[:sn]} ->" +
                        " #{translation.errors.full_messages} "
               }
             end
@@ -45,7 +45,7 @@ module BxBlockLanguageOptions
           unless application_message.save
             return {
               success: false,
-              error: "Some error occured in Application Message data in row- #{arr2[:sn]} ->" \
+              error: I18n.t('services.bx_block_language_options.translation_data_import_service.some_error_occured') + "#{arr2[:sn]} ->" +
                      " #{application_message.errors.full_messages} "
             }
           end

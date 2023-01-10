@@ -18,7 +18,7 @@ module BxBlockCategories
 
     def check_parent_categories
       if categories.blank? && parent.blank?
-        errors.add(:base, "Please select categories or a parent.")
+        errors.add(:base, I18n.t('models.bx_block_categories.sub_category.please_select_categories'))
       end
     end
 

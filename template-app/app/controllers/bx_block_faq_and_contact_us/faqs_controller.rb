@@ -14,16 +14,16 @@ module BxBlockFaqAndContactUs
         render json: FaqSerializer.new(@faq).serializable_hash, status: :ok
       else
         render json: {errors: [
-          {success: false, message: "No record found"},
+          {success: false, message: I18n.t('controllers.bx_block_faq_and_contact_us.faqs_controller.no_record_found')},
         ]}, status: :ok
       end
     end
 
     def destroy
       if @faq.destroy
-        render json: {message: "Record Successfully Deleted."}, status: :ok
+        render json: {message: I18n.t('controllers.bx_block_faq_and_contact_us.faqs_controller.record_successfully_deleted')}, status: :ok
       else
-        render json: {message: "Record not found."}
+        render json: {message: I18n.t('controllers.builder_base.application_controller.record_not_found')}
       end
     end
 

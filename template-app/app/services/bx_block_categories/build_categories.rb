@@ -56,7 +56,7 @@ module BxBlockCategories
           category = BxBlockCategories::Category.where(
             'lower(name) = ?', key.downcase
           ).first_or_create(:name=>key, :identifier=>category_identifier_hash[key])
-          category.update(identifier: category_identifier_hash[key])
+          # category.update(identifier: category_identifier_hash[key])
           value.each do |val|
             category.sub_categories.where(
               'lower(name) = ?', val.downcase

@@ -35,13 +35,13 @@ module BxBlockContentManagement
 
     def validate_video_short_length
       if self.video.present? and self.video.video.present?
-        errors.add(:video, "can't be more than 30 seconds") if get_time_duration(self.video.video) >= 30
+        errors.add(:video, I18n.t('models.bx_block_content_management.content_video.can_not_more')) if get_time_duration(self.video.video) >= 30
       end
     end
 
     def validate_video_full_length
       if self.video.present? and self.video.video.present?
-        errors.add(:video, "can't be less than 30 seconds") if get_time_duration(self.video.video) < 30
+        errors.add(:video, I18n.t('models.bx_block_content_management.content_video.can_not_less')) if get_time_duration(self.video.video) < 30
       end
     end
 

@@ -6,7 +6,7 @@ module BxBlockLanguageOptions
 
     validates :name, presence: true, uniqueness: {case_sensitive: false}
     translation_class.validates :message,
-                                presence: { message: "EN translation message can't be blank" },
+                                presence: { message: I18n.t('models.bx_block_language_options.application_message.translation_message_not_blank') },
                                 if: -> (trans) { trans.locale == :en }
 
     accepts_nested_attributes_for :translations, allow_destroy: true
@@ -15,9 +15,9 @@ module BxBlockLanguageOptions
       application_message = BxBlockLanguageOptions::ApplicationMessage.find_by(name: key)
       if application_message.present?
         return application_message.message if application_message.message.present?
-        "Translation not present for key: #{key}, locale: #{Globalize.locale()}"
+        I18n.t('models.bx_block_language_options.application_message.translation_not_present') "#{key}", I18n.t('models.bx_block_language_options.application_message.locale') "#{Globalize.locale()}"
       else
-        "Translation not present for key: #{key}"
+        I18n.t('models.bx_block_language_options.application_message.translation_not_present') "#{key}"
       end
     end
 
@@ -26,7 +26,7 @@ module BxBlockLanguageOptions
       if application_message.present?
         application_message.update!(locale: locale, message: message)
       else
-        raise "Translation not present for key: #{key}"
+        raise I18n.t('models.bx_block_language_options.application_message.translation_not_present') "#{key}"
       end
     end
   end

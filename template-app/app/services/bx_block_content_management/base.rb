@@ -26,8 +26,8 @@ module BxBlockContentManagement
 
     def add_errors(msg, name, sn, object_name, identifier)
       @error_tracker.add_errors(
-        "In #{@sheet_name}: Their was error occurred in saving #{object_name} with #{identifier} " \
-        "'#{name}' in row with sn: '#{sn}', errors: #{msg}"
+        I18n.t('services.bx_block_content_management.base.in') + "#{@sheet_name}:" + I18n.t('services.bx_block_content_management.base.their_was_error') + "#{object_name}" + I18n.t('services.bx_block_content_management.base.with') + "#{identifier}" +
+        + "#{name}" + I18n.t('services.bx_block_content_management.base.in_row_with') + "#{sn}," + I18n.t('services.bx_block_content_management.base.errors') + "#{msg}"
       )
     end
 
@@ -84,7 +84,7 @@ module BxBlockContentManagement
 
     def get_missing_header_message
       missing_sheet_headers = missing_headers.to_sentence
-      "Missing headers in sheet #{@sheet_name}: #{missing_sheet_headers}"
+      I18n.t('services.bx_block_content_management.base.missing_headers_sheet') "#{@sheet_name}: #{missing_sheet_headers}"
     end
   end
 end

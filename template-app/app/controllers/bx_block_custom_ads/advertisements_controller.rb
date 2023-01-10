@@ -11,7 +11,7 @@ module BxBlockCustomAds
                        end
       render json: {
         advertisements: advertisements,
-        message: "Successfully loded"
+        message: I18n.t('controllers.bx_block_custom_ads.advertisements_controller.successfully_loded')
       }
     end
 
@@ -24,7 +24,7 @@ module BxBlockCustomAds
       if advertisement.save
         render json: {
           advertisement: advertisement,
-          message: "Successfully created"
+          message: I18n.t('controllers.bx_block_custom_ads.advertisements_controller.successfully_created')
         }, status: :created
       else
         render json: {
@@ -38,10 +38,10 @@ module BxBlockCustomAds
       if advertisement
         render json: {
           advertisement: advertisement,
-          message: "Successfully loded"
+          message: I18n.t('controllers.bx_block_custom_ads.advertisements_controller.successfully_loded')
         }
       else
-        render json: { error: "Advertisement not found" }
+        render json: { error: I18n.t('controllers.bx_block_custom_ads.advertisements_controller.advertisement_not_found') }
       end
 
     end

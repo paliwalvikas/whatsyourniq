@@ -74,7 +74,7 @@ module BxBlockCatalogue
 
       if @catalogue.nil?
         render json: {
-            message: "Catalogue with id #{params[:id]} doesn't exists"
+            message: I18n.t('controllers.bx_block_catalogue.catalogues_controller.catalogue_not_exists')
         }, status: :not_found
       end
     end
