@@ -100,7 +100,7 @@ module BxBlockContentManagement
       def max_tag_char_length
         self.tag_list.each do |tag|
           if tag.length > MAX_TAG_CHARACTERS
-            errors[:tag] << "#{tag}" I18n.t('models.bx_block_content_management.content.must_shorter_than') "#{MAX_TAG_CHARACTERS}" I18n.t('models.bx_block_content_management.content.characters_maximum')
+            errors[:tag] << "#{tag} #{I18n.t('models.bx_block_content_management.content.must_shorter_than')} #{MAX_TAG_CHARACTERS} #{I18n.t('models.bx_block_content_management.content.characters_maximum')}"
           end
         end
       end
@@ -112,7 +112,7 @@ module BxBlockContentManagement
       end
 
       def validate_content_type
-        errors.add(:content_type_id, I18n.t('models.bx_block_content_management.content.can_not_be_updated') if will_save_change_to_content_type_id?
+        errors.add(:content_type_id, I18n.t('models.bx_block_content_management.content.can_not_be_updated')) if will_save_change_to_content_type_id?
       end
 
       def validate_publish_date
