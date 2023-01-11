@@ -15,9 +15,9 @@ module BxBlockLanguageOptions
       application_message = BxBlockLanguageOptions::ApplicationMessage.find_by(name: key)
       if application_message.present?
         return application_message.message if application_message.message.present?
-        I18n.t('models.bx_block_language_options.application_message.translation_not_present') "#{key}", I18n.t('models.bx_block_language_options.application_message.locale') "#{Globalize.locale()}"
+        "#{I18n.t('models.bx_block_language_options.application_message.translation_not_present')} #{key}, #{I18n.t('models.bx_block_language_options.application_message.locale')} #{Globalize.locale()}"
       else
-        I18n.t('models.bx_block_language_options.application_message.translation_not_present') "#{key}"
+        "#{I18n.t('models.bx_block_language_options.application_message.translation_not_present')} #{key}"
       end
     end
 
@@ -26,7 +26,7 @@ module BxBlockLanguageOptions
       if application_message.present?
         application_message.update!(locale: locale, message: message)
       else
-        raise I18n.t('models.bx_block_language_options.application_message.translation_not_present') "#{key}"
+        raise "#{I18n.t('models.bx_block_language_options.application_message.translation_not_present')} #{key}"
       end
     end
   end
