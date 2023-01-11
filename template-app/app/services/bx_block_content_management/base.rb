@@ -84,7 +84,7 @@ module BxBlockContentManagement
 
     def get_missing_header_message
       missing_sheet_headers = missing_headers.to_sentence
-      I18n.t('services.bx_block_content_management.base.missing_headers_sheet') "#{@sheet_name}: #{missing_sheet_headers}"
+      "#{I18n.t('services.bx_block_content_management.base.missing_headers_sheet')} #{@sheet_name}: #{missing_sheet_headers}"
     end
   end
 end
