@@ -9,7 +9,7 @@ module BxBlockLanguageOptions
 
       success, missing_headers = validate_headers(translations_data.first)
       unless success
-        return {success: false, error: I18n.t('services.bx_block_language_options.translation_data_import_service.missing_headers') + "#{missing_headers}" + I18n.t('services.bx_block_language_options.translation_data_import_service.in_translations_sheet')
+        return {success: false, error: I18n.t('services.bx_block_language_options.translation_data_import_service.missing_headers') + "#{missing_headers}" + I18n.t('services.bx_block_language_options.translation_data_import_service.in_translations_sheet')}
       end
 
       translations_data.each(headers) do |row|
