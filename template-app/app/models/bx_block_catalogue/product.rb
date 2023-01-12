@@ -8,6 +8,7 @@ module BxBlockCatalogue
     validates :bar_code, presence: true
 
     attr_accessor :image_url, :category_filter, :category_type_filter
+
     has_one_attached :image
     has_one :health_preference, class_name: 'BxBlockCatalogue::HealthPreference', dependent: :destroy
     has_one :ingredient, class_name: 'BxBlockCatalogue::Ingredient', dependent: :destroy
@@ -18,12 +19,15 @@ module BxBlockCatalogue
                                      foreign_key: 'filter_sub_category_id'
     has_many :favourite_products, class_name: 'BxBlockCatalogue::FavouriteProduct', dependent: :destroy
     has_many :compare_products, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
-    has_many :reported_products, class_name: 'BxBlockCatalogue::ReportedProduct', foreign_key: 'product_id', dependent: :destroy
+    has_many :reported_products, class_name: 'BxBlockCatalogue::ReportedProduct', foreign_key: 'product_id',
+                                 dependent: :destroy
     enum product_type: %i[cheese_and_oil beverage solid]
     enum food_drink_filter: %i[food drink]
 
     accepts_nested_attributes_for :ingredient, allow_destroy: true
-    # after_create :product_health_preference
+
+    after_create :product_health_preference
+    after_save :save_image_url_in_db
     scope :green, -> { where(data_check: 'green') }
     scope :red, -> { where(data_check: 'red') }
     scope :n_a, -> { where(data_check: 'na') }
@@ -36,17 +40,17 @@ module BxBlockCatalogue
 
     def product_health_preference
       health = { "Immunity": nil, "Gut Health": nil, "Holistic Nutrition": nil, "Weight loss": nil, "Weight gain": nil,
-                   "Diabetic": nil, "Low Cholesterol": nil, "Heart Friendly": nil, "Energy and Vitality": nil, "Physical growth": nil, "Cognitive health": nil, "High Protein": nil, "Low Sugar": nil }
+                 "Diabetic": nil, "Low Cholesterol": nil, "Heart Friendly": nil, "Energy and Vitality": nil, "Physical growth": nil, "Cognitive health": nil, "High Protein": nil, "Low Sugar": nil }
       hsh = {}
       health.each do |key, value|
         value = BxBlockCatalogue::ProductHealthPreferenceService.new.health_preference(self, key.to_s)
         key = key.to_s.include?(' ') ? key.to_s.downcase.tr!(' ', '_') : key.to_s.downcase
         hsh[key.to_sym] = value
       end
-      unless health_preference.present?
-        create_health_preference(hsh)
-      else
+      if health_preference.present?
         health_preference.update(hsh)
+      else
+        create_health_preference(hsh)
       end
     end
 
@@ -73,6 +77,11 @@ module BxBlockCatalogue
 
     def compare_product_good_not_so_good_ingredients
       BxBlockCatalogue::ProductService.new(ingredient, product_type).calculation_for_rdas
+    end
+
+    # saving image url in db to reduce the time taking of api
+    def save_image_url_in_db
+      self.image_url = image.service_url if image.present?
     end
   end
 end

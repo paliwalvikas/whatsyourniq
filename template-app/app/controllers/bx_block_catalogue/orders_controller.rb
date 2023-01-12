@@ -4,7 +4,8 @@ module BxBlockCatalogue
   class OrdersController < ApplicationController
     require 'json'
     include BuilderJsonWebToken::JsonWebTokenValidation
-    before_action :validate_json_web_token, :current_user, only: %i[create index show update]
+    skip_before_action :validate_json_web_token, only: [:show]
+    before_action :validate_json_web_token, :current_user, only: %i[create index update]
     before_action :set_order, only: [:create]
     before_action :get_product, only: %i[show destroy remove_product]
 
@@ -20,7 +21,9 @@ module BxBlockCatalogue
 
     def create
       order_item = @order.order_items.find_by(order_item_params)
-      return render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.food_already_present') } if order_item.present?
+      if order_item.present?
+        return render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.food_already_present') }
+      end
 
       if @order.order_items.create(order_item_params)
         render json: BxBlockCatalogue::OrderSerializer.new(@order)
@@ -51,9 +54,13 @@ module BxBlockCatalogue
       order_item = @order.order_items.find_by(product_id: params[:product_id])
       if order_item.present?
         order_item.destroy
-        render json: { message: I18n.t('controllers.bx_block_catalogue.orders_controller.product_successfully_removed'), success: 1 }
+        render json: {
+          message: I18n.t('controllers.bx_block_catalogue.orders_controller.product_successfully_removed'), success: 1
+        }
       else
-        render json: { message: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') , success: 0}
+        render json: {
+          message: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found'), success: 0
+        }
       end
     end
 
@@ -82,11 +89,15 @@ module BxBlockCatalogue
                  current_user.orders.find_by_id(order_item_params[:order_id])
                else
                  order = current_user.orders.find_by(order_params)
-                 return render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.basket_name_already_present') } if order.present?
+                 if order.present?
+                   return render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.basket_name_already_present') }
+                 end
 
                  current_user.orders.create(order_params)
                end
-      render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.basket_not_present') } unless @order.present?
+      return if @order.present?
+
+      render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.basket_not_present') }
     end
 
     def get_product
@@ -94,7 +105,8 @@ module BxBlockCatalogue
       if @order.present?
         @order
       else
-        render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.food_basket_not_found'), success: 0 }
+        render json: { error: I18n.t('controllers.bx_block_catalogue.orders_controller.food_basket_not_found'),
+                       success: 0 }
       end
     end
   end

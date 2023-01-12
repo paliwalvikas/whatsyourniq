@@ -2,12 +2,12 @@
 
 ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name,
-                :price_post_discount, :price_mrp, :category_id, :positive_good, :negative_not_good, :image, :bar_code, :data_check, :description, :ingredient_list, :food_drink_filter, :filter_category_id, :filter_sub_category_id, ingredient_attributes: [:id, :product_id, :energy, :saturate, :total_sugar, :sodium, :ratio_fatty_acid_lipids, :fibre, :fruit_veg,
-                :protein, :vit_a, :vit_c, :vit_d, :vit_b6, :vit_b12, :vit_b9, :vit_b2, :vit_b3, :vit_b1, :vit_b5, :vit_b7, :calcium,
-                :iron, :magnesium, :zinc, :iodine, :potassium, :phosphorus, :manganese, :copper, :selenium, :chloride, :chromium,
-                :total_fat, :monosaturated_fat, :polyunsaturated_fat, :trans_fat, :soyabean, :cholestrol, :fat, :mono_unsaturated_fat,
-                :veg_and_nonveg, :gluteen_free, :added_sugar, :artificial_preservative, :organic, :vegan_product, :egg, :fish,
-                :shellfish, :tree_nuts, :peanuts, :wheat, :carbohydrate]
+                :price_post_discount, :price_mrp, :category_id, :positive_good, :negative_not_good, :image, :bar_code, :data_check, :description, :ingredient_list, :food_drink_filter, :filter_category_id, :filter_sub_category_id, ingredient_attributes: %i[id product_id energy saturate total_sugar sodium ratio_fatty_acid_lipids fibre fruit_veg
+                                                                                                                                                                                                                                                                protein vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 vit_b2 vit_b3 vit_b1 vit_b5 vit_b7 calcium
+                                                                                                                                                                                                                                                                iron magnesium zinc iodine potassium phosphorus manganese copper selenium chloride chromium
+                                                                                                                                                                                                                                                                total_fat monosaturated_fat polyunsaturated_fat trans_fat soyabean cholestrol fat mono_unsaturated_fat
+                                                                                                                                                                                                                                                                veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish
+                                                                                                                                                                                                                                                                shellfish tree_nuts peanuts wheat carbohydrate]
 
   active_admin_import
   config.batch_actions = true
@@ -15,15 +15,20 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   before_action :set_product # , only: [:show, :edit, :update, :destroy]
 
   sidebar :actions do
-    button_to "Delete All Products", "/admin/products/delete_all_products", :method => :delete, data: {:confirm => "It will delete all products. Are you sure?"}
+    button_to 'Delete All Products', '/admin/products/delete_all_products', method: :delete,
+                                                                            data: { confirm: 'It will delete all products. Are you sure?' }
   end
 
-  action_item :only => :index do
-    link_to "Calculate Ratings", calculate_ratings_admin_products_path(:calculation_type => "calculate_ratings")
+  action_item only: :index do
+    link_to 'Calculate Ratings', calculate_ratings_admin_products_path(calculation_type: 'calculate_ratings')
   end
 
-  action_item :only => :index do
-    link_to "Calculate NP", calculate_ratings_admin_products_path(:calculation_type => "calculate_np")
+  action_item only: :index do
+    link_to 'Calculate NP', calculate_ratings_admin_products_path(calculation_type: 'calculate_np')
+  end
+
+  action_item only: :index do
+    link_to 'Save image in DB', update_image_url_admin_products_path
   end
 
   collection_action :calculate_ratings do
@@ -31,9 +36,14 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     redirect_to collection_path flash[:notice] = 'Calculation on product is processing.'
   end
 
-  collection_action :delete_all_products, :method => :delete do
+  collection_action :update_image_url do
+    BxBlockCatalogue::ProductImageUrlWorker.perform_at(Time.now)
+    redirect_to collection_path flash[:notice] = 'image saved in DB.'
+  end
+
+  collection_action :delete_all_products, method: :delete do
     BxBlockCatalogue::Product.delete_all
-    flash[:alert] = "All product deleted successfully."  
+    flash[:alert] = 'All product deleted successfully.'
     redirect_to admin_products_path
   end
 
@@ -44,7 +54,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   action_item :product_import_status, only: :index do
     link_to 'Import Status', '/admin/import_statuses'
   end
-  
+
   collection_action :download, method: :get do
     file_name = "#{Rails.root}/lib/product_importable_file_format.csv"
     send_file file_name, type: 'application/csv'
@@ -92,12 +102,10 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       f.input :food_drink_filter
       f.input :filter_category_id, as: :select, collection: BxBlockCategories::FilterCategory.pluck(:name, :id)
       f.input :filter_sub_category_id, as: :select,
-      
+
                                        collection: BxBlockCategories::FilterSubCategory.all.pluck(:name, :id)
 
-
-      f.inputs "Ingredient", for: [:ingredient, f.object.ingredient || BxBlockCatalogue::Ingredient.new] do |ff|
-      
+      f.inputs 'Ingredient', for: [:ingredient, f.object.ingredient || BxBlockCatalogue::Ingredient.new] do |ff|
         ff.input :energy
         ff.input :saturate
         ff.input :total_sugar
@@ -187,15 +195,18 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       row :product_name
       row :product_type
       row :product_point do |obj|
-        obj.product_point.present? ? obj.product_point : "NA"
+        obj.product_point.present? ? obj.product_point : 'NA'
       end
       row :product_rating do |obj|
-        obj.product_rating.present? ? obj.product_rating : "NA"
+        obj.product_rating.present? ? obj.product_rating : 'NA'
       end
       row :brand_name
       row :weight
       row :image do |obj|
-        link_to image_tag(obj.image&.service_url&.split('?')&.first, size: "150x200"), obj.image&.service_url&.split('?')&.first if obj.image.attached?
+        if obj.image.attached?
+          link_to image_tag(obj.image&.service_url&.split('?')&.first, size: '150x200'),
+                  obj.image&.service_url&.split('?')&.first
+        end
       end
       row :bar_code
       row :data_check
@@ -215,9 +226,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       row :filter_sub_category_id do |obj|
         obj&.filter_sub_category&.name
       end
-      row :ingredients do |obj|
-        obj.ingredient
-      end
+      row :ingredients, &:ingredient
     end
   end
 
@@ -226,25 +235,44 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       ActiveStorage::Current.host = request.base_url
     end
 
-    def delete_all_product
-    end
-
     def do_import
-      redirect_to import_admin_products_path, flash: {error: "Please select file!"} and return if params[:active_admin_import_model].nil?
-      redirect_to import_admin_products_path, flash: {error: "File format not valid!"} and return unless params[:active_admin_import_model][:file].content_type.include?("csv")
+      if params[:active_admin_import_model].nil?
+        redirect_to import_admin_products_path,
+                    flash: { error: 'Please select file!' } and return
+      end
+      unless params[:active_admin_import_model][:file].content_type.include?('csv')
+        redirect_to import_admin_products_path,
+                    flash: { error: 'File format not valid!' } and return
+      end
+
       file_path = params[:active_admin_import_model][:file].path
-      file = open(file_path) rescue nil
+      file = begin
+        open(file_path)
+      rescue StandardError
+        nil
+      end
       file_csv = CSV.parse(file, headers: true)
-      expected_headers = ["category_id", "product_type", "food_drink_filter", "category_filter", "category_type_filter", "website", "product_name", "brand_name", "description", "bar_code", "weight", "price_mrp", "price_post_discount", "image", "ingredient_list", "fruit_veg", "nutritional", "energy", "carbohydrate", "fibre", "protein", "total_fat", "saturate", "monosaturated_fat", "polyunsaturated_fat", "trans_fat", "fatty_acid", "vit_a", "vit_c", "vit_d", "vit_b6", "vit_b12", "vit_b9", "calcium", "iron", "magnesium", "zinc", "iodine", "cholestrol", "sodium", "fat", "total_sugar", "mono_unsaturated_fat", "data_check", "veg_and_nonveg", "gluteen_free", "added_sugar", "artificial_preservative", "organic", "vegan_product", "egg", "fish", "shellfish", "tree_nuts", "peanuts", "wheat", "soyabean"]
-      redirect_to import_admin_products_path, flash: {error: "File contains invalid headers!"} and return unless file_csv.headers == expected_headers
+      expected_headers = %w[category_id product_type food_drink_filter category_filter
+                            category_type_filter website product_name brand_name description bar_code weight price_mrp price_post_discount image ingredient_list fruit_veg nutritional energy carbohydrate fibre protein total_fat saturate monosaturated_fat polyunsaturated_fat trans_fat fatty_acid vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 calcium iron magnesium zinc iodine cholestrol sodium fat total_sugar mono_unsaturated_fat data_check veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish shellfish tree_nuts peanuts wheat soyabean]
+      unless file_csv.headers == expected_headers
+        redirect_to import_admin_products_path,
+                    flash: { error: 'File contains invalid headers!' } and return
+      end
+
       pcsv = BxBlockCatalogue::ProductCsv.create
-      file = open(file_path) rescue nil
-      pcsv.csv_file.attach(
-        io: file,
-        filename: "#{file_path.split("/").last}",
-        content_type: params[:active_admin_import_model][:file].content_type
-      ) if file
-      BxBlockCatalogue::BulkProductImportWorker.perform_at(Time.now, "#{pcsv.id}")
+      file = begin
+        open(file_path)
+      rescue StandardError
+        nil
+      end
+      if file
+        pcsv.csv_file.attach(
+          io: file,
+          filename: file_path.split('/').last.to_s,
+          content_type: params[:active_admin_import_model][:file].content_type
+        )
+      end
+      BxBlockCatalogue::BulkProductImportWorker.perform_at(Time.now, pcsv.id.to_s)
       redirect_to collection_path flash[:notice] = 'Data import processing'
     end
   end
