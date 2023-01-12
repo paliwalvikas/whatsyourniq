@@ -5,7 +5,10 @@ module BxBlockChat
 
     def index
       if @chats.present? 
-        render json: ChatSerializer.new(@chats&.order(created_at: :asc)).serializable_hash, status: :ok
+        params[:per] = '1'
+        chat = Kaminari.paginate_array(@chats.order(created_at: :asc)).page(params[:page]).per(params[:per])
+        chats = ChatSerializer.new(chat).serializable_hash  
+        render json: { chat: chats ,meta: page_meta(chat) }
       else
         render json:  { message: "Chat not found" },
                        status: :unprocessable_entity
