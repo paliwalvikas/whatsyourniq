@@ -42,15 +42,6 @@ module BxBlockCatalogue
       end
     end
 
-    def show
-      product = BxBlockCatalogue::Product.find_by(id: params[:id])
-      if product.present?
-        render json: ProductSerializer.new(product, params: { user: valid_user })
-      else
-        render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
-      end
-    end
-    
     def niq_score
       products = niq_list_smart_search
       if products.present?
@@ -104,9 +95,8 @@ module BxBlockCatalogue
           nil
         end
       else
-        # render json: [], status: :ok
-        render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }, status: :ok
-        # render json: { errors: 'Product not found' }, status: :unprocessable_entity
+        render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') },
+               status: :ok
       end
     end
 
@@ -203,7 +193,8 @@ module BxBlockCatalogue
       if requested_product.save
         render json: RequestedProductSerializer.new(requested_product), status: :ok
       else
-        render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.request_not_send') }, status: :unprocessable_entity
+        render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.request_not_send') },
+               status: :unprocessable_entity
       end
     end
 
@@ -221,10 +212,12 @@ module BxBlockCatalogue
         if reported_product.present?
           render json: BxBlockCatalogue::ReportedProductSerializer.new(reported_product)
         else
-          render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.failed_to_report') }, status: :unprocessable_entity
+          render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.failed_to_report') },
+                 status: :unprocessable_entity
         end
       else
-        render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.you_already_reported') }, status: :unprocessable_entity
+        render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.you_already_reported') },
+               status: :unprocessable_entity
       end
     end
 
