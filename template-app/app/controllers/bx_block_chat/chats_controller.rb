@@ -5,7 +5,6 @@ module BxBlockChat
 
     def index
       if @chats.present? 
-        params[:per] = '1'
         chat = Kaminari.paginate_array(@chats.order(created_at: :asc)).page(params[:page]).per(params[:per])
         chats = ChatSerializer.new(chat).serializable_hash  
         render json: { chat: chats ,meta: page_meta(chat) }
