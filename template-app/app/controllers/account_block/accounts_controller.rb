@@ -78,7 +78,7 @@ module AccountBlock
 
     def update_params
       params.require(:data).require(:attributes).permit(:full_name, :full_phone_number, :email, :activated, :image,
-                                                        :gender)
+                                                        :gender, :enable_offline)
     end
 
     def social_params
