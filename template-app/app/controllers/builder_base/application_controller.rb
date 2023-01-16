@@ -24,8 +24,8 @@ module BuilderBase
     end
     
     def extract_locale
-      language = if params[:data][:language_id].present?
-        BxBlockLanguageOptions::Language.find(params[:data][:language_id]).locale
+      if params[:language_id]&.present?
+        BxBlockLanguageOptions::Language.find(params[:language_id]).locale
       else
         I18n.default_locale.to_s
       end
