@@ -65,6 +65,10 @@ module BxBlockCatalogue
       end
     end
 
+    attribute :health_preference do |obj, _params| 
+      _params[:health_preference]
+    end
+
     attribute :negative_not_good do |object, _params|
       if _params[:status] == 'offline'
         object.rda_value['not_so_good_ingredient']

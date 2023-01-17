@@ -141,7 +141,7 @@ module BxBlockCatalogue
 
     def health_preference(params, data)
       product = fav_filter_product(params, 'health_preference')
-      health = ['Immunity', 'Gut Health', 'Holistic Nutrition', 'Weight loss', 'Weight gain','Diabetic','Low Cholesterol','Heart Friendly','Energy and Vitality','Physical growth','Cognitive health', 'Mental health / mood boosting foods','Hyperthyroid', 'Hypothyroid', 'Greater than 60 years old','Pregnant women']
+      health = ['Immunity', 'Gut Health', 'Holistic Nutrition', 'Weight loss', 'Weight gain','Diabetic','Low Cholesterol','Heart Friendly','Energy and Vitality','Physical growth','Cognitive health', 'Low Sugar', 'High Protein','Mental health / mood boosting foods','Hyperthyroid', 'Hypothyroid', 'Greater than 60 years old','Pregnant women']
       health.each do |h_pref|
         unless h_pref == 'Mental health / mood boosting foods'
           prod = product.present? ? BxBlockCatalogue::SmartSearchService.new.p_health_preference({health_preference: h_pref}, product) : []
