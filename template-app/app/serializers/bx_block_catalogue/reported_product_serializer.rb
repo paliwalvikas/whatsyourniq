@@ -7,5 +7,10 @@ module BxBlockCatalogue
     attribute :product do |object, _params|
       ProductSerializer.new(object.product)
     end
+
+    attribute :reported_product_answer do |object|
+    	answers = ReportedProductAnswer.where(id: object&.ans_ids)
+    	ReportedProductAnswerSerializer.new(answers)
+    end
   end
 end
