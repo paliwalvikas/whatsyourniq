@@ -13,7 +13,7 @@ module BxBlockCatalogue
     	def health_preference(product, search)
       	ingredient = product.ingredient
         return unless ingredient.present?
-  	    ash = {vit_a: 300, vit_d: 4.5, vit_b1: 2.163, vit_c: 24, vit_e: 3, vit_b6: 0.57, vit_b12: 0.75, iron: 5.7, zinc: 5.1,selenium: 12, copper: 0.6, protein: 10.8, fibre: 6, calcium: 300, folate: 90, vit_b2: 0.6, iodine: 42, sugar: 5, fat: 3, gut_h: 6, h_protein: 10.8, energy: 40, cholestrol: 20, saturated_fat: 1.5, lodine: 42}
+  	    ash = {vit_a: 300, vit_d: 4.5, vit_b1: 2.163, vit_c: 24, vit_e: 3, vit_b6: 0.57, vit_b12: 0.75, iron: 5.7, zinc: 5.1,selenium: 12, copper: 0.6, protein: 10.8, fibre: 6, calcium: 300, vit_b9: 90, vit_b2: 0.6, iodine: 42, sugar: 5, fat: 3, gut_h: 6, h_protein: 10.8, energy: 40, cholestrol: 20, saturated_fat: 1.5, lodine: 42}
     		case product.product_type
   	    when 'solid'
   	   		options(ingredient, ash, search)
@@ -53,7 +53,7 @@ module BxBlockCatalogue
         when 'High Protein'
   	    	high_protein = check_greater?(ingredient[:protein], ash[:h_protein])
         when 'Low Sugar'
-  	    	low_sugar = check_greater?(ingredient[:total_sugar], ash[:sugar])
+  	    	low_sugar = check_less?(ingredient[:total_sugar], ash[:sugar])
         end
     	end
 
@@ -73,7 +73,7 @@ module BxBlockCatalogue
     	end
 
     	def physical_growth(ing, val)
-    		check_greater?(ing[:calcium], val[:calcium]) && check_greater?(ing[:vit_d], val[:vit_d]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:folate], val[:folate]) && check_greater?(ing[:vit_b12], val[:vit_b12] && check_greater?(ing[:vit_b6], val[:vit_b6]) && check_greater?(ing[:vit_b2], val[:vit_b2])) || check_greater?(ing[:fibre], val[:fibre]) 
+    		check_greater?(ing[:calcium], val[:calcium]) && check_greater?(ing[:vit_d], val[:vit_d]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:vit_b9], val[:vit_b9]) && check_greater?(ing[:vit_b12], val[:vit_b12] && check_greater?(ing[:vit_b6], val[:vit_b6]) && check_greater?(ing[:vit_b2], val[:vit_b2])) || check_greater?(ing[:fibre], val[:fibre]) 
     	end
 
     	def cognitive_health(ingr, val)
@@ -85,11 +85,11 @@ module BxBlockCatalogue
     	end
 
     	def weight_loss(ing, val)
-    		check_less?(ing[:energy], val[:energy]) && check_greater?(ing[:protein], val[:protein]) || check_greater?(ing[:fibre], val[:fibre]) || micronutrients(ing, val, 'w')
+    		(check_less?(ing[:energy], val[:energy]) && check_greater?(ing[:protein], val[:protein])) || check_greater?(ing[:fibre], val[:fibre]) || micronutrients(ing, val, 'w')
     	end
 
     	def weight_gain(ing, val)
-    		(ing[:energy].to_f > val[:energy] ) && check_greater?(ing[:protein], val[:protein]) || check_greater?(ing[:fibre], val[:fibre]) || micronutrients(ing, val, 'w')
+    		((ing[:energy].to_f > val[:energy] ) && check_greater?(ing[:protein], val[:protein])) || check_greater?(ing[:fibre], val[:fibre]) || micronutrients(ing, val, 'w')
     	end
 
     	def diabetes(ing, val, fibre)

@@ -15,9 +15,10 @@ module BxBlockCatalogue
       if product.present?
         CalculateProductRating.new.calculation(product)
         data = CalculateRda.new.rda_calculation(product)
+        health_preference = NutritionalConsiderationService.new.check_nutrition(product, params[:fav_search_id], data) if params[:fav_search_id].present?
         render json: ProductCompareSerializer.new(product,
                                                   params: { good_ingredient: data[:good_ingredient],
-                                                            not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user })
+                                                            not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user , health_preference: health_preference})
       else
         render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
       end
@@ -26,7 +27,6 @@ module BxBlockCatalogue
     def index
       products = BxBlockCatalogue::Product.where(data_check: 'green')
       return unless products.present?
-
       products = Kaminari.paginate_array(products).page(params[:page]).per(params[:per_page])
       catalogues = ProductCompareSerializer.new(products, params: { status: 'offline' })
       render json: { products: catalogues, meta: page_meta(products) }
@@ -126,7 +126,7 @@ module BxBlockCatalogue
                      end
         begin
           data = page_meta(products_array).present? ? page_meta(products_array) : { total_count: products_array.count }
-          render json: { products: serializer, meta: data }
+          render json: { products: serializer, favourite_search: @fav_s, meta: data }
         rescue AbstractController::DoubleRenderError
           nil
         end
