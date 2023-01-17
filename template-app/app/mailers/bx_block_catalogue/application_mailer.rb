@@ -1,6 +1,6 @@
 module BxBlockCatalogue
   class ApplicationMailer < BuilderBase::ApplicationMailer
-    default from: ENV.fetch("MAILER_EMAIL")
+    default from: "hello@superfoodsvalley.com"
     layout 'mailer'
   end
 end
