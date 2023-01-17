@@ -163,6 +163,11 @@ kn:
       favourite_search:
         please_uniq_filters: 'ದಯವಿಟ್ಟು ಅನನ್ಯ ಫಿಲ್ಟರ್ಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ'
     bx_block_categories:
+      category:
+        category_type:
+          packaged_food: 'ಪ್ಯಾಕೇಜ್ ಮಾಡಿದ ಆಹಾರಗಳು'
+          raw_food: 'ಕಚ್ಚಾ ಆಹಾರಗಳು'
+          cooked_food: 'ಬೇಯಿಸಿದ ಆಹಾರಗಳು'
       sub_category:
         please_select_categories: 'ದಯವಿಟ್ಟು ವರ್ಗಗಳನ್ನು ಅಥವಾ ಪೋಷಕರನ್ನು ಆಯ್ಕೆಮಾಡಿ.'
     bx_block_content_management:

@@ -163,6 +163,11 @@ hi:
       favourite_search:
         please_uniq_filters: 'कृपया यूनिक फ़िल्टर चुनें'
     bx_block_categories:
+      category:
+        category_type:
+          packaged_food: 'डिब्बाबंद खाद्य पदार्थ'
+          raw_food: 'कच्चे खाद्य पदार्थ'
+          cooked_food: 'पके हुए खाद्य पदार्थ'
       sub_category:
         please_select_categories: 'कृपया श्रेणियों या माता-पिता का चयन करें।'
     bx_block_content_management:
@@ -245,7 +250,7 @@ hi:
         account_block/sms_account:
           attributes:
             full_phone_number:
-              blank: 'खाली नहीं हो सकता'
+              blank: 'खाली नहीं रख सकते'
         bx_block_catalogue/favourite_product:
           attributes:
             product:
