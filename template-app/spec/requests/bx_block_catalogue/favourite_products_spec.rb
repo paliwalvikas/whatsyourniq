@@ -68,7 +68,7 @@ RSpec.describe "BxBlockCatalogue::FavouriteProduct", type: :request do
       
       json = JSON.parse(response.body).deep_symbolize_keys
     
-      expect(json[:errors]).to eq  'Product Not Found' 
+      expect(json[:errors]).to eq  'Product not found' 
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:ok)

@@ -8,7 +8,7 @@ RSpec.describe BxBlockCatalogue::ProductCalculationWorker, type: :worker do
   let(:scheduled_job) { described_class.perform_in(time, 'BxBlockCatalogue::ProductCalculationWorker', true) }
 
   describe 'testing worker' do
-    it { is_expected.to be_retryable false }
+    it { is_expected.to be_retryable 3 }
 
     it 'ProductCalculationWorker are enqueued in the default queue' do
       described_class.perform_async

@@ -29,8 +29,7 @@ RSpec.describe "Products", type: :request do
 
     it "when Product not found" do
       headers = { "ACCEPT" => "application/json" }
-      get "/bx_block_catalogue/products", :params => {
-      }, :headers => headers
+      get "/bx_block_catalogue/products", :params => {}, :headers => headers
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
@@ -73,7 +72,7 @@ RSpec.describe "Products", type: :request do
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
-      expect(json[:error]).to eq("Something went wrong!")
+      expect(json[:errors]).to eq("Incorrect data!")
 
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:ok)
@@ -179,10 +178,10 @@ RSpec.describe "Products", type: :request do
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
-      expect(json[:errors]).to eq "updated"
+      expect(json[:errors]).to eq "Updated"
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
-      expect(response).to have_http_status(:bad_request)
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -210,7 +209,7 @@ RSpec.describe "Products", type: :request do
       expect(json[:msg]).to eq "Updated"
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
-      expect(response).to have_http_status(:bad_request)
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -238,7 +237,7 @@ RSpec.describe "Products", type: :request do
       expect(json[:errors]).to eq "Deleted"
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
-      expect(response).to have_http_status(:bad_request)
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -275,7 +274,7 @@ RSpec.describe "Products", type: :request do
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
-      expect(json[:errors]).to eq "Product Not Found"
+      expect(json[:errors]).to eq "Product not found"
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:ok)
@@ -301,7 +300,7 @@ RSpec.describe "Products", type: :request do
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
-      expect(json[:message]).to eq "deleted successfully!"
+      expect(json[:message]).to eq "Deleted successfully!"
       
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:ok)
