@@ -23,8 +23,7 @@ module BxBlockSms
       end
 
       def provider_name
-        # ENV["PROVIDER"]
-        "TEST"
+        ENV["PROVIDER"] || "TEST"
       end
 
       def unsupported_message(provider)
