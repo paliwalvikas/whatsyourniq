@@ -85,9 +85,7 @@ RSpec.describe BxBlockCatalogue::BulkProductImportWorker, type: :worker do
     context 'after product saves' do
       let(:product) { BxBlockCatalogue::Product.find_or_create_by(bar_code: "bar_code") }
       let(:ingredient) { product.build_ingredient(energy: "20.00 kcal", total_sugar: "10 gram") }
-      let(:image) { '/home/rails/Pictures/Railway Track Trees Green Way Path 4K Wallpaper-1024x768.jpg' }
-      let(:file_url) { URI.parse(image) }
-      let(:file) { open(image.strip) }
+      let(:file) { Rack::Test::UploadedFile.new("#{Rails.root}/spec/fixtures/files/wrong_image.jpg") }
 
       ingredient_params = {
         "energy" => "20 kcal",

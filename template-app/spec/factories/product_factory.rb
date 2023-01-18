@@ -19,6 +19,7 @@ FactoryBot.define do
     filter_sub_category_id {1}
     food_drink_filter {"Drink"}
     website {"Amazon"}
+    rda_value {"good_ingredient"}
     # calculated {true}
     # np_calculated{true}
   end

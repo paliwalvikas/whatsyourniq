@@ -31,7 +31,7 @@ RSpec.describe "AddProfiles", type: :request do
 
       json = JSON.parse(response.body).deep_symbolize_keys
 
-      expect(json[:message]).to eq "Profile doesn't exists for provided Id"
+      expect(json[:message]).to eq "Profile does not exists for provided Id"
 
       expect(response.content_type).to eq("application/json; charset=utf-8")
       expect(response).to have_http_status(:unprocessable_entity)

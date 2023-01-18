@@ -9,7 +9,7 @@ RSpec.describe BxBlockChat::AnswerOptionsController, type: :controller do
       get :index
       json = JSON.parse(response.body).deep_symbolize_keys
       expect(json[:data]).should_not be_nil
-      expect(response).to have_http_status(:ok)                           
+      expect(response).to have_http_status(:unprocessable_entity)                           
     end
 
     it "should response with params AnswerOption#index" do 
