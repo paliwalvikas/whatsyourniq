@@ -59,6 +59,7 @@ module BxBlockCatalogue
 
     attribute :positive_good do |object, _params|
       if _params[:status] == 'offline'
+        
         object.rda_value['good_ingredient'] if object.rda_value.present?
       elsif _params[:good_ingredient].present?
         _params[:good_ingredient]
