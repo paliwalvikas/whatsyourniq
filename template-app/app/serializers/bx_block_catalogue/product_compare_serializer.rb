@@ -59,7 +59,7 @@ module BxBlockCatalogue
 
     attribute :positive_good do |object, _params|
       if _params[:status] == 'offline'
-        object.rda_value['good_ingredient']
+        object.rda_value['good_ingredient'] if object.rda_value.present?
       elsif _params[:good_ingredient].present?
         _params[:good_ingredient]
       end
@@ -71,7 +71,7 @@ module BxBlockCatalogue
 
     attribute :negative_not_good do |object, _params|
       if _params[:status] == 'offline'
-        object.rda_value['not_so_good_ingredient']
+        object.rda_value['not_so_good_ingredient'] if object.rda_value.present?
       elsif _params[:not_so_good_ingredient].present?
         _params[:not_so_good_ingredient]
       end

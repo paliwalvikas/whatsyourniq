@@ -7,6 +7,7 @@ module AccountBlock
     before_action :validate_json_web_token, only: [:index]
 
     def create
+
       case params[:data][:type] #### rescue invalid API format
       when 'sms_account'
         account = SmsAccount.find_by(full_phone_number: params[:data][:attributes][:full_phone_number])
