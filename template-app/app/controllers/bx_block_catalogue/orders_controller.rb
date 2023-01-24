@@ -27,6 +27,7 @@ module BxBlockCatalogue
 
       if @order.order_items.create(order_item_params)
         render json: BxBlockCatalogue::OrderSerializer.new(@order)
+        OrderMailer.add_healthy_food_basket(@order).deliver_later
       else
         render json: { error: order_item.errors }
       end
@@ -46,6 +47,7 @@ module BxBlockCatalogue
     end
 
     def destroy
+      OrderMailer.remove_healthy_food_basket(@order).deliver_now
       @order.destroy
       render json: { message: I18n.t('controllers.bx_block_catalogue.orders_controller.order_successfully_deleted') }
     end

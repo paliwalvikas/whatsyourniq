@@ -15,6 +15,7 @@ module BxBlockAddProfile
       if save_result
         render json: AddProfileSerializer.new(add_prfile, serialization_options).serializable_hash,
                status: :created
+        AddProfileMailer.new_family_member(current_user, add_prfile).deliver_later
       else
         render json: ErrorSerializer.new(add_prfile, serialization_options).serializable_hash,
                status: :unprocessable_entity
