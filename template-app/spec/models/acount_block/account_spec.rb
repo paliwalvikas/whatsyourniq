@@ -11,6 +11,7 @@ RSpec.describe AccountBlock::Account, type: :model do
     it { should have_one_attached(:image) }
   end
 
+
   describe "Enum" do
     it { should define_enum_for(:status).with_values([:regular, :suspended, :deleted]) }
     # it { should define_enum_for(:gender).with_values([:female, :male, :other]) }

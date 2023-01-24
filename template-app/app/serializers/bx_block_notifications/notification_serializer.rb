@@ -11,7 +11,11 @@ module BxBlockNotifications
         :read_at,
         :created_at,
         :updated_at,
-        :account
+        :account,
     ]
+
+    attributes :notificable do |obj|
+        obj&.notificable
+    end
   end
 end

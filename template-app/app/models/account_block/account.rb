@@ -28,8 +28,6 @@ module AccountBlock
     scope :active, -> { where(activated: true) }
     scope :existing_accounts, -> { where(status: %w[regular suspended]) }
 
-    serialize :device_id, Array
-
     private
 
     def parse_full_phone_number

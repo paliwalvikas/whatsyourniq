@@ -3,7 +3,7 @@
 ActiveAdmin.register BxBlockCatalogue::ReportedProduct, as: 'Reported_product' do
   permit_params :product, :account, :description, :status
 
-  index title: 'Reported_Question' do
+  index title: 'Reported_Product' do
     selectable_column
     id_column
     column :product
