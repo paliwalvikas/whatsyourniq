@@ -15,7 +15,7 @@ module BxBlockNotifications
     ]
 
     attributes :notificable do |obj|
-        obj&.notificable
+      obj&.notificable
     end
   end
 end

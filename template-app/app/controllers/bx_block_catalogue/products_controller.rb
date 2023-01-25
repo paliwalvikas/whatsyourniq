@@ -16,9 +16,13 @@ module BxBlockCatalogue
         CalculateProductRating.new.calculation(product)
         data = CalculateRda.new.rda_calculation(product)
         health_preference = NutritionalConsiderationService.new.check_nutrition(product, params[:fav_search_id], data) if params[:fav_search_id].present?
-        render json: ProductCompareSerializer.new(product,
+        begin
+          render json: ProductCompareSerializer.new(product,
                                                   params: { good_ingredient: data[:good_ingredient],
                                                             not_so_good_ingredient: data[:not_so_good_ingredient], user: valid_user , health_preference: health_preference})
+        rescue AbstractController::DoubleRenderError
+          nil
+        end
       else
         render json: { errors: I18n.t('controllers.bx_block_catalogue.favourite_products_controller.product_not_found') }
       end
