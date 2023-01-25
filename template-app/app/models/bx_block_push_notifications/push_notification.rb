@@ -9,9 +9,8 @@ module BxBlockPushNotifications
     before_create :send_push_notification
 
     def send_push_notification
-      if push_notificable.activated && push_notificable.device_id &&
-        push_notificable.privacy_setting["#{notify_type}".to_sym]
-        fcm_client = FCM.new(ENV['FCM_SEVER_KEY']) # set your FCM_SERVER_KEY
+      if push_notificable.activated && push_notificable.device_id # && push_notificable.privacy_setting["#{notify_type}".to_sym]
+        fcm_client = FCM.new(ENV['FCM_SEVER_KEY'])
         options = { priority: 'high',
                     data: {
                       message: remarks,
@@ -24,9 +23,6 @@ module BxBlockPushNotifications
                     }
                   }
         registration_id = push_notificable.device_id
-        # A registration ID looks something like:
-        #“dAlDYuaPXes:APA91bFEipxfcckxglzRo8N1SmQHqC6g8SWFATWBN9orkwgvTM57kmlFOUYZAmZKb4XGGOOL
-        #9wqeYsZHvG7GEgAopVfVupk_gQ2X5Q4Dmf0Cn77nAT6AEJ5jiAQJgJ_LTpC1s64wYBvC”
         fcm_client.send(registration_id, options)
       end
     rescue Exception => e

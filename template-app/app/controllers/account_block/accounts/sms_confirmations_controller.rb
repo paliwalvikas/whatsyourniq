@@ -33,7 +33,7 @@ module AccountBlock
           @sms_otp.activated = true
           @sms_otp.save
           @account = AccountBlock::SmsAccount.find_by(full_phone_number: @sms_otp.full_phone_number)
-          # @account.register = true
+          @account.update(device_id: params[:data][:attributes][:device_id])
           @account.additional_details = true unless @account&.full_name.nil?
           render json: SmsAccountSerializer.new(@account, meta: {
             message: I18n.t('controllers.account_block.accounts.phone_confirmed_successfully'),

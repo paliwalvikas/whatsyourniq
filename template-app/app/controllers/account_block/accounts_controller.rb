@@ -7,7 +7,6 @@ module AccountBlock
     before_action :validate_json_web_token, only: [:index]
 
     def create
-
       case params[:data][:type] #### rescue invalid API format
       when 'sms_account'
         account = SmsAccount.find_by(full_phone_number: params[:data][:attributes][:full_phone_number])
@@ -31,7 +30,7 @@ module AccountBlock
 
       when 'social_account'
         account = SocialAccount.find_by(email: params[:data][:attributes][:email])
-        if account.present?
+        if account.present? && account.update(device_id: params[:data][:attributes][:device_id])
           account.register = true
           account.additional_details = true unless account.full_name.nil?
           render json: SocialAccountSerializer.new(account, meta: { token: encode(account.id), message: I18n.t('controllers.account_block.accounts.account_already_registered'), register: account.register, additional_details: account.additional_details }),
@@ -79,12 +78,12 @@ module AccountBlock
 
     def update_params
       params.require(:data).require(:attributes).permit(:full_name, :full_phone_number, :email, :activated, :image,
-                                                        :gender, :enable_offline)
+                                                        :gender, :enable_offline, :device_id)
     end
 
     def social_params
       params.require(:data).require(:attributes).permit(:full_name, :full_phone_number, :email, :activated, :image_url,
-                                                        :gender, :unique_auth_id)
+                                                        :gender, :unique_auth_id, :device_id)
     end
 
     def encode(id)

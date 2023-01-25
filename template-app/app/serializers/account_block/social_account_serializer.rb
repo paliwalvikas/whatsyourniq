@@ -9,7 +9,8 @@ module AccountBlock
       :phone_number,
       :email,
       :activated,
-      :flag
+      :flag,
+      :device_id
     ]
 
     attribute :image do |object, _params|

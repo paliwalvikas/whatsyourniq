@@ -45,6 +45,10 @@ Rails.application.routes.draw do
     resources :orders
   end
 
+  namespace :bx_block_notifications do
+    resources :notifications
+  end
+
   namespace :bx_block_chat do 
     resources :chats
     resources :answer_options

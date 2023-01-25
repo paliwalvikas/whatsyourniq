@@ -189,3 +189,5 @@ affinitySidekiq:
                   values:
                   - app-deploySidekiq
             topologyKey: "kubernetes.io/hostname"
+            
+FCM_SEVER_KEY: "AAAAjmCG0wg:APA91bF48wEEPJ0p7m6ydOgzOv8B7TxKQ8CsGYicOhrTFN5mQd3vARGn9oFFMxCw8l3FFCc_9fHcO5anefy07HOlO2QsmyqzDXF_x7-sTSHEAv6kvk4eEPP-5xJWKn-sakVVApABKKmR"

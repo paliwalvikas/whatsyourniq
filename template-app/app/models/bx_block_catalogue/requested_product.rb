@@ -6,5 +6,14 @@ module BxBlockCatalogue
     enum status: [:pending, :rejected, :approved]
     has_many_attached :product_image
     has_many_attached :barcode_image
+
+    after_update :send_notifications, if: :saved_change_to_status
+
+    private
+
+    def send_notifications
+      BxBlockPushNotifications::PushNotificationJob.perform_now("Requested Product", "Requested Product status has been changed", account, self)
+    end
+
   end
 end
