@@ -12,6 +12,7 @@ module BxBlockCatalogue
     private
 
     def send_notifications
+      RequestedProductMailer.update_product_status(self).deliver_later
       BxBlockPushNotifications::PushNotificationJob.perform_now("Requested Product", "Requested Product status has been changed", account, self)
     end
 
