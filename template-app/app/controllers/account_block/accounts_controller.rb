@@ -40,6 +40,7 @@ module AccountBlock
           if account.save
             render json: SocialAccountSerializer.new(account, meta: { token: encode(account.id), register: account.register }).serializable_hash,
                    status: :created
+            AccountMailer.send_welcome_mail(account).deliver_later
           end
         end
       else
@@ -56,6 +57,7 @@ module AccountBlock
         account.additional_details = true
         render json: AccountSerializer.new(account, meta: { message: I18n.t('controllers.account_block.accounts.account_updated_successfully'), additional_details: account.additional_details }),
                status: :ok
+        AccountMailer.update_profile(account).deliver_later
       else
         render json: { message: I18n.t('controllers.account_block.accounts.account_not_updated') }
       end
