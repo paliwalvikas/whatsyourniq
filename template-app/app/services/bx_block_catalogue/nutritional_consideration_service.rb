@@ -3,11 +3,11 @@
 module BxBlockCatalogue
   class NutritionalConsiderationService
     def check_nutrition(product, fav_id, data)
-      val = FavouriteSearch.find_by(id: fav_id).health_preference
-      result = []
+      val = FavouriteSearch.find_by(id: fav_id)&.health_preference
+      result = {good_ingredient: [], not_so_good_ingredient: []}
       value = data_set(data)
       return unless fav_id.present?
-
+      
       case val
       when 'Immunity'
         check_immunity(product, value, result)
@@ -64,7 +64,7 @@ module BxBlockCatalogue
 
       high_immunonutrients(value, %w[vit_b1 vit_b2 vit_b6 vit_b12 vit_d iron], result)
       low_ing(value, ['calories'], result)
-      final_result(value, %w[calories protein fibre], result)
+      final_result(value, %w[protein fibre], result)
     end
 
     def check_weight_gain(product, value, result)
@@ -126,16 +126,14 @@ module BxBlockCatalogue
     end
 
     def final_result(value, ing, result)
-      value&.each do |val|
-        result << val if ing.include?(val[:name]) && val[:level] == 'High'
-      end
+      good_and_not_so_good(value, ing, result, 'High')
       result
     end
 
     def high_immunonutrients(value, ing, result)
       value&.each do |val|
         if ing.include?(val[:name]) && val[:level] == 'High'
-          result << { name: 'high_immunonutrients', level: 'High' }
+          result[:good_ingredient] << { name: 'high_immunonutrients', level: 'High' }
           break
         end
       end
@@ -143,10 +141,23 @@ module BxBlockCatalogue
     end
 
     def low_ing(value, ing, result)
+      good_and_not_so_good(value, ing, result, 'Low')
+      result
+    end
+
+    def good_and_not_so_good(value, ing, result, level)
       value&.each do |val|
-        result << val if ing.include?(val[:name]) && val[:level] == 'Low'
+        if not_good_ing.include?(val[:name])
+          result[:not_so_good_ingredient] << val if ing.include?(val[:name]) && val[:level] == level
+        else
+          result[:good_ingredient] << val if ing.include?(val[:name]) && val[:level] == level
+        end
       end
       result
+    end
+
+    def not_good_ing
+      %w[calories total_fat saturated_fat cholesterol trans_fat sodium sugar]
     end
 
     def immunity_ing
