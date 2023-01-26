@@ -196,6 +196,7 @@ module BxBlockCatalogue
       requested_product = current_user.requested_products.new(requested_product_params)
       if requested_product.save
         render json: RequestedProductSerializer.new(requested_product), status: :ok
+        RequestedProductMailer.send_product_status(requested_product).deliver_later
       else
         render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.request_not_send') },
                status: :unprocessable_entity

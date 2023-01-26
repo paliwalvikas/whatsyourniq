@@ -35,6 +35,7 @@ module AccountBlock
           account.additional_details = true unless account.full_name.nil?
           render json: SocialAccountSerializer.new(account, meta: { token: encode(account.id), message: I18n.t('controllers.account_block.accounts.account_already_registered'), register: account.register, additional_details: account.additional_details }),
                  status: :ok
+          AccountMailer.existing_user(account).deliver_later
         else
           account = SocialAccount.new(social_params)
           if account.save
