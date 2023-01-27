@@ -2,7 +2,7 @@
 
 ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name,
-                :price_post_discount, :price_mrp, :category_id, :positive_good, :negative_not_good, :image, :bar_code, :data_check, :description, :ingredient_list, :food_drink_filter, :filter_category_id, :filter_sub_category_id, ingredient_attributes: %i[id product_id energy saturate total_sugar sodium ratio_fatty_acid_lipids fibre fruit_veg
+                :price_post_discount, :price_mrp, :category_id, :positive_good, :negative_not_good, :image, :bar_code, :account_id, :data_check, :description, :ingredient_list, :food_drink_filter, :filter_category_id, :filter_sub_category_id, ingredient_attributes: %i[id product_id energy saturate total_sugar sodium ratio_fatty_acid_lipids fibre fruit_veg
                                                                                                                                                                                                                                                                 protein vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 vit_b2 vit_b3 vit_b1 vit_b5 vit_b7 calcium
                                                                                                                                                                                                                                                                 iron magnesium zinc iodine potassium phosphorus manganese copper selenium chloride chromium
                                                                                                                                                                                                                                                                 total_fat monosaturated_fat polyunsaturated_fat trans_fat soyabean cholestrol fat mono_unsaturated_fat
@@ -93,6 +93,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       f.input :product_rating
       f.input :category_id, as: :select, collection: BxBlockCategories::Category.all.pluck(:category_type, :id)
       # f.input :positive_good
+      f.input :account_id, as: :select, collection: resource.reported_product
       f.input :image, as: :file
       f.input :bar_code
       f.input :data_check
@@ -182,6 +183,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
     column :weight
     column :price_mrp
     column :price_post_discount
+    column :account
     column :ingredients do |obj|
       obj&.ingredient
     end
@@ -219,7 +221,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       row :category_id do |obj|
         obj&.category&.category_type
       end
-
+      row :account
       row :filter_category_id do |obj|
         obj&.filter_category&.name
       end
@@ -258,7 +260,6 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
         redirect_to import_admin_products_path,
                     flash: { error: 'File contains invalid headers!' } and return
       end
-
       pcsv = BxBlockCatalogue::ProductCsv.create
       file = begin
         open(file_path)
