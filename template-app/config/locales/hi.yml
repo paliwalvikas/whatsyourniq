@@ -150,6 +150,9 @@ hi:
     bx_block_upload_media:
       upload_media_controller:
         successfully_updated: 'सफलतापूर्वक उत्परिवर्तित'
+    bx_block_term_and_condition:
+      term_and_conditions_controller:
+        term_and_conditions_not_exist: "नियम और शर्तें मौजूद नहीं हैं"
   models:
     account_block:
       account:
