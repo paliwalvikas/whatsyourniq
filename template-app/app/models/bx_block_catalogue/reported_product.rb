@@ -8,11 +8,16 @@ module BxBlockCatalogue
 
     enum status: [:pending, :updated]
     after_update :send_email_and_notification, if: :saved_change_to_status
+    # after_save :save_reported_product_immage_url
 
   	def send_email_and_notification
   	  ReportProductMailer.respond_reported_product(self).deliver_later
       BxBlockPushNotifications::PushNotificationJob.perform_now("Reported Product", "Reported Product status has been changed", account, self)
   	end
 
+
+    # #saving image in the db
+    # def save_reported_product_immage_url
+    # end
   end
 end

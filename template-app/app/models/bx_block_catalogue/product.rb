@@ -21,6 +21,7 @@ module BxBlockCatalogue
     has_many :compare_products, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
     has_many :reported_products, class_name: 'BxBlockCatalogue::ReportedProduct', foreign_key: 'product_id',
                                  dependent: :destroy
+    belongs_to :account, class_name: 'AccountBlock::Account', foreign_key: 'account_id', optional: true                             
     enum product_type: %i[cheese_and_oil beverage solid]
     enum food_drink_filter: %i[food drink]
 
@@ -82,6 +83,11 @@ module BxBlockCatalogue
     # saving image url in db to reduce the time taking of api
     def save_image_url_in_db
       self.image_url = image.service_url if image.present?
+    end
+
+    def reported_product
+      ids = BxBlockCatalogue::ReportedProduct.pluck(:account_id)
+      AccountBlock::Account.where(id: ids).pluck(:full_name, :id)
     end
   end
 end
