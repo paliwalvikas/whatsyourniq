@@ -14,17 +14,13 @@ ActiveAdmin.register BxBlockCatalogue::RequestedProduct, as: 'Requested_product'
     column :status
     column :category
     column 'product_image' do |obj|
-      obj.product_image.each do |img|
-        span do
-          image_tag(url_for(img), class: 'short_image', onclick: 'generateModel(this);')
-        end
+      obj.product_image.each.map do |img|
+        image_tag(url_for(img), class: 'short_image', onclick: 'generateModel(this);')
       end
     end
     column 'barcode_image' do |obj|
-      obj.barcode_image.each do |img|
-        span do
-          image_tag(url_for(img), class: 'short_image', onclick: 'generateModel(this);')
-        end
+      obj.barcode_image.each.map do |img|
+        image_tag(url_for(img), class: 'short_image', onclick: 'generateModel(this);')
       end
     end
     actions
