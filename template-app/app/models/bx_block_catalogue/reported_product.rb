@@ -12,7 +12,7 @@ module BxBlockCatalogue
 
   	def send_email_and_notification
   	  ReportProductMailer.respond_reported_product(self).deliver_later
-      BxBlockPushNotifications::PushNotificationJob.perform_now("Reported Product", "Reported Product status has been changed", account, self)
+      BxBlockPushNotifications::PushNotificationJob.perform_now("Submitted Product", "Submitted Product status has been changed", account, self)
   	end
 
 
