@@ -6,7 +6,7 @@ module BxBlockTermsAndConditions
     skip_before_action :validate_json_web_token
     
     def terms_and_conditions
-      terms_and_conditions = BxBlockTermsAndConditions::TermAndCondition.all
+      terms_and_conditions = BxBlockTermsAndConditions::TermsAndConditions.all
 
       if terms_and_conditions.any?
         render json: TermsAndConditionsSerializer.new(terms_and_conditions).serializable_hash, status: :ok
@@ -16,4 +16,3 @@ module BxBlockTermsAndConditions
     end
   end
 end
-
