@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_22_071835) do
+ActiveRecord::Schema.define(version: 2023_01_27_074630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "about_contents", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "account_categories", force: :cascade do |t|
     t.integer "account_id"
@@ -53,6 +60,7 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.integer "age"
     t.boolean "register", default: false, null: false
     t.boolean "additional_details", default: false
+    t.boolean "enable_offline"
   end
 
   create_table "action_mailbox_inbound_emails", force: :cascade do |t|
@@ -109,6 +117,27 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "add_profiles", force: :cascade do |t|
+    t.string "full_name"
+    t.float "weight"
+    t.float "height"
+    t.integer "age"
+    t.string "email"
+    t.bigint "contact_no"
+    t.string "address"
+    t.string "pincode"
+    t.integer "relation_id"
+    t.integer "account_id"
+    t.integer "activity_level"
+    t.string "state"
+    t.string "city"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.float "bmi_result"
+    t.integer "bmi_status"
+    t.integer "gender"
+  end
+
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -131,6 +160,20 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.integer "seller_account_id"
     t.datetime "start_at"
     t.datetime "expire_at"
+  end
+
+  create_table "answer_options", force: :cascade do |t|
+    t.string "option"
+    t.integer "chat_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "answers", force: :cascade do |t|
+    t.text "answer"
+    t.integer "faq_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "application_message_translations", force: :cascade do |t|
@@ -333,10 +376,37 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.index ["sub_category_id"], name: "index_categories_sub_categories_on_sub_category_id"
   end
 
+  create_table "chat_answers", force: :cascade do |t|
+    t.integer "answer_option_id"
+    t.integer "chat_id"
+    t.integer "account_id"
+    t.string "answer"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "chats", force: :cascade do |t|
+    t.string "chat_type"
+    t.string "question"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "compare_products", force: :cascade do |t|
     t.boolean "selected", default: false
     t.integer "account_id"
     t.integer "product_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "contact_us", force: :cascade do |t|
+    t.integer "contact_type"
+    t.string "business_name"
+    t.string "name"
+    t.string "email"
+    t.bigint "contact_no"
+    t.text "message"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -457,6 +527,12 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "faqs", force: :cascade do |t|
+    t.string "question"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "favourite_products", force: :cascade do |t|
     t.integer "account_id"
     t.integer "product_id"
@@ -522,6 +598,10 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.integer "product_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "hyperthyroid", default: false
+    t.boolean "greater_than_60_years_old", default: false
+    t.boolean "pregnant_women", default: false
+    t.boolean "hypothyroid", default: false
   end
 
   create_table "images", force: :cascade do |t|
@@ -611,6 +691,7 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.string "no_artificial_color"
     t.string "folate"
     t.string "fat"
+    t.string "jain"
   end
 
   create_table "languages", force: :cascade do |t|
@@ -620,6 +701,9 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.boolean "is_app_language"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "language_type"
+    t.string "locale"
+    t.bigint "sequence"
   end
 
   create_table "live_streams", force: :cascade do |t|
@@ -691,7 +775,10 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.bigint "account_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "notificable_type"
+    t.bigint "notificable_id"
     t.index ["account_id"], name: "index_notifications_on_account_id"
+    t.index ["notificable_type", "notificable_id"], name: "index_notifications_on_notificable_type_and_notificable_id"
   end
 
   create_table "order_items", force: :cascade do |t|
@@ -724,6 +811,11 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.json "fruit_veg", default: "{}"
     t.json "fibre", default: "{}"
     t.json "protein", default: "{}"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "product_csvs", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -763,6 +855,10 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.integer "filter_sub_category_id"
     t.integer "food_drink_filter"
     t.string "website"
+    t.boolean "calculated", default: false
+    t.boolean "np_calculated", default: false
+    t.json "rda_value"
+    t.text "image_url"
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["filter_category_id"], name: "index_products_on_filter_category_id"
     t.index ["filter_sub_category_id"], name: "index_products_on_filter_sub_category_id"
@@ -778,6 +874,47 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_push_notifications_on_account_id"
     t.index ["push_notificable_type", "push_notificable_id"], name: "index_push_notification_type_and_id"
+  end
+
+  create_table "relations", force: :cascade do |t|
+    t.string "relation"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "reported_product_answers", force: :cascade do |t|
+    t.integer "reported_product_question_id"
+    t.text "reported_answer"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "reported_product_questions", force: :cascade do |t|
+    t.text "reported_question"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "reported_products", force: :cascade do |t|
+    t.integer "product_id"
+    t.integer "account_id"
+    t.text "description"
+    t.integer "ans_ids", default: [], array: true
+    t.integer "status", default: 0
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.text "comment"
+  end
+
+  create_table "requested_products", force: :cascade do |t|
+    t.integer "account_id"
+    t.string "name"
+    t.string "weight"
+    t.string "refernce_url"
+    t.integer "status", default: 0
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "category_id"
   end
 
   create_table "seller_accounts", force: :cascade do |t|
@@ -829,6 +966,13 @@ ActiveRecord::Schema.define(version: 2022_09_22_071835) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "taggings_count", default: 0
+  end
+
+  create_table "terms_and_condtions", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "tests", force: :cascade do |t|
