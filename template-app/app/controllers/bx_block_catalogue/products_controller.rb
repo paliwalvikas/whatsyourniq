@@ -58,7 +58,7 @@ module BxBlockCatalogue
 
     def prod_health_preference
       Product.all.each do |product|
-        product.product_health_preference
+        product.product_health_preference unless product.health_preference.present?
         CalculateRda.new.negative_and_positive(product) unless product.np_calculated?
       end
       BxBlockCategories::FilterCategory.where(name: "Malt/cereal based bev's").update(name: 'Malt/cereal based bevs')
