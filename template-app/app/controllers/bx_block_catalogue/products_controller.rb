@@ -58,7 +58,7 @@ module BxBlockCatalogue
 
     def prod_health_preference
       Product.all.each do |product|
-        product.product_health_preference
+        product.product_health_preference unless product.health_preference.present?
         CalculateRda.new.negative_and_positive(product) unless product.np_calculated?
       end
       BxBlockCategories::FilterCategory.where(name: "Malt/cereal based bev's").update(name: 'Malt/cereal based bevs')
@@ -129,7 +129,7 @@ module BxBlockCatalogue
                        )
                      end
         begin
-          data = page_meta(products_array).present? ? page_meta(products_array) : { total_count: products_array.count }
+          data = page_meta(products_array).present? ? page_meta(products_array) : { total_count: products_array.count, product_ids: products_array&.select(:id) }
           render json: { products: serializer, favourite_search: @fav_s, meta: data }
         rescue AbstractController::DoubleRenderError
           nil
@@ -195,6 +195,8 @@ module BxBlockCatalogue
     def requested_products
       requested_product = current_user.requested_products.new(requested_product_params)
       if requested_product.save
+        BxBlockPushNotifications::PushNotificationJob.perform_now("Requested Product", "Requested Product successfully", current_user, requested_product)
+
         render json: RequestedProductSerializer.new(requested_product), status: :ok
         RequestedProductMailer.send_product_status(requested_product).deliver_later
       else
@@ -215,6 +217,7 @@ module BxBlockCatalogue
       if check_already_reported
         reported_product = current_user.reported_products.create(reported_product_params)
         if reported_product.present?
+          BxBlockPushNotifications::PushNotificationJob.perform_now("Submitted Product", "Product submitted successfully", current_user, reported_product)
           render json: BxBlockCatalogue::ReportedProductSerializer.new(reported_product)
         else
           render json: { error: I18n.t('controllers.bx_block_catalogue.products_controller.failed_to_report') },

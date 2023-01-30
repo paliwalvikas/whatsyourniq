@@ -25,7 +25,7 @@ module BxBlockCatalogue
 
     	private
 
-    	def options(ingredient, ash,search)
+    	def options(ingredient, ash, search)
   	    fibre = ash[:fibre] == 3 ? 6 : 3
         case search
         when 'Immunity'
@@ -68,12 +68,13 @@ module BxBlockCatalogue
     	def check_greater?(ing , val)
     		ing.to_f >= val
     	end
+      
     	def check_less?(ing, val)
     		ing.to_f <= val
     	end
 
     	def physical_growth(ing, val)
-    		check_greater?(ing[:calcium], val[:calcium]) && check_greater?(ing[:vit_d], val[:vit_d]) && check_greater?(ing[:protein], val[:protein]) && check_greater?(ing[:vit_b9], val[:vit_b9]) && check_greater?(ing[:vit_b12], val[:vit_b12] && check_greater?(ing[:vit_b6], val[:vit_b6]) && check_greater?(ing[:vit_b2], val[:vit_b2])) || check_greater?(ing[:fibre], val[:fibre]) 
+    		check_greater?(ing[:calcium], val[:calcium]) && check_greater?(ing[:vit_d], val[:vit_d]) && check_greater?(ing[:protein], val[:protein]) && (check_greater?(ing[:vit_b9], val[:vit_b9]) && check_greater?(ing[:vit_b12], val[:vit_b12]) && check_greater?(ing[:vit_b6], val[:vit_b6]) && check_greater?(ing[:vit_b2], val[:vit_b2])) || check_greater?(ing[:fibre], val[:fibre]) 
     	end
 
     	def cognitive_health(ingr, val)
@@ -108,7 +109,7 @@ module BxBlockCatalogue
       end
 
     	def heart_friendly(ing, val, fibre)
-    		check_less?(ing[:cholestrol], val[:cholestrol]) && check_less?(ing[:saturate], val[:saturated_fat]) && check_greater?(ing[:fibre], fibre) && check_less?(ing[:total_sugar], val[:sugar]) &&energy_from_saturated_fat(ing)
+    		check_less?(ing[:cholestrol], val[:cholestrol]) && check_less?(ing[:saturate], val[:saturated_fat]) && check_greater?(ing[:fibre], fibre) && energy_from_saturated_fat(ing) || check_less?(ing[:total_sugar], val[:sugar]) 
     	end
 
     	def energy_and_vitality(ing, val)
