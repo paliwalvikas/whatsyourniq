@@ -150,9 +150,9 @@ en:
     bx_block_upload_media:
       upload_media_controller:
         successfully_updated: 'Successfully Updated'
-    bx_block_term_and_condition:
-      term_and_conditions_controller:
-        term_and_conditions_not_exist: "Term and conditions doesn't exist"
+    bx_block_terms_and_conditions:
+      terms_and_conditions_controller:
+        terms_and_conditions_not_exist: "Terms and conditions doesn't exist"
   models:
     account_block:
       account:

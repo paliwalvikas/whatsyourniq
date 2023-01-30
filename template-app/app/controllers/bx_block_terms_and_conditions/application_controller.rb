@@ -1,4 +1,4 @@
-module BxBlockTermAndCondition
+module BxBlockTermsAndConditions
   class ApplicationController < BuilderBase::ApplicationController
     include JSONAPI::Deserialization
     include BuilderJsonWebToken::JsonWebTokenValidation

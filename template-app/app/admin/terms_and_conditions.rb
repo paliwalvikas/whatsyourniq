@@ -1,4 +1,4 @@
-ActiveAdmin.register BxBlockTermAndCondition::TermAndCondition, as: "term_and_conditions" do
+ActiveAdmin.register BxBlockTermsAndConditions::TermAndCondition, as: "terms_and_conditions" do
   permit_params :title, :description
 
   index do

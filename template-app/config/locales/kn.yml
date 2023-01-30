@@ -150,9 +150,9 @@ kn:
     bx_block_upload_media:
       upload_media_controller:
         successfully_updated: 'ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ'
-    bx_block_term_and_condition:
-      term_and_conditions_controller:
-        term_and_conditions_not_exist: "
+    bx_block_terms_and_conditions:
+      terms_and_conditions_controller:
+        terms_and_conditions_not_exist: "
 ನಿಯಮ ಮತ್ತು ಷರತ್ತುಗಳು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ"
   models:
     account_block:

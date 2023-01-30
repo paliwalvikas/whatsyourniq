@@ -105,5 +105,5 @@ Rails.application.routes.draw do
   end
 
   get '/about_us', to: "bx_block_content_management/about_contents#about_us_contents"
-  get '/term_and_conditions', to: "bx_block_term_and_condition/term_and_conditions#term_and_conditions"
+  get '/terms_and_conditions', to: "bx_block_terms_and_conditions/terms_and_conditions#terms_and_conditions"
 end
