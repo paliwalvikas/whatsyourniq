@@ -130,6 +130,7 @@ module BxBlockCatalogue
                      end
         begin
           data = page_meta(products_array).present? ? page_meta(products_array) : { total_count: products_array.count, product_ids: products_array&.select(:id) }
+          serializer = params[:page].present? ? serializer : []
           render json: { products: serializer, favourite_search: @fav_s, meta: data }
         rescue AbstractController::DoubleRenderError
           nil
