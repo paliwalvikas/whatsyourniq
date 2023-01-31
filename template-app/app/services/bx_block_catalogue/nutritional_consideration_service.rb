@@ -53,7 +53,7 @@ module BxBlockCatalogue
 
     def check_holistic_nutrition(product, value, result)
       return unless product.health_preference.holistic_nutrition
-
+      
       high_immunonutrients(value, %w[vit_b12 vit_d iron], result)
       low_ing(value, %w[sugar sodium total_fat], result)
       final_result(value, %w[protein fibre], result)
@@ -69,7 +69,15 @@ module BxBlockCatalogue
 
     def check_weight_gain(product, value, result)
       return unless product.health_preference.weight_gain
-
+      
+      energy = product.ingredient.energy.to_f
+      energy_level = case product.product_type
+                     when 'solid'
+                       'High' if energy > 40
+                     when 'beverage'
+                       "High" if energy > 20
+                     end
+      value << {name: 'calories', level: 'High'}
       high_immunonutrients(value, %w[vit_b1 vit_b2 vit_b6 vit_b12 vit_d iron], result)
       final_result(value, %w[calories protein fibre], result)
     end
@@ -132,8 +140,8 @@ module BxBlockCatalogue
 
     def high_immunonutrients(value, ing, result)
       value&.each do |val|
-        if ing.include?(val[:name]) && val[:level] == 'High'
-          result[:good_ingredient] << { name: 'high_immunonutrients', level: 'High' }
+        if ing.include?(val[:name]) && (val[:level] == 'High' || val[:level] == 'Free' || val[:level] == 'Medium')
+          result[:good_ingredient] << { name: 'high_immunonutrients', level: val[:level] }
           break
         end
       end
@@ -148,9 +156,9 @@ module BxBlockCatalogue
     def good_and_not_so_good(value, ing, result, level)
       value&.each do |val|
         if not_good_ing.include?(val[:name])
-          result[:not_so_good_ingredient] << val if ing.include?(val[:name]) && val[:level] == level
+          result[:not_so_good_ingredient] << {name: val[:name], level: level} if ing.include?(val[:name]) && (val[:level] == level || val[:level] == 'Free' || val[:level] == 'Medium')
         else
-          result[:good_ingredient] << val if ing.include?(val[:name]) && val[:level] == level
+          result[:good_ingredient] << {name: val[:name], level: level} if ing.include?(val[:name]) && (val[:level] == level || val[:level] == 'Free' || val[:level] == 'Medium')
         end
       end
       result
