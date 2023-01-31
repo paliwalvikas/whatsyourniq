@@ -97,7 +97,7 @@ module BxBlockCatalogue
       return unless product.health_preference.heart_friendly
 
       low_ing(value, %w[saturated_fat cholesterol sugar], result)
-      final_result(value, %w[fibre sugar], result)
+      final_result(value, %w[fibre], result)
     end
 
     def check_energy_and_vitality(product, value, result)
@@ -156,9 +156,9 @@ module BxBlockCatalogue
     def good_and_not_so_good(value, ing, result, level)
       value&.each do |val|
         if not_good_ing.include?(val[:name])
-          result[:not_so_good_ingredient] << {name: val[:name], level: level} if ing.include?(val[:name]) && (val[:level] == level || val[:level] == 'Free' || val[:level] == 'Medium')
+          result[:not_so_good_ingredient] << val if ing.include?(val[:name]) && (val[:level] == level || val[:level] == 'Free' || val[:level] == 'Medium')
         else
-          result[:good_ingredient] << {name: val[:name], level: level} if ing.include?(val[:name]) && (val[:level] == level || val[:level] == 'Free' || val[:level] == 'Medium')
+          result[:good_ingredient] << val if ing.include?(val[:name]) && (val[:level] == level || val[:level] == 'Free' || val[:level] == 'Medium')
         end
       end
       result
