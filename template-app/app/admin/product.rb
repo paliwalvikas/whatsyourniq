@@ -2,12 +2,10 @@
 
 ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   permit_params :id, :product_name, :product_type, :product_point, :product_rating, :weight, :brand_name,
-                :price_post_discount, :price_mrp, :category_id, :positive_good, :negative_not_good, :image, :bar_code, :account_id, :data_check, :description, :ingredient_list, :food_drink_filter, :filter_category_id, :filter_sub_category_id, ingredient_attributes: %i[id product_id energy saturate total_sugar sodium ratio_fatty_acid_lipids fibre fruit_veg
-                                                                                                                                                                                                                                                                protein vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 vit_b2 vit_b3 vit_b1 vit_b5 vit_b7 calcium
-                                                                                                                                                                                                                                                                iron magnesium zinc iodine potassium phosphorus manganese copper selenium chloride chromium
-                                                                                                                                                                                                                                                                total_fat monosaturated_fat polyunsaturated_fat trans_fat soyabean cholestrol fat mono_unsaturated_fat
-                                                                                                                                                                                                                                                                veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish
-                                                                                                                                                                                                                                                                shellfish tree_nuts peanuts wheat carbohydrate]
+                :price_post_discount, :price_mrp, :category_id, :positive_good, :negative_not_good, :image, 
+                :bar_code, :account_id, :data_check, :description, :ingredient_list, :food_drink_filter,
+                :filter_category_id, :filter_sub_category_id, 
+                ingredient_attributes: %i[id product_id energy saturate total_sugar sodium ratio_fatty_acid_lipids fibre fruit_vegprotein vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 vit_b2 vit_b3 vit_b1 vit_b5 vit_b7 calcium iron magnesium zinc iodine potassium phosphorus manganese copper selenium chloride chromium total_fat monosaturated_fat polyunsaturated_fat trans_fat soyabean cholestrol fat mono_unsaturated_fat veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish shellfish tree_nuts peanuts wheat carbohydrate]
 
   active_admin_import
   config.batch_actions = true
@@ -255,7 +253,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       end
       file_csv = CSV.parse(file, headers: true)
       expected_headers = %w[category_id product_type food_drink_filter category_filter
-                            category_type_filter website product_name brand_name description bar_code weight price_mrp price_post_discount image ingredient_list fruit_veg nutritional energy carbohydrate fibre protein total_fat saturate monosaturated_fat polyunsaturated_fat trans_fat fatty_acid vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 calcium iron magnesium zinc iodine cholestrol sodium fat total_sugar mono_unsaturated_fat data_check veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish shellfish tree_nuts peanuts wheat soyabean]
+                            category_type_filter website product_name brand_name description bar_code weight price_mrp price_post_discount user_email image ingredient_list fruit_veg nutritional energy carbohydrate fibre protein total_fat saturate monosaturated_fat polyunsaturated_fat trans_fat fatty_acid vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 calcium iron magnesium zinc iodine cholestrol sodium fat total_sugar mono_unsaturated_fat data_check veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish shellfish tree_nuts peanuts wheat soyabean]
       unless file_csv.headers == expected_headers
         redirect_to import_admin_products_path,
                     flash: { error: 'File contains invalid headers!' } and return
