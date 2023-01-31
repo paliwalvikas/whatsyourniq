@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register BxBlockCatalogue::ReportedProduct, as: 'Reported_product' do
-  permit_params :product, :account, :description, :status
+  permit_params :product, :account, :description, :status , :comment
 
   index title: 'Reported_Product' do
     selectable_column
