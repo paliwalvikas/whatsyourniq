@@ -7,7 +7,7 @@ module BxBlockPushNotifications
       @message = message
       @account = account
       @app_url = app_url
-      @fcm_client = FCM.new(FCM.new(ENV['FCM_SEVER_KEY']))
+      @fcm_client = FCM.new(ENV['FCM_SEVER_KEY'])
     end
 
     def call
