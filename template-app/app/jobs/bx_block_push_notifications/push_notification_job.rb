@@ -3,7 +3,7 @@ module BxBlockPushNotifications
     queue_as :default
     def perform(title, message, account, notificable)
       BxBlockNotifications::NotificationCreator.new(account.id, title, message, notificable).call
-      BxBlockPushNotifications::SendPushNotification.new(title, message, account, notificable).call 
+      BxBlockPushNotifications::SendPushNotification.new(title, message, account).call 
     end
   end
 end
