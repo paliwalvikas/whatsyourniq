@@ -2,12 +2,11 @@ module BxBlockPushNotifications
   class SendPushNotification
     attr_reader :title, :message, :user_ids, :app_url
 
-    def initialize(title, message, account, push_notificable)
+    def initialize(title, message, account)
       @title = title
       @message = message
       @account = account
       @app_url = app_url
-      @push_notificable = push_notificable
       @fcm_client = FCM.new(FCM.new(ENV['FCM_SEVER_KEY']))
     end
 
