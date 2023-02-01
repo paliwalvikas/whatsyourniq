@@ -5,7 +5,7 @@ module BxBlockCatalogue
   class ProductsController < ApplicationController
     include BuilderJsonWebToken::JsonWebTokenValidation
     skip_before_action :validate_json_web_token,
-                       only: %i[smart_search_filters product_smart_search update index search niq_score show delete_old_data
+                       only: %i[smart_search_filters total_product product_smart_search update index search niq_score show delete_old_data
                                 product_calculation regenerate_master_data question_listing prod_health_preference delete_health_preference change_for_cal]
     before_action :find_fav_search, only: %i[niq_score product_smart_search ofline_smart_serach]
     before_action :product_found, only: %i[niq_score index]
@@ -235,7 +235,9 @@ module BxBlockCatalogue
     end
 
     def total_product
-      render json: { total_product_count: BxBlockCatalogue::Product.count }
+      products = BxBlockCatalogue::Product.all
+      green_check_product_count = products.where(data_check: 'green').count
+      render json: { total_product_count: products.count, green_check_product_count: green_check_product_count, red_check_product_count: (products.count - green_check_product_count)}
     end
 
     def show_reported_product

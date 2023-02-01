@@ -12,7 +12,7 @@ module BxBlockCatalogue
     validate :only_three_record
 
     def only_three_record 
-      if AccountBlock::Account.find_by(id: self.account_id).compare_products.where(selected: true).count >= 3
+      if AccountBlock::Account.find_by(id: self.account_id).compare_products.where(selected: true).count >= 5
         errors.add(:selected, I18n.t('models.bx_block_catalogue.compare_product.you_are_not_able'))
       end
     end
