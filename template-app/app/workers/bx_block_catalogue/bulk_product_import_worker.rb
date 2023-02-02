@@ -75,34 +75,23 @@ module BxBlockCatalogue
             product_import_status.record_uploaded = success_data.count  
           end
 
-          if product.errors.any?
-            failer_data << ["#{row_count}", "#{product.product_name}", "#{product.errors.messages.map {|key, value| key.to_s + " " + value.first.to_s}.join(",")}", "Failed"]
-            product_import_status.record_failed = failer_data.count
-          end
-
-          report_data = (success_data + failer_data).unshift(csv_headers)
-
-          product_import_status.file_status = CSV.generate do |csv|
-            report_data.each do |r_data|
-              csv << r_data
-            end
-            csv
-          end
-
-          product_import_status.save
         rescue Exception => e
-          if product_params["product_name"].present?
-            product_name = product_params["product_name"]
-            failer_data << ["#{row_count}", "#{product_name}", "#{e.message}", "Failed"]
-            product_import_status.record_failed = failer_data.count
-          end
-          report_data = (success_data + failer_data).unshift(csv_headers)
-
-          product_import_status.file_status = CSV.generate do |csv|
-            report_data.each do |r_data|
-              csv << r_data
+          @import_error = e.message
+        ensure
+          if @import_error.present?
+            if product_params["product_name"].present?
+              product_name = product_params["product_name"]
+              failer_data << ["#{row_count}", "#{product_name}", "#{@import_error}", "Failed"]
+              product_import_status.record_failed = failer_data.count
             end
-            csv
+            report_data = (success_data + failer_data).unshift(csv_headers)
+
+            product_import_status.file_status = CSV.generate do |csv|
+              report_data.each do |r_data|
+                csv << r_data
+              end
+              csv
+            end
           end
         end
       end
