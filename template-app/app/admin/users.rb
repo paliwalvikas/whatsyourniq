@@ -7,7 +7,7 @@ ActiveAdmin.register AccountBlock::Account, as: "Users" do
       f.input :full_name
       f.input :email
       f.input :full_phone_number
-      f.input :gender, label: 'Gender', :as => :select, collection: ['Male', 'Female','Other']
+      f.input :gender, :as => :select, :collection => ["Male","Female","Other"]
       f.input :age
       f.input :activated
     end

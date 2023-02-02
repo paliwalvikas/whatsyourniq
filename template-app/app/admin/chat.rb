@@ -33,6 +33,7 @@ ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
         val.input :option
       end
     end
+    f.semantic_errors :answer_options
     f.actions
   end
 

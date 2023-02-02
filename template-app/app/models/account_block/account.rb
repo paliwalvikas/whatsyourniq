@@ -5,6 +5,9 @@ module AccountBlock
     self.table_name = :accounts
     include Wisper::Publisher
     attr_accessor :image_url
+    validates :full_name, presence: true, format: { with: /[[:alpha:]]/ }
+    validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+    validates :gender, presence: true
 
     # has_secure_password
     has_one_attached :image
@@ -25,7 +28,6 @@ module AccountBlock
     has_many :products, class_name: 'BxBlockCatalogue::Product', foreign_key: 'account_id'
     before_save :image_process, if: :image_url
     enum status: %i[regular suspended deleted]
-    enum gender: %i[female male other]
     scope :active, -> { where(activated: true) }
     scope :existing_accounts, -> { where(status: %w[regular suspended]) }
 

@@ -10,6 +10,7 @@ ActiveAdmin.register BxBlockCatalogue::ReportedProductQuestion, as: "Reported_Qu
         end
       end
     end
+    f.semantic_errors :reported_product_answers
     f.actions
   end
 
