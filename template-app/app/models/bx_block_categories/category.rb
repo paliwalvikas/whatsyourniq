@@ -7,6 +7,7 @@ module BxBlockCategories
     join_table: :categories_sub_categories, dependent: :destroy
     has_many :products, class_name: 'BxBlockCatalogue::Product', dependent: :destroy
     has_many :requested_products, class_name: 'BxBlockCatalogue::RequestedProduct', foreign_key: 'category_id'
+    validates :category_type, presence: true
 
     scope :category_type, ->(category_type) { where category_type: category_type }
 

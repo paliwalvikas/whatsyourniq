@@ -6,6 +6,7 @@ module BxBlockCatalogue
     enum status: [:pending, :rejected, :approved]
     has_many_attached :product_image
     has_many_attached :barcode_image
+    validates :status, presence: true, allow_blank: false
 
     after_update :send_notifications, if: :saved_change_to_status
 

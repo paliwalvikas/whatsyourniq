@@ -30,8 +30,4 @@ ActiveAdmin.register_page "Dashboard" do
     #   end
     # end
   end # content
-
-  action_item only: :index do
-   link_to 'Calculation', product_calculation_bx_block_catalogue_products_path()
-  end
 end
