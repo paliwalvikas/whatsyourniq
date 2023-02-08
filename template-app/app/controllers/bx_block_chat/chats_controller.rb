@@ -1,18 +1,22 @@
 module BxBlockChat
   class ChatsController < ApplicationController
-    skip_before_action :validate_json_web_token, only: [:show, :index]
-    before_action :find_record , only: %i[index]
 
     def index
-      if @chats.present? 
-        chat = Kaminari.paginate_array(@chats.order(created_at: :asc)).page(params[:page] || '10').per(params[:per] || '1')
-        chats = ChatSerializer.new(chat).serializable_hash  
-        render json: { chat: chats ,meta: page_meta(chat) }
+      data = user_chat
+      if data.present? 
+        render json: data
       else
         render json:  { message: "Chat not found" },
                        status: :unprocessable_entity
       end
     end
+
+    def list_of_chats
+      chats = chat_answers
+      render json: BxBlockChat::ChatSerializer.new(chats,  params: serializ_options).serializable_hash,
+                    status: :ok
+    end
+
 
     def show
       chat = Chat.find_by(id: params[:id] || params[:chat_id])
@@ -27,13 +31,31 @@ module BxBlockChat
 
     private 
 
-    def find_record
-      @chats =  if params[:chat_type].present?
-                  Chat.where(chat_type: params[:chat_type])
-                else
-                  Chat.all
-                end
-      @chats
+    def serializ_options
+      { account: current_user, host: { host: request.protocol + request.host_with_port } }
+    end
+
+    def user_chat
+      data = {}
+      ["Personal", "Lifestyle", "Health", "Nutrition"].each do |type|
+        chat_ids = Chat.where(chat_type: type)&.ids
+        ids = current_user&.chat_answers&.where(chat_id: chat_ids)&.pluck(:chat_id)
+        data[type] = ChatSerializer.new(Chat.where(id: ids),  params: serializ_options)
+      end
+      data
+    end
+
+    def chat_answers
+      answer = current_user&.chat_answers&.last
+      chats = Chat.where(chat_type: params[:chat_type]).order(created_at: :asc)
+      if answer&.chat.chat_type == params[:chat_type]
+        count = chats.where(id: 0..answer&.chat_id&.to_i).count
+        chats.first(count+1)
+      elsif params[:chat_type].downcase == "personal"
+        chats.first(3)  
+      else
+        chats.first
+      end
     end
 
   end

@@ -5,11 +5,11 @@ module BxBlockChat
     validates :chat_type, presence: true, allow_blank: false
     validates :question, presence: true, allow_blank: false, format: { with: /[[:alpha:]]/ }
 
-   	has_one :chat_answer, class_name: "BxBlockChat::ChatAnswer", dependent: :destroy
+   	has_many :chat_answers, class_name: "BxBlockChat::ChatAnswer", dependent: :destroy
     has_many :answer_options, class_name: 'BxBlockChat::AnswerOption', dependent: :destroy
  	
     accepts_nested_attributes_for :answer_options, :allow_destroy => true
-    validate :should_have_answer_option
+    # validate :should_have_answer_option
 
     private
 
