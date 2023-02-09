@@ -251,7 +251,7 @@ en:
       smart_filters_service:
         category:
           Packaged_Food: 'Packaged Food'
-          Packaged_Drink: 'Packaged Drinks'
+          Packaged_Drink: 'Packaged Drink'
           Packaged_Cheese_And_Oil: 'Packaged Cheese And Oil'
           Raw_Food: 'Raw Food'
           Cooked_Food: 'Cooked Food'

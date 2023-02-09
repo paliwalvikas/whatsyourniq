@@ -64,9 +64,16 @@ module BxBlockCatalogue
         data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
       end
       data.each do |d|
-        d[:category] = I18n.t("services.bx_block_catalogue.smart_filters_service.category.#{d[:category].gsub(/[\s,-]/ ,"_")}")
+        d[:category_en] = d.delete(:category)
+        d[:category_en] = I18n.t("services.bx_block_catalogue.smart_filters_service.category.#{d[:category_en].gsub(/[\s,-]/ ,"_")}", locale: "en")
+        d.store("category_hi", I18n.t("services.bx_block_catalogue.smart_filters_service.category.#{d[:category_en].gsub(/[\s,-]/ ,"_")}", locale: "hi"))
+        d.store("category_kn", I18n.t("services.bx_block_catalogue.smart_filters_service.category.#{d[:category_en].gsub(/[\s,-]/ ,"_")}", locale: "kn"))
+
         d[:category_filter].each do |e|
-          e[:category_filter] = I18n.t("services.bx_block_catalogue.smart_filters_service.category_filter.#{e[:category_filter].gsub(/[\s,-]/ ,"_")}")
+          e[:category_filter_en] = e.delete(:category_filter)
+          e[:category_filter_en] = I18n.t("services.bx_block_catalogue.smart_filters_service.category_filter.#{e[:category_filter_en].gsub(/[\s,-]/ ,"_")}", locale: "en")
+          e.store("category_filter_hi", I18n.t("services.bx_block_catalogue.smart_filters_service.category_filter.#{e[:category_filter_en].gsub(/[\s,-]/ ,"_")}", locale: "hi"))
+          e.store("category_filter_kn", I18n.t("services.bx_block_catalogue.smart_filters_service.category_filter.#{e[:category_filter_en].gsub(/[\s,-]/ ,"_")}", locale: "kn"))
         end
       end
 			data = {count: total_count(data), category: data}
