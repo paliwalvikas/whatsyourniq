@@ -2,9 +2,10 @@
 
 module BxBlockChat
   class ChatsController < ApplicationController
+
     def index
       data = user_chat
-      if data.present?
+      if data.present? && current_user.chat_answers.present?
         render json: data
       else
         render json: { message: 'Chat not found' },
@@ -15,7 +16,7 @@ module BxBlockChat
     def list_of_chats
       chat = ac_chat_answers
       meta = @chats.last.id == chat.last.id ? 'Completed' : 'Pending'
-      render json: { chat: BxBlockChat::ChatSerializer.new(chat, params: serializ_options), meta: meta }
+      render json: { chat: BxBlockChat::ChatSerializer.new(chat, params: serialization_options), meta: meta }
     end
 
     def show
@@ -31,7 +32,7 @@ module BxBlockChat
 
     private
 
-    def serializ_options
+    def serialization_options
       { account: current_user, host: { host: request.protocol + request.host_with_port } }
     end
 
@@ -40,7 +41,7 @@ module BxBlockChat
       %w[Personal Lifestyle Health Nutrition].each do |type|
         chat_ids = Chat.where(chat_type: type)&.ids
         ids = current_user&.chat_answers&.where(chat_id: chat_ids)&.pluck(:chat_id)
-        data[type] = ChatSerializer.new(Chat.where(id: ids), params: serializ_options)
+        data[type] = ChatSerializer.new(Chat.where(id: ids), params: serialization_options)
       end
       data
     end
