@@ -50,9 +50,13 @@ Rails.application.routes.draw do
   end
 
   namespace :bx_block_chat do 
-    resources :chats
+    resources :chats do
+      collection do
+        get :list_of_chats
+      end
+    end
     resources :answer_options
-    resources :chat_answers
+    resources :chat_answers 
   end
 
   namespace :bx_block_faq_and_contact_us do
