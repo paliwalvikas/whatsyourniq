@@ -31,6 +31,9 @@ module BxBlockCatalogue
         product = BxBlockCatalogue::Product&.green&.where(category_id: category.id).where.not(filter_category_id: nil)
         data << {count: product.count, food_type: category.category_type.titleize}
       end
+      data.each do |d|
+        d[:food_type] = I18n.t("services.bx_block_catalogue.smart_filters_service.category.#{d[:food_type].gsub(/[\s,-]/ ,"_")}")
+      end
       data = {count: total_count(data), food_type: data}
     end
 
@@ -60,6 +63,19 @@ module BxBlockCatalogue
         u_f.map{ |i| filter << {count: prod.filter_category_id(i.id).count, category_filter: i.name } }
         data << {count: total_count(filter), category: c.category_type.titleize, category_filter: filter}
       end
+      data.each do |d|
+        d[:category_en] = d.delete(:category)
+        d[:category_en] = I18n.t("services.bx_block_catalogue.smart_filters_service.category.#{d[:category_en].gsub(/[\s,-]/ ,"_")}", locale: "en")
+        d.store("category_hi", I18n.t("services.bx_block_catalogue.smart_filters_service.category.#{d[:category_en].gsub(/[\s,-]/ ,"_")}", locale: "hi"))
+        d.store("category_kn", I18n.t("services.bx_block_catalogue.smart_filters_service.category.#{d[:category_en].gsub(/[\s,-]/ ,"_")}", locale: "kn"))
+
+        d[:category_filter].each do |e|
+          e[:category_filter_en] = e.delete(:category_filter)
+          e[:category_filter_en] = I18n.t("services.bx_block_catalogue.smart_filters_service.category_filter.#{e[:category_filter_en].gsub(/[\s,-]/ ,"_")}", locale: "en")
+          e.store("category_filter_hi", I18n.t("services.bx_block_catalogue.smart_filters_service.category_filter.#{e[:category_filter_en].gsub(/[\s,-]/ ,"_")}", locale: "hi"))
+          e.store("category_filter_kn", I18n.t("services.bx_block_catalogue.smart_filters_service.category_filter.#{e[:category_filter_en].gsub(/[\s,-]/ ,"_")}", locale: "kn"))
+        end
+      end
 			data = {count: total_count(data), category: data}
     end
 
@@ -82,6 +98,15 @@ module BxBlockCatalogue
         end 
         data << {count: total_count(filter), food_drink_filter: ("packaged " + prd).titleize,  category_filter: filter } unless total_count(filter) == 0
       end 
+      data.each do |d|
+        d[:food_drink_filter] = I18n.t("services.bx_block_catalogue.smart_filters_service.category.#{d[:food_drink_filter].gsub(/[\s,-]/ ,"_")}") 
+        d[:category_filter].each do |e|
+          e[:category] = I18n.t("services.bx_block_catalogue.smart_filters_service.category_filter.#{e[:category].gsub(/[\s,-]/ ,"_")}")
+          e[:sub_category_filter].each do |f|
+            f[:sub_category_filter] = I18n.t("services.bx_block_catalogue.smart_filters_service.sub_category_filter.#{f[:sub_category_filter].gsub(/[\s,-]/ ,"_")}")
+          end
+        end
+      end
       data = {count: total_count(data), sub_category: data}
     end
 
@@ -107,6 +132,9 @@ module BxBlockCatalogue
         id_s = find_allergies(alg, 'yes')
         data << {count: product.where(id: id_s).count, product_rating: alg.titleize }
       end
+      data.each do |d|
+        d[:product_rating] = I18n.t("services.bx_block_catalogue.smart_filters_service.food_allergies.#{d[:product_rating].gsub(/[\s,-]/ ,"_")}")
+      end
       data = {count: total_count(data), food_allergies: data}
   	end
 
@@ -117,7 +145,10 @@ module BxBlockCatalogue
         alg = values_for_food_p(alg)
         alg = alg == 'Non-Veg' ?  alg : alg.titleize
         data << {count: product.where(id: id_s).count, product_rating: alg }
-      end 
+      end
+      data.each do |d|
+        d[:product_rating] = I18n.t("services.bx_block_catalogue.smart_filters_service.food_preference.#{d[:product_rating].gsub(/[\s,-]/ ,"_")}")
+      end
       data = {count: total_count(data), food_preference: data}
     end
 
@@ -150,6 +181,9 @@ module BxBlockCatalogue
           data << {count: 0, health_preference: h_pref }
         end
       end 
+      data.each do |d|
+        d[:health_preference] = I18n.t("services.bx_block_catalogue.smart_filters_service.health_preference.#{d[:health_preference].gsub(/[\s,]/ ,"_")}")
+      end
       data = {count: total_count(data), health_preference: data}
     end
 
@@ -160,11 +194,16 @@ module BxBlockCatalogue
           filter = []
           case neg_pos
           when "Good Ingredients"
-              filter << {title: ["Protein","Fibre","Probiotic"]}
-              filter << {"Vitamins": {title: vitamin_columns.map{|ing| ing.titleize}} }
-              filter << {"Minerals": {title: mineral_columns.map{|ing| ing.titleize} }}
+            title = [
+              I18n.t("services.bx_block_catalogue.smart_filters_service.functional_preference.title.Protein"),
+              I18n.t("services.bx_block_catalogue.smart_filters_service.functional_preference.title.Fibre"),
+              I18n.t("services.bx_block_catalogue.smart_filters_service.functional_preference.title.Probiotic")
+            ]
+              filter << { title: title }
+              filter << {"Vitamins": {title: vitamin_columns.map{|ing| I18n.t("services.bx_block_catalogue.smart_filters_service.functional_preference.vitamins.#{ing}")}} }
+              filter << {"Minerals": {title: mineral_columns.map{|ing| I18n.t("services.bx_block_catalogue.smart_filters_service.functional_preference.minarals.#{ing}")} }}
           when "Not So Good Ingredients"
-            filter << {title: prd_negative_not_good.map{|ing| ing.titleize}}
+            filter << {title: prd_negative_not_good.map{|ing| I18n.t("services.bx_block_catalogue.smart_filters_service.functional_preference.prd_negative_not_good.#{ing}")}}
           end 
           data <<  {functional_preference: neg_pos.titleize, data: filter }
       end
@@ -172,7 +211,7 @@ module BxBlockCatalogue
     end
 
     def prd_negative_not_good
-      ['calories', 'Total fat', 'saturated_fat','cholesterol','trans_fat','sodium','Sugar']
+      ['calories', 'Total_fat', 'saturated_fat','cholesterol','trans_fat','sodium','Sugar']
     end
 
     def prd_positive_good  

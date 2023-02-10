@@ -12,11 +12,6 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
 
   before_action :set_product # , only: [:show, :edit, :update, :destroy]
 
-  sidebar :actions do
-    button_to 'Delete All Products', '/admin/products/delete_all_products', method: :delete,
-                                                                            data: { confirm: 'It will delete all products. Are you sure?' }
-  end
-
   action_item only: :index do
     link_to 'Calculate Ratings', calculate_ratings_admin_products_path(calculation_type: 'calculate_ratings')
   end

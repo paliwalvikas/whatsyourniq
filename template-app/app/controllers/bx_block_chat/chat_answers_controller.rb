@@ -1,14 +1,7 @@
 module BxBlockChat
   class ChatAnswersController < ApplicationController
-    skip_before_action :validate_json_web_token, only: [:show]
     before_action :find_chat_ans, only: %i[show update]
     before_action :check_answer, only: %i[create]
-
-    def index
-      chat_ids = Chat.where(chat_type: params[:chat_type])&.pluck(:id)
-      answers = current_user.chat_answers.where(chat_id: chat_ids).order(created_at: :asc)
-      render json: ChatAnswerSerializer.new(answers).serializable_hash, status: :ok
-    end
 
     def create
       ans = current_user.chat_answers.new(chat_answer_params)

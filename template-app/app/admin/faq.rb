@@ -1,4 +1,4 @@
-ActiveAdmin.register BxBlockFaqAndContactUs::Faq, as: "FQA_Question" do
+ActiveAdmin.register BxBlockFaqAndContactUs::Faq, as: "FAQ_Question" do
   permit_params :question, answers_attributes: %i[id answer _destroy]
 
   form do |f|
@@ -10,6 +10,7 @@ ActiveAdmin.register BxBlockFaqAndContactUs::Faq, as: "FQA_Question" do
         end
       end
     end
+    f.semantic_errors :answers
     f.actions
   end
 

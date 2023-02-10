@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register BxBlockCatalogue::ReportedProduct, as: 'Reported_product' do
+  actions :all, except: :new
+  filter :account_id, as: :select, collection: AccountBlock::Account.all.map {|acc| [acc.full_name, acc.id]}
+  filter :product_id, as: :select, collection: BxBlockCatalogue::Product.all.map {|product| [product.product_name, product.id]}
+  
   permit_params :product, :account, :description, :status , :comment
 
   index title: 'Reported_Product' do

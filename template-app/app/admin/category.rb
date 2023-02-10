@@ -1,4 +1,5 @@
 ActiveAdmin.register BxBlockCategories::Category, as: "category" do
+  filter :category_type, as: :select, collection: BxBlockCategories::Category.category_types
   permit_params :name, :category_type
 
   form do |f|
@@ -10,7 +11,7 @@ ActiveAdmin.register BxBlockCategories::Category, as: "category" do
     f.actions
   end
 
-  index title: 'users' do
+  index title: 'categories' do
     id_column
     column :category_type
     column :created_at
