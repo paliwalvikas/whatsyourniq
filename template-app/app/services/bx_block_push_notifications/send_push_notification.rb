@@ -11,10 +11,21 @@ module BxBlockPushNotifications
     end
 
     def call
-      options = { title: title,
-                  message: message,
-                }
-      @fcm_client.send(@account.device_id, options)
+      options =  {
+          notification: {
+            title: title,
+            body: message,
+            mutable_content: true,
+            sound: "default"
+            },
+
+         data: {
+         title: title,
+            body: message,
+            }
+        }
+     @fcm_client.send(@account.device_id, options)
+
     end
   end
 end
