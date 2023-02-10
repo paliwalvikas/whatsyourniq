@@ -13,6 +13,11 @@ Rails.application.routes.draw do
   namespace :bx_block_catalogue do
     get 'search', to: 'products#search'
     get 'regenerate_master_data', to: 'products#regenerate_master_data'
+    resources :loged_foods do
+      collection do
+        post :copy_loged_food
+      end
+    end
     resources :products do
       collection do
         get :niq_score

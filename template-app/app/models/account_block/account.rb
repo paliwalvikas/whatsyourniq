@@ -15,14 +15,13 @@ module AccountBlock
     after_save :set_black_listed_user
     has_many :favourite_products, class_name: 'BxBlockCatalogue::FavouriteProduct', dependent: :destroy
     has_many :compare_products, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
-    # has_many :members, class_name: 'AccountBlock::Member', dependent: :destroy
-    # has_many :addresses, class_name: 'BxBlockAddress::Address', as: :addressble, dependent: :destroy
     has_many :orders, class_name: 'BxBlockCatalogue::Order', dependent: :destroy
     has_many :add_profiles, class_name: 'BxBlockAddProfile::AddProfile', dependent: :destroy
     has_many :requested_products, class_name: 'BxBlockCatalogue::RequestedProduct', foreign_key: 'account_id', dependent: :destroy
     has_many :reported_products, class_name: 'BxBlockCatalogue::ReportedProduct', foreign_key: 'account_id', dependent: :destroy
     has_many :chat_answers, class_name: 'BxBlockChat::ChatAnswer', dependent: :destroy
     has_many :products, class_name: 'BxBlockCatalogue::Product', foreign_key: 'account_id'
+    has_many :loged_foods, class_name: 'BxBlockCatalogue::LogedFood',foreign_key: 'account_id', dependent: :destroy
     before_save :image_process, if: :image_url
     enum status: %i[regular suspended deleted]
     enum gender: %i[female male other]
