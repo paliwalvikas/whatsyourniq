@@ -9,13 +9,6 @@ module BxBlockChat
     has_many :answer_options, class_name: 'BxBlockChat::AnswerOption', dependent: :destroy
  	
     accepts_nested_attributes_for :answer_options, :allow_destroy => true
-    # validate :should_have_answer_option
-
-    private
-
-    def should_have_answer_option
-       errors.add(:base, "At least one answer option is required.") if answer_options.blank?
-    end
   end  
 end
 
