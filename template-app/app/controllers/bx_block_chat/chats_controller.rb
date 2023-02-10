@@ -15,7 +15,7 @@ module BxBlockChat
 
     def list_of_chats
       chat = ac_chat_answers
-      meta = @chats.last.id == chat.last.id ? 'Completed' : 'Pending'
+      meta = @chats&.last&.id == chat&.last&.id ? 'Completed' : 'Pending'
       render json: { chat: BxBlockChat::ChatSerializer.new(chat, params: serialization_options), meta: meta }
     end
 
@@ -55,7 +55,7 @@ module BxBlockChat
       elsif params[:chat_type].downcase == 'personal'
         @chats.first(3)
       else
-        @chats.first
+        @chats.first(1)
       end
     end
   end
