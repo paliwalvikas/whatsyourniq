@@ -1,6 +1,6 @@
 module BxBlockChat
   class ChatAnswersController < ApplicationController
-    before_action :find_chat_ans, only: %i[show update]
+    before_action :find_chat_ans, only: %i[show update destroy]
     before_action :check_answer, only: %i[create]
 
     def create
@@ -17,7 +17,7 @@ module BxBlockChat
     def update
       if @answer.present? && @answer.update(chat_answer_params)
         render json: ChatAnswerSerializer.new(@answer, serialization_options)
-                         .serializable_hash,
+                                         .serializable_hash,
                status: :ok
       else
         render json: ErrorSerializer.new(@answer).serializable_hash,
@@ -27,6 +27,17 @@ module BxBlockChat
 
     def show
       render json: ChatAnswerSerializer.new(@answer, serialization_options).serializable_hash, status: :ok
+    end
+
+    def destroy
+      return if @answer.nil?
+
+      if @answer.destroy
+        render json: { success: true }, status: :ok
+      else
+        render json: ErrorSerializer.new(@answer).serializable_hash,
+               status: :unprocessable_entity
+      end
     end
 
     private
@@ -41,7 +52,7 @@ module BxBlockChat
 
     def check_answer
       unless params[:image].present? || params[:answer_option_id].present? || params[:answer].present?
-        render json: {error: "Please enter any answer"}
+        render json: { error: 'Please enter any answer' }
       end
     end
   end
