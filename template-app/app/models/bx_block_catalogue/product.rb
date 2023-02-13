@@ -21,6 +21,7 @@ module BxBlockCatalogue
     has_many :compare_products, class_name: 'BxBlockCatalogue::CompareProduct', dependent: :destroy
     has_many :reported_products, class_name: 'BxBlockCatalogue::ReportedProduct', foreign_key: 'product_id',
                                  dependent: :destroy
+    has_many :loged_foods, class_name: 'BxBlockCatalogue::LogedFood',foreign_key: 'account_id', dependent: :destroy
     belongs_to :account, class_name: 'AccountBlock::Account', foreign_key: 'account_id', optional: true                             
     enum product_type: %i[cheese_and_oil beverage solid]
     enum food_drink_filter: %i[food drink]
