@@ -98,7 +98,6 @@ module BxBlockCatalogue
 
       product_import_status.status = "Failed" unless failer_data.empty?
       product_import_status.status = "Success" if failer_data.empty?
-      product_import_status.status = "Success" if failer_data.empty?
       product_import_status.save
     end
 
