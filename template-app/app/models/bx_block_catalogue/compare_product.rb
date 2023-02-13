@@ -9,9 +9,9 @@ module BxBlockCatalogue
                 foreign_key: 'product_id'
 
     validates :product_id, uniqueness: {scope: [:account_id]}
-    validate :only_three_record
+    validate :compare_products_limit
 
-    def only_three_record 
+    def compare_products_limit 
       if AccountBlock::Account.find_by(id: self.account_id).compare_products.where(selected: true).count >= 5
         errors.add(:selected, I18n.t('models.bx_block_catalogue.compare_product.you_are_not_able'))
       end
