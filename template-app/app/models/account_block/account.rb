@@ -7,7 +7,6 @@ module AccountBlock
     attr_accessor :image_url
     validates :full_name, presence: true, format: { with: /[[:alpha:]]/ }
     validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-    validates :gender, presence: true
 
     # has_secure_password
     has_one_attached :image
