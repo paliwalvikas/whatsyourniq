@@ -1,6 +1,6 @@
 module BxBlockChat
   class ChatAnswersController < ApplicationController
-    before_action :find_chat_ans, only: %i[show update destroy]
+    before_action :find_chat_ans, only: %i[show update]
     before_action :check_answer, only: %i[create]
 
     def create
@@ -29,13 +29,11 @@ module BxBlockChat
       render json: ChatAnswerSerializer.new(@answer, serialization_options).serializable_hash, status: :ok
     end
 
-    def destroy
-      return if @answer.nil?
-
-      if @answer.destroy
+    def destroy_all_chat
+      if current_user&.chat_answers&.present? && current_user&.chat_answers&.destroy_all
         render json: { success: true }, status: :ok
       else
-        render json: ErrorSerializer.new(@answer).serializable_hash,
+        render json: { error: "Chat Answers not found"},
                status: :unprocessable_entity
       end
     end

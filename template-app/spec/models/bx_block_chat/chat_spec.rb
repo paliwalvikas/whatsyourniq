@@ -12,4 +12,8 @@ RSpec.describe BxBlockChat::Chat, type: :model do
 	it { should validate_presence_of(:question)}
   end
 
+   describe "Enum" do
+    it { should define_enum_for(:answer_type).with_values({ text: 0 ,number: 1, radio_button: 2, check_box: 3, date_picker: 4, bmi_scale: 5, image_picker: 6 }) }
+  end
+
 end

@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe BxBlockChat::ChatAnswersController, type: :controller do
   let(:account) { create(:account) }
+  let(:ex_account) { create(:account, email: Faker::Internet.email) }
   let(:chat) { create(:chat) }
   let(:answer_option) { create(:answer_option, chat_id: chat.id) }
   let(:chat_answer) do
@@ -44,19 +45,20 @@ RSpec.describe BxBlockChat::ChatAnswersController, type: :controller do
   end
 
   describe 'Chat Answer #delete' do
-    it 'should destroy record ChatAnswer#destroy' do
-      delete :destroy, params: { token: @token, id: chat_answer.id }
+    it 'should destroy record ChatAnswer#destroy_all_chat' do
+      delete :destroy_all_chat, params: { token: @token }
       json = JSON.parse(response.body).deep_symbolize_keys
       expect(json[:success]).to eq true
     end
 
-    it 'should destroy without record ChatAnswer#destroy' do
-      delete :destroy, params: { token: @token, id: 0 }
-      response.body == ''
+    it 'should destroy_all_chat without record ChatAnswer#destroy_all_chat' do
+      delete :destroy_all_chat, params: { token: BuilderJsonWebToken.encode(ex_account.id) }
+      json = JSON.parse(response.body).deep_symbolize_keys
+      expect(json[:error]).to eq 'Chat Answers not found'
     end
 
-    it 'should response without token ChatAnswer#destroy' do
-      delete :destroy, params: { id: 0 }
+    it 'should response without token ChatAnswer#destroy_all_chat' do
+      delete :destroy_all_chat, params: { id: 0 }
       json = JSON.parse(response.body).deep_symbolize_keys
       expect(json[:errors]).to eq @invalid
     end
