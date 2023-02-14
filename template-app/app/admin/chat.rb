@@ -1,5 +1,5 @@
 ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
-  permit_params :chat_type, :question, :radio, answer_options_attributes: %i[id option _destroy]
+  permit_params :chat_type, :question, :answer_type, answer_options_attributes: %i[id option _destroy]
 
   scope :personal, default: true do |personal|
     personal.where(chat_type: 'Personal')
@@ -18,7 +18,7 @@ ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
     id_column
     column :chat_type
     column :question
-    column :radio
+    column :answer_type
     column :created_at
     column :updated_at
     actions
@@ -28,7 +28,7 @@ ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
     f.inputs do
       f.input :chat_type, as: :select, collection: %w[Personal Lifestyle Health Nutrition]
       f.input :question
-      f.input :radio
+      f.input :answer_type, as: :select, collection: BxBlockChat::Chat.answer_types.keys
     end
     f.has_many :answer_options, new_record: 'Add Answer Options', allow_destroy: true do |val|
       val.inputs do
@@ -44,7 +44,7 @@ ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
       row :id
       row :chat_type
       row :question
-      row :radio
+      row :answer_type
       panel 'Answer Options' do
         table_for data.answer_options do
           column :id

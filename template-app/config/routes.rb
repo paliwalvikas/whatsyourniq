@@ -61,7 +61,11 @@ Rails.application.routes.draw do
       end
     end
     resources :answer_options
-    resources :chat_answers 
+    resources :chat_answers do
+      collection do
+        delete :destroy_all_chat
+      end
+    end
   end
 
   namespace :bx_block_faq_and_contact_us do
