@@ -58,10 +58,16 @@ module BxBlockCatalogue
     end
 
     attribute :positive_good do |object, _params|
-      if _params[:status] == 'offline'
-        object.rda_value['good_ingredient'] if object.rda_value.present?
+      if _params[:status] == 'offline' && object.rda_value.present?
+        object.rda_value['good_ingredient'].each do |gi|
+          gi[:level] = I18n.t("models.bx_block_catalogue.products.data.level.#{gi[:level]}")
+          gi[:name] = I18n.t("models.bx_block_catalogue.products.data.name.#{gi[:name]}")
+        end
       elsif _params[:good_ingredient].present?
-        _params[:good_ingredient]
+        _params[:good_ingredient].each do |gi|
+          gi[:level] = I18n.t("models.bx_block_catalogue.products.data.level.#{gi[:level]}")
+          gi[:name] = I18n.t("models.bx_block_catalogue.products.data.name.#{gi[:name]}")
+        end
       end
     end
 
@@ -70,10 +76,16 @@ module BxBlockCatalogue
     end
 
     attribute :negative_not_good do |object, _params|
-      if _params[:status] == 'offline'
-        object.rda_value['not_so_good_ingredient'] if object.rda_value.present?
+      if _params[:status] == 'offline' && object.rda_value.present?
+        object.rda_value['not_so_good_ingredient'].each do |ngi|
+          ngi[:level] = I18n.t("models.bx_block_catalogue.products.data.level.#{ngi[:level]}")
+          ngi[:name] = I18n.t("models.bx_block_catalogue.products.data.name.#{ngi[:name]}")
+        end
       elsif _params[:not_so_good_ingredient].present?
-        _params[:not_so_good_ingredient]
+        _params[:not_so_good_ingredient].each do |ngi|
+          ngi[:level] = I18n.t("models.bx_block_catalogue.products.data.level.#{ngi[:level]}")
+          ngi[:name] = I18n.t("models.bx_block_catalogue.products.data.name.#{ngi[:name]}")
+        end
       end
     end
   end
