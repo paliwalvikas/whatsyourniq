@@ -9,6 +9,7 @@ module AccountBlock
       :phone_number,
       :email,
       :activated,
+      :gender,
       :flag,
       :device_id
     ]

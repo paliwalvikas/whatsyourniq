@@ -8,6 +8,7 @@ module AccountBlock
       :country_code,
       :phone_number,
       :email,
+      :gender,
       :activated,
       :device_id,
     ]
