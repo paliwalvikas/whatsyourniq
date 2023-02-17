@@ -5,13 +5,12 @@ module AccountBlock
     self.table_name = :accounts
     include Wisper::Publisher
     attr_accessor :image_url
-    validates :full_name, presence: true, format: { with: /[[:alpha:]]/ }
-    validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
     # has_secure_password
     has_one_attached :image
     before_validation :parse_full_phone_number
     before_create :generate_api_key
+    has_many :notifications, class_name: 'BxBlockNotifications::Notification', dependent: :destroy
     has_many :favourite_searches, class_name: 'BxBlockCatalogue::FavouriteSearch', dependent: :destroy
     has_one :blacklist_user, class_name: 'AccountBlock::BlackListUser', dependent: :destroy
     after_save :set_black_listed_user
