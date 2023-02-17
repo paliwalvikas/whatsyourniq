@@ -4,6 +4,7 @@ module BxBlockChat
   class ChatAnswersController < ApplicationController
     before_action :find_chat_ans, only: %i[show update destroy]
     before_action :check_answer, only: %i[create]
+    after_action :add_image, only: %i[create]
     NOT_FOUND = 'Chat Answers not found'
 
     def create
@@ -84,6 +85,10 @@ module BxBlockChat
       unless params[:image].present? || params[:answer_option_id].present? || params[:answer].present?
         render json: { error: 'Please enter any answer' }
       end
+    end
+
+    def add_image
+      current_user.image.attach(params[:image]) if params[:image].present?
     end
   end
 end
