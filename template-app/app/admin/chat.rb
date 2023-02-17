@@ -1,5 +1,5 @@
 ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
-  permit_params :chat_type, :question, :answer_type, answer_options_attributes: %i[id option _destroy]
+  permit_params :chat_type, :question, :answer_type, answer_options_attributes: %i[id option message marks _destroy]
 
   scope :personal, default: true do |personal|
     personal.where(chat_type: 'Personal')
@@ -33,6 +33,8 @@ ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
     f.has_many :answer_options, new_record: 'Add Answer Options', allow_destroy: true do |val|
       val.inputs do
         val.input :option
+        val.input :message
+        val.input :marks
       end
     end
     f.semantic_errors :answer_options
@@ -49,6 +51,8 @@ ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
         table_for data.answer_options do
           column :id
           column :option
+          column :message
+          column :marks
           column :created_at
           column :updated_at
         end
