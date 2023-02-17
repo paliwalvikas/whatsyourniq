@@ -24,7 +24,7 @@ module BxBlockChat
     def show
       chat = Chat.find_by(id: params[:id] || params[:chat_id])
       if chat.present?
-        render json: ChatSerializer.new(chat).serializable_hash,
+        render json: ChatSerializer.new(chat, serialization_options).serializable_hash,
                status: :ok
       else
         render json: { message: 'Chat not found' },

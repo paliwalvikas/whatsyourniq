@@ -8,7 +8,7 @@ module BxBlockChat
 
     attributes :chat_answers do |object, _params|
       obj = object&.chat_answers&.where(chat_id: object.id, account_id: _params[:account]&.id)
-      ChatAnswerSerializer.new(obj)
+      ChatAnswerSerializer.new(obj, params: _params[:host])
     end
   end
 end
