@@ -332,7 +332,20 @@ en:
           Packaged_Cheese_&_Oil: "Packaged Cheese & Oil"
           Pulses: 'Pulses'
           Green_Leafy_Vegetables: 'Green Leafy Vegetables'
-          Malt/cereal_based_bev's: Malt/cereal based bev's
+          Malt/cereal_based_bev's: "Malt/cereal based bev's"
+          Dried_Fruits__Nuts_&Seeds: 'Dried Fruits Nuts & Seeds'
+          Cereal&Muesli: 'Cereal & Muesli'
+          Malt/Cereal_based_Beverages: 'Malt/Cereal based Beverages'
+          Dairy__Eggs&Plant_Based_Alternatives: 'Dairy Eggs & Plant Based Alternatives'
+          Fruit_Juices&Drinks: 'Fruit Juices & Drinks'
+          Malt/cereal_based_bevs: 'Malt/cereal based bevs'
+          Dried_Fruits__Nuts_&_Seeds: 'Dried Fruits Nuts & Seeds'
+          Cereal_&_Muesli: 'Cereal & Muesli'
+          Dairy__Eggs_&_Plant_Based_Alternatives: 'Dairy Eggs & Plant Based Alternatives'
+          Candies_&_Mints: 'Candies & Mints'
+          Snack_Bars: 'Snack Bars'
+          Soups__Stews_&_Chillis: 'Soups Stews & Chillis'
+          Diet_&_Nutrition: 'Diet & Nutrition'
         sub_category_filter:
           Jams_&_Spreads: 'Jams & Spreads'
           Cooking: 'Cooking'
@@ -412,6 +425,15 @@ en:
           Hot_Chocolate: 'Hot Chocolate'
           oil: 'oil'
           Oil: 'Oil'
+          Flavouring_Syrups: 'Flavouring Syrups'
+          cooking: 'cooking'
+          Milkshakes: 'Milkshakes'
+          Curd: 'Curd'
+          Candies_&_Mints: 'Candies & Mints'
+          Chocolate_Bars: 'Chocolate Bars'
+          Diabetic_Care: 'Diabetic Care'
+          Gut_Health: 'Gut Health'
+          Protein_Supplements: 'Protein Supplements'
         food_preference:
           Veg: 'Veg'
           Non_Veg: 'Non-Veg'
