@@ -14,6 +14,7 @@ RSpec.describe BxBlockChat::ChatAnswersController, type: :controller do
   before do
     @token = BuilderJsonWebToken.encode(account.id)
     @invalid = [{ token: 'Invalid token' }]
+    @not_found = 'Chat Answers not found'
   end
 
   describe 'Post create' do
@@ -44,7 +45,7 @@ RSpec.describe BxBlockChat::ChatAnswersController, type: :controller do
     end
   end
 
-  describe 'Chat Answer #delete' do
+  describe 'Chat Answer Chat#destroy_all_chat' do
     it 'should destroy record ChatAnswer#destroy_all_chat' do
       delete :destroy_all_chat, params: { token: @token }
       json = JSON.parse(response.body).deep_symbolize_keys
@@ -54,13 +55,33 @@ RSpec.describe BxBlockChat::ChatAnswersController, type: :controller do
     it 'should destroy_all_chat without record ChatAnswer#destroy_all_chat' do
       delete :destroy_all_chat, params: { token: BuilderJsonWebToken.encode(ex_account.id) }
       json = JSON.parse(response.body).deep_symbolize_keys
-      expect(json[:error]).to eq 'Chat Answers not found'
+      expect(json[:error]).to eq @not_found
     end
 
     it 'should response without token ChatAnswer#destroy_all_chat' do
       delete :destroy_all_chat, params: { id: 0 }
       json = JSON.parse(response.body).deep_symbolize_keys
       expect(json[:errors]).to eq @invalid
+    end
+  end
+
+  describe "Chat answer Chat#destroy" do 
+    it "should response Id with Chat#destroy" do 
+      delete :destroy, params: { token: @token, id: chat_answer.id }
+      json = JSON.parse(response.body).deep_symbolize_keys
+      expect(json[:success]).to eq true
+    end 
+
+    it 'should response without token ChatAnswer#destroy' do
+      delete :destroy, params: { id: 0 }
+      json = JSON.parse(response.body).deep_symbolize_keys
+      expect(json[:errors]).to eq @invalid
+    end
+
+    it 'should destroy_all_chat without record ChatAnswer#destroy_all_chat' do
+      delete :destroy, params: { token: @token, id: 0 }
+      json = JSON.parse(response.body).deep_symbolize_keys
+      expect(json[:error]).to eq @not_found
     end
   end
 end

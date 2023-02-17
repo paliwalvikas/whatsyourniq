@@ -6,22 +6,9 @@ module BxBlockChat
       AnswerOptionSerializer.new(obj&.answer_options)
     end
 
-    attributes :chat_answers do |obj, _params|
-      obj = obj&.chat_answers&.find_by(account_id: _params[:account]&.id)
-      if obj.present?
-        ans =	if obj.answer.present?
-                obj.answer
-              elsif obj.answer_option_id&.present?
-                obj&.answer_option&.option
-              elsif obj.image.attached?
-                if Rails.env.development?
-                  Rails.application.routes.url_helpers.rails_blob_path(obj.image, only_path: true)
-                else
-                  obj.image&.service_url&.split('?')&.first
-                end
-              end
-      end
-      { id: obj&.id, answer: ans }
+    attributes :chat_answers do |object, _params|
+      obj = object&.chat_answers&.where(chat_id: object.id, account_id: _params[:account]&.id)
+      ChatAnswerSerializer.new(obj)
     end
   end
 end
