@@ -7,18 +7,10 @@ module BxBlockChat
     NOT_FOUND = 'Chat Answers not found'
 
     def create
-      create_answer if params[:answer_option_id].instance_of?(Array)
-      ans = current_user.chat_answers.new(chat_answer_params)
-      begin
-        if ans.save
-          render json: ChatAnswerSerializer.new(ans, serialization_options).serializable_hash,
-                 status: :created
-        else
-          render json: ErrorSerializer.new(ans).serializable_hash,
-                 status: :unprocessable_entity
-        end
-      rescue AbstractController::DoubleRenderError
-        nil
+      if params[:answer_option_id].instance_of?(Array)
+        create_answer 
+      else
+        new_chat_answer
       end
     end
 
@@ -63,6 +55,21 @@ module BxBlockChat
 
     def find_chat_ans
       @answer = ChatAnswer.find_by(id: params[:id] || params[:chat_answer_id])
+    end
+
+    def new_chat_answer
+      ans = current_user.chat_answers.new(chat_answer_params)
+      begin
+        if ans.save
+          render json: ChatAnswerSerializer.new(ans, serialization_options).serializable_hash,
+                 status: :created
+        else
+          render json: ErrorSerializer.new(ans).serializable_hash,
+                 status: :unprocessable_entity
+        end
+      rescue AbstractController::DoubleRenderError
+        nil
+      end
     end
 
     def create_answer
