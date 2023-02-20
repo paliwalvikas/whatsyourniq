@@ -74,7 +74,7 @@ module BxBlockChat
     end
 
     def create_answer
-      params[:answer_option_id].first.split(",").each do |ans_id|
+      params[:answer_option_id].each do |ans_id|
         current_user.chat_answers.create(chat_id: params[:chat_id], answer_option_id: ans_id)
       end
       render json: ChatAnswerSerializer.new(current_user.chat_answers.where(chat_id: params[:chat_id]),
