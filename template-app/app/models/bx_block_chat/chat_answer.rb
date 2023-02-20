@@ -9,7 +9,7 @@ module BxBlockChat
               class_name: 'AccountBlock::Account'
     belongs_to :chat, 
               class_name: "BxBlockChat::Chat"
-    has_one_attached :image
+    has_one_attached :image, dependent: :destroy
 
   end  
 end
