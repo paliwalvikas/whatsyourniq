@@ -2,8 +2,8 @@ module BxBlockChat
   class ChatSerializer < BuilderBase::BaseSerializer
     attributes :id, :chat_type, :question, :answer_type, :created_at, :updated_at
 
-    attributes :answer do |obj|
-      obj.chat_answers&.present? ? 1 : 0 
+    attributes :answer do |obj, _params|
+      _params[:account].chat_answers&.present? ? "1" : "0" 
     end
 
     attributes :answer_options do |obj|
