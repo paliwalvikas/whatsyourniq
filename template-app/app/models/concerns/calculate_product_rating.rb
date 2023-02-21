@@ -1,70 +1,84 @@
 # frozen_string_literal: true
 
 class CalculateProductRating
+  
   def calculation(product)
-    np = []
-    pp = []
-    # unless product_point.present?
-    @product = product
-    ing = @product.ingredient
-    neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
-    neg_clumns = neg_clumns.first(5)
+    if product.category.packaged_food?
+      np = []
+      pp = []
+      # unless product_point.present?
+      @product = product
+      ing = @product.ingredient
+      neg_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::PositiveIngredient.column_names + ['product_id'])
+      neg_clumns = neg_clumns.first(5)
 
-    neg_clumns.each do |clm|
-      ing_value = ing.send(clm)
-      np << check_value('negative_value', clm, ing_value) if ing_value.present?
-    end
+      neg_clumns.each do |clm|
+        ing_value = ing.send(clm)
+        np << check_value('negative_value', clm, ing_value) if ing_value.present?
+      end
 
-    pos_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::NegativeIngredient.column_names + ['product_id'])
-    if np.sum >= 11 && @product.ingredient.fruit_veg.to_i < 5
-      pos_clumns = pos_clumns.first(2)
-    else
-      pos_clumns.first(3)
-    end
+      pos_clumns = BxBlockCatalogue::Ingredient.column_names - (BxBlockCheeseAndOil::MicroIngredient.column_names + BxBlockCheeseAndOil::NegativeIngredient.column_names + ['product_id'])
+      if np.sum >= 11 && @product.ingredient.fruit_veg.to_i < 5
+        pos_clumns = pos_clumns.first(2)
+      else
+        pos_clumns.first(3)
+      end
 
-    pos_clumns.each do |clm|
-      ing_value = ing.send(clm)
-      pp << check_value('positive_value', clm, ing_value) if ing_value.present?
-    end
-    mp = micro_calculation(ing).sum
-    p_point = np.sum - pp.sum
-    if np.blank? && pp.blank?
-      @product.product_rating = nil
-      @product.product_point = nil
-    else
-      p_rating = if p_point <= (-1)
-                   'A'
-                 elsif p_point.between?(0, 2)
-                   'B'
-                 elsif p_point.between?(3, 10)
-                   'C'
-                 elsif p_point.between?(11, 18)
-                   'D'
-                 else
-                   'E'
-                 end
-      @product.product_rating = p_rating
-      @product.product_point = p_point
-    end
-    # end
+      pos_clumns.each do |clm|
+        ing_value = ing.send(clm)
+        pp << check_value('positive_value', clm, ing_value) if ing_value.present?
+      end
+      mp = micro_calculation(ing).sum
+      p_point = np.sum - pp.sum
+      if np.blank? && pp.blank?
+        @product.product_rating = nil
+        @product.product_point = nil
+      else
+        p_rating = if p_point <= (-1)
+                     'A'
+                   elsif p_point.between?(0, 2)
+                     'B'
+                   elsif p_point.between?(3, 10)
+                     'C'
+                   elsif p_point.between?(11, 18)
+                     'D'
+                   else
+                     'E'
+                   end
+        @product.product_rating = p_rating
+        @product.product_point = p_point
+      end
+      # end
 
-    if @product.product_rating.present?
-      pr = if mp.to_f.between?(0, 4)
-             @product.product_rating
-           elsif mp.to_f.between?(4, 8) && @product.product_rating != 'A' && @product.product_rating != 'E'
-             (@product.product_rating.ord - 1).chr
-           elsif mp.to_f.between?(4, 8) && @product.product_rating == 'A' || @product.product_rating == 'E'
-             @product.product_rating
-           elsif mp.to_f > (8) && @product.product_rating != 'A'
-             @product.product_rating == 'D' || @product.product_rating == 'E' ? (@product.product_rating.ord - 1).chr : (@product.product_rating.ord - 2).chr
-           elsif mp.to_f > (8) && @product.product_rating == 'A'
-             pr = 'A'
-           end
-      pr = 'A' if ['@', '?'].include?(pr)
-      @product.product_rating = pr
-    end
-    calculated = true
-    @product.save!
+      if @product.product_rating.present?
+        pr = if mp.to_f.between?(0, 4)
+               @product.product_rating
+             elsif mp.to_f.between?(4, 8) && @product.product_rating != 'A' && @product.product_rating != 'E'
+               (@product.product_rating.ord - 1).chr
+             elsif mp.to_f.between?(4, 8) && @product.product_rating == 'A' || @product.product_rating == 'E'
+               @product.product_rating
+             elsif mp.to_f > (8) && @product.product_rating != 'A'
+               @product.product_rating == 'D' || @product.product_rating == 'E' ? (@product.product_rating.ord - 1).chr : (@product.product_rating.ord - 2).chr
+             elsif mp.to_f > (8) && @product.product_rating == 'A'
+               pr = 'A'
+             end
+        pr = 'A' if ['@', '?'].include?(pr)
+        @product.product_rating = pr
+      end
+      calculated = true
+      return @product.save
+    elsif product.category.raw_food?
+      if product.filter_category.present?
+        category_range = product.filter_category.filter_category_range
+        if product.product_point.to_f.between?(category_range.rang_for_a.split('-').first.to_i, category_range.rang_for_a.split('-').second.to_i)
+          product.update_columns(product_rating: 'A')
+        elsif product.product_point.to_f.between?(category_range.rang_for_b.split('-').first.to_i, category_range.rang_for_b.split('-').second.to_i)
+          product.update_columns(product_rating: 'B')
+        elsif product.product_point.to_f.between?(category_range.rang_for_c.to_i, category_range.rang_for_c.to_i)
+          product.update_columns(product_rating: 'C')
+        end
+      end
+    end 
   end
 
   def micro_calculation(ing)
