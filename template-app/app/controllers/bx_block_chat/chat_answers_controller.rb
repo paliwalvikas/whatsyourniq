@@ -51,7 +51,7 @@ module BxBlockChat
     private
 
     def chat_answer_params
-      params.permit(:chat_id, :answer_option_id, :answer, :account_id, :image)
+      params.permit(:chat_id, :answer_option_id, :answer, :account_id, :image, :add_profile_id)
     end
 
     def find_chat_ans
