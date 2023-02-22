@@ -3,7 +3,7 @@ module BxBlockChat
     attributes :id, :chat_type, :question, :answer_type, :created_at, :updated_at
 
     attributes :answer do |obj, _params|
-      _params[:account].chat_answers&.present? ? "1" : "0" 
+      _params[:account].chat_answers&.where(chat_id: obj.id).present? ? "1" : "0" 
     end
 
     attributes :answer_options do |obj|
