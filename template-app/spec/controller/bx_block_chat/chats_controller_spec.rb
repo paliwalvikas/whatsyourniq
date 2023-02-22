@@ -15,7 +15,7 @@ RSpec.describe BxBlockChat::ChatsController, type: :controller do
     it "should respond with no params Chat#index" do
       get :index, params: { token: @token }
       json = JSON.parse(response.body)
-      expect(json["Personal"]['data]').should_not be_nil
+      expect(json["Personal"]['data']).should_not be_nil
       expect(response).to have_http_status(:ok)
     end
 

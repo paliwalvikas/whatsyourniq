@@ -3,7 +3,9 @@ module BxBlockChat
     attributes :id, :chat_id, :account_id, :answer_option_id #, :created_at, :updated_at
 
     attribute :answer do |obj, params|
-      if obj.answer.present?
+      if obj.answer.present? && obj.answer == "BMI score"
+        { account: obj.account, bmi_result: "you are #{obj.account.bmi_status}" }
+      elsif obj.answer.present?
         obj.answer
       elsif obj.answer_option_id&.present?
         obj&.answer_option&.option
