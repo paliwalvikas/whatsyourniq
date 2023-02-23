@@ -1,22 +1,27 @@
 module BxBlockChat
   class ChatAnswerSerializer < BuilderBase::BaseSerializer
-    attributes :id, :chat_id, :account_id, :answer_option_id #, :created_at, :updated_at
+    attributes :id, :chat_id, :account_id, :answer_option_id # , :created_at, :updated_at
 
     attribute :answer do |obj, params|
-      if obj.answer.present? && obj.answer == "BMI score"
-        { account: obj.account, bmi_result: "you are #{obj.account.bmi_status}" }
-      elsif obj.answer.present?
+      if obj.answer.present?
         obj.answer
       elsif obj.answer_option_id&.present?
         obj&.answer_option&.option
       elsif obj.image.attached?
-        host = params[:host] || ""
+        host = params[:host] || ''
 
         if obj.image.attached?
-              host + Rails.application.routes.url_helpers.rails_blob_url(
-                obj.image, only_path: true
-              )
+          host + Rails.application.routes.url_helpers.rails_blob_url(
+            obj.image, only_path: true
+          )
         end
+      end
+    end
+
+    attribute :bmi_calculation do |obj|
+      if obj.answer.present? && obj.answer.include?('BMI score')
+        { account: obj&.account,
+          bmi_result: "you are #{obj.account.bmi_status}" }
       end
     end
   end
