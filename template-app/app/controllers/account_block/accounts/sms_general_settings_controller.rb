@@ -2,7 +2,7 @@
 
 module AccountBlock
   module Accounts
-    class SmsConfirmationsController < ApplicationController
+    class SmsGeneralSettingsController < ApplicationController
       include BuilderJsonWebToken::JsonWebTokenValidation
 
       before_action :validate_json_web_token
@@ -32,8 +32,8 @@ module AccountBlock
         if @sms_otp.pin.to_s == params[:data][:attributes]['pin'].to_s
           @sms_otp.activated = true
           @sms_otp.save
-          @account = AccountBlock::Account.find_by(full_phone_number: @sms_otp.full_phone_number)
-          @account.update(device_id: params[:data][:attributes][:device_id])
+          @account = AccountBlock::Account.find_by(id: params[:id])
+          @account.update(device_id: params[:data][:attributes][:device_id], full_phone_number: @sms_otp.full_phone_number )
           @account.additional_details = true unless @account&.full_name.nil?
           render json: SmsAccountSerializer.new(@account, meta: {
             message: I18n.t('controllers.account_block.accounts.phone_confirmed_successfully'),

@@ -1,5 +1,5 @@
 module AccountBlock
-  class SocialAccountSerializer
+  class GeneralSettingSerializer
     include FastJsonapi::ObjectSerializer
 
     attributes *[
@@ -8,12 +8,9 @@ module AccountBlock
       :country_code,
       :phone_number,
       :email,
-      :activated,
       :gender,
-      :flag,
+      :activated,
       :device_id,
-      :fb_social_id,
-      :google_social_id
     ]
 
     attribute :image do |object, _params|
@@ -21,9 +18,10 @@ module AccountBlock
         if Rails.env.development?
           Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)
         else
-          object.image&.service_url&.split('?')&.first
+          object.image&.service_url
         end
       end
     end
   end
 end
+

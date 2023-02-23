@@ -3,7 +3,7 @@
 module AccountBlock
   class AccountSerializer < BuilderBase::BaseSerializer
     attributes(:activated, :country_code, :email, :full_name, :type,
-               :created_at, :updated_at, :device_id, :unique_auth_id, :gender, :enable_offline)
+               :created_at, :updated_at, :device_id, :unique_auth_id, :gender, :enable_offline, :fb_social_id, :google_social_id)
 
     attribute :country_code do |object|
       country_code_for object

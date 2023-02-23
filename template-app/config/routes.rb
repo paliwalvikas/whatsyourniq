@@ -79,7 +79,9 @@ Rails.application.routes.draw do
   end
 
   namespace :account_block do
-    resources :accounts
+    resources :accounts do
+      patch 'general_setting', to: 'accounts#general_setting'
+    end
     get 'search', to: 'accounts#search'
   end
 
@@ -110,6 +112,7 @@ Rails.application.routes.draw do
 
   post 'sms_otp', to: 'account_block/accounts/send_otps#create'
   post '/accounts/sms_confirmation', to: 'account_block/accounts/sms_confirmations#create'
+  post '/accounts/sms_general_setting', to: 'account_block/accounts/sms_general_settings#create'
   delete '/destroy_all', to: 'bx_block_catalogue/compare_products#destroy_all'
   delete 'remove_product', to: 'bx_block_catalogue/orders#remove_product'
 
