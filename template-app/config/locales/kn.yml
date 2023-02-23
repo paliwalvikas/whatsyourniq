@@ -336,6 +336,13 @@ kn:
           Green_Leafy_Vegetables: 'ಸೊಪ್ಪುಗಳು'
           Malt/cereal_based_bev's: '
 ಮಾಲ್ಟ್/ಧಾನ್ಯ ಆಧಾರಿತ ಬೆವ್ಸ್'
+          Dried_Fruits__Nuts_&Seeds: 'ಒಣಗಿದ ಹಣ್ಣುಗಳು'
+          Cereal&Muesli: 'ಧಾನ್ಯಗಳು ಮತ್ತು ಮ್ಯೂಸ್ಲಿ'
+          Malt/Cereal_based_Beverages: 'ಮಾಲ್ಟ್/ಧಾನ್ಯ ಆಧಾರಿತ ಪಾನೀಯಗಳು'
+          Dairy__Eggs&Plant_Based_Alternatives: 'ಡೈರಿ ಮೊಟ್ಟೆಗಳು ಮತ್ತು ಸಸ್ಯ ಆಧಾರಿತ ಪರ್ಯಾಯಗಳು'
+          Fruit_Juices&Drinks: 'ಹಣ್ಣಿನ ರಸಗಳು ಮತ್ತು ಪಾನೀಯಗಳು'
+          Malt/cereal_based_bevs: '
+ಮಾಲ್ಟ್/ಧಾನ್ಯ ಆಧಾರಿತ ಬೆವ್ಸ್'
           Dried_Fruits__Nuts_&_Seeds: 'ಒಣಗಿದ ಹಣ್ಣುಗಳು, ನಟ್ಸ್ಗಳು ಮತ್ತು ಬೀಜಗಳು'
           Cereal_&_Muesli: 'ಏಕದಳ ಮತ್ತು ಮ್ಯೂಸ್ಲಿ'
           Dairy__Eggs_&_Plant_Based_Alternatives: "ಡೈರಿ, ಮೊಟ್ಟೆಗಳು ಮತ್ತು ಸಸ್ಯ ಆಧಾರಿತ ಪರ್ಯಾಯಗಳು"
@@ -438,7 +445,7 @@ kn:
           Vegan: 'ವೆಗನ್'
           Organic: 'ಆರ್ಗ್ಯಾನಿಕ್'
           Gluten_Free: 'ಗ್ಲುಟನ್ ಮುಕ್ತ'
-          No_Artificial_Preservative_Or_Color: 'ಕೃತಕ ಬಣ್ಣಗಳಿಲ್ಲದ  ಸಂರಕ್ಷಕಗಳಿಲ್ಲದ'
+          No_Artificial_Preservative_Or_Color: 'ಕೃತಕ ಬಣ್ಣಗಳಿಲ್ಲದ ಅಥವಾ ಸಂರಕ್ಷಕಗಳಿಲ್ಲದ '
           No_Added_Sugar: 'ಸಕ್ಕರೆ ಸೇರಿಸಿದ'
           Jain: 'ಜೈನ್'
         food_allergies:
