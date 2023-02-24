@@ -29,7 +29,7 @@ module AccountBlock
         end
 
       when 'social_account'
-        account = SocialAccount.find_by(email: params[:data][:attributes][:email])
+        account = AccountBlock::Account.find_by(email: params[:data][:attributes][:email])
         if account.present? && account.update(device_id: params[:data][:attributes][:device_id])
           account.register = true
           account.additional_details = true unless account.full_name.nil?
@@ -76,6 +76,12 @@ module AccountBlock
         render json: GeneralSettingSerializer.new(account).serializable_hash, status: :ok
       elsif account.present? && params[:data][:attributes][:email].present?
         account.update(email: params[:data][:attributes][:email])
+        render json: GeneralSettingSerializer.new(account).serializable_hash, status: :ok
+      elsif account.present? && params[:data][:attributes][:fb_social_id].present?
+        account.update(fb_social_id: params[:data][:attributes][:fb_social_id])
+        render json: GeneralSettingSerializer.new(account).serializable_hash, status: :ok
+      elsif account.present? && params[:data][:attributes][:google_social_id].present?
+        account.update(google_social_id: params[:data][:attributes][:google_social_id])
         render json: GeneralSettingSerializer.new(account).serializable_hash, status: :ok
       else
         render json: { message: I18n.t('controllers.account_block.accounts.account_not_updated') }
