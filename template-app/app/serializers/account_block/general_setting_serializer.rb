@@ -11,6 +11,8 @@ module AccountBlock
       :gender,
       :activated,
       :device_id,
+      :fb_social_id,
+      :google_social_id
     ]
 
     attribute :image do |object, _params|
