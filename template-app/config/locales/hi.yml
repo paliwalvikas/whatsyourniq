@@ -441,7 +441,7 @@ hi:
           Vegan: 'वीगन /vegan'
           Organic: 'आर्गेनिक'
           Gluten_Free: 'जीरो ग्लूटेन'
-          No_Artificial_Preservative_Or_Color: 'जीरो आर्टिफिशियल रंग जीरो प्रेसेर्वटिवेस'
+          No_Artificial_Preservative_Or_Color: 'जीरो आर्टिफिशियल रंग या जीरो प्रेसेर्वटिवेस '
           No_Added_Sugar: 'जीरो चीनी /चीनी नहीं मिलायी हुई'
           Jain: 'जैन'
         food_allergies:
