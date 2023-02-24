@@ -9,7 +9,7 @@ module AccountBlock
     def create
       case params[:data][:type] #### rescue invalid API format
       when 'sms_account'
-        account = SmsAccount.find_by(full_phone_number: params[:data][:attributes][:full_phone_number])
+        account = AccountBlock::Account.find_by(full_phone_number: params[:data][:attributes][:full_phone_number])
         sms_otp = sms_otp_pin
         if account.present?
           account.register = true
@@ -64,6 +64,24 @@ module AccountBlock
       end
     end
 
+    def general_setting
+      account = AccountBlock::Account.find_by_id(params[:account_id])
+      if account.present? && params[:data][:attributes][:full_phone_number].present?
+        sms_otp = sms_otp_pin
+        render json: GeneralSettingSerializer.new(account, meta: {
+                                                  token: encode(sms_otp.id), pin: sms_otp.pin, register: account.register, sms_otp_id: sms_otp.id
+                                                }).serializable_hash, status: :ok
+      elsif account.present? && params[:data][:attributes][:image].present?
+        account.update(image: params[:data][:attributes][:image])
+        render json: GeneralSettingSerializer.new(account).serializable_hash, status: :ok
+      elsif account.present? && params[:data][:attributes][:email].present?
+        account.update(email: params[:data][:attributes][:email])
+        render json: GeneralSettingSerializer.new(account).serializable_hash, status: :ok
+      else
+        render json: { message: I18n.t('controllers.account_block.accounts.account_not_updated') }
+      end
+    end
+
     def show
       account = AccountBlock::Account.find_by_id(params[:id])
       render json: AccountSerializer.new(account)
@@ -86,7 +104,7 @@ module AccountBlock
 
     def social_params
       params.require(:data).require(:attributes).permit(:full_name, :full_phone_number, :email, :activated, :image_url,
-                                                        :gender, :unique_auth_id, :device_id)
+                                                        :gender, :unique_auth_id, :device_id, :fb_social_id, :google_social_id)
     end
 
     def encode(id)
