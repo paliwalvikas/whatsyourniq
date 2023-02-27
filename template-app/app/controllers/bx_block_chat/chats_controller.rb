@@ -65,11 +65,11 @@ module BxBlockChat
 
     def personal_conditions(answer)
       data = @chats.where(id: 0..answer&.chat_id&.to_i)
-      pregnant = current_user.chat_answers.find_by(chat_id: data.last.id).answer_option.option
-      question = @chats.first(data.count + 1)&.last&.question&.downcase&.include?('pregnant')
-      if current_user.gender.downcase == 'male' && question
+      pregnant = current_user&.chat_answers&.find_by(chat_id: data.last.id)&.answer_option&.option
+      question = @chats&.first(data.count + 1)&.last&.question&.downcase&.include?('pregnant')
+      if current_user&.gender&.downcase == 'male' && question
         @chats.first(data.count)
-      elsif current_user.gender.downcase == 'female' && pregnant.downcase == 'no'
+      elsif current_user&.gender&.downcase == 'female' && pregnant&.downcase == 'no'
         @chats.first(data.count)
       else
         @chats.first(data.count + 1)
