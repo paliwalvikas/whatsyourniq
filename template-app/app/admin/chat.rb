@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
-  permit_params :chat_type, :question, :answer_type, answer_options_attributes: %i[id option message marks _destroy]
+  permit_params :chat_type, :question, :answer_type,
+                answer_options_attributes: %i[id option message marks chat_option_category_id title _destroy]
 
   scope :personal, default: true do |personal|
     personal.where(chat_type: 'Personal')
@@ -35,6 +38,9 @@ ActiveAdmin.register BxBlockChat::Chat, as: 'chat' do
         val.input :option
         val.input :message
         val.input :marks
+        val.input :title
+        val.input :chat_option_category_id, as: :select,
+                                            collection: BxBlockCategories::ChatOptionCategory.pluck(:name, :id)
       end
     end
     f.semantic_errors :answer_options
