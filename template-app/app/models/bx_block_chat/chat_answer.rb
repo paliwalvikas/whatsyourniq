@@ -22,7 +22,7 @@ module BxBlockChat
     private
 
     def check_val?
-      chat&.question&.downcase&.include?('height') || chat&.question&.downcase&.include?('weight') || chat&.question&.downcase&.include?('date of birth')
+      chat&.question&.downcase&.include?('height') || chat&.question&.downcase&.include?('weight') || chat&.question&.downcase&.include?('date of birth') || chat&.question&.downcase&.include?('gender')
     end
 
     def updating_details
@@ -32,12 +32,14 @@ module BxBlockChat
         account.update(weight: answer.to_f)
       elsif account.present? && add_profile.nil? && chat&.question&.downcase&.include?('date of birth')
         account.update(age: answer.to_i)
-      elsif add_profile.present? && chat&.question&.downcase&.include?('height')
-        add_profile.update(height: answer.to_f)
-      elsif add_profile.present? && chat&.question&.downcase&.include?('weight')
-        add_profile.update(weight: answer.to_f)
-      elsif add_profile.present? && chat&.question&.downcase&.include?('date of birth')
-        add_profile.update(age: answer.to_i)
+      elsif account.present? && add_profile.nil? && chat&.question&.downcase&.include?('gender')
+        account.update(gender: answer_option.option)
+        # elsif add_profile.present? && chat&.question&.downcase&.include?('height')
+        #   add_profile.update(height: answer.to_f)
+        # elsif add_profile.present? && chat&.question&.downcase&.include?('weight')
+        #   add_profile.update(weight: answer.to_f)
+        # elsif add_profile.present? && chat&.question&.downcase&.include?('date of birth')
+        #   add_profile.update(age: answer.to_i)
       end
     end
 
