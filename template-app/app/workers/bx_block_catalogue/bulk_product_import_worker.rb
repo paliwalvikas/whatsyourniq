@@ -4,12 +4,12 @@ module BxBlockCatalogue
   class BulkProductImportWorker 
     include Sidekiq::Worker
     include Sidekiq::Status::Worker
-    sidekiq_options retry: 3#, lock: :until_executed, on_conflict: { client: :log, server: :raise }
+    sidekiq_options retry: false#, lock: :until_executed, on_conflict: { client: :log, server: :raise }
 
     # ERROR_CLASSES = [ActiveModel::UnknownAttributeError].freeze
     
     def perform(product_csv_id)
-      ActiveStorage::Current.host = "http://localhost:3000"
+      # ActiveStorage::Current.host = "http://localhost:3000"
       pcsv = BxBlockCatalogue::ProductCsv.find_by_id(product_csv_id)
       csv_text = open(pcsv.csv_file) do |io|
         io.set_encoding('utf-8')
@@ -43,7 +43,7 @@ module BxBlockCatalogue
           product_params["product_type"] = "cheese_and_oil"
         end
         begin
-          product = BxBlockCatalogue::Product.find_or_initialize_by(bar_code: product_params['bar_code'])
+          product = BxBlockCatalogue::Product.find_by(bar_code: product_params['bar_code']) || BxBlockCatalogue::Product.new(bar_code: product_params['bar_code']) 
 
           product.attributes = product_params.except('bar_code', 'filter_category', 'category_id', 'category_type_filter','image', 'user_email')
           product.category_id = BxBlockCategories::Category.new.find_category_type(product_params['category_id'])
@@ -55,7 +55,8 @@ module BxBlockCatalogue
           if product_params["user_email"].present?
             product.account_id = find_account(product_params["user_email"])
           end
-          if product.save
+
+          if product.save!
             CalculateProductRating.new.calculation(product)
             CalculateRda.new.negative_and_positive(product)
             img = product_params["image"]&.split("\n")&.first
@@ -64,7 +65,7 @@ module BxBlockCatalogue
               file = open(img) rescue nil
               product.image.attach(
                 io: file,
-                filename: "#{product&.product_name&.split&.first}.#{file.content_type_parse.first.split("/").last}",
+                filename: "#{product&.product_name&.split&.first}.#{file.content_type_parse&.first&.split("/").last}",
                 content_type: file.content_type_parse.first
               ) if file
             end
@@ -76,26 +77,22 @@ module BxBlockCatalogue
           end
 
         rescue Exception => e
-          @import_error = e.message
-        ensure
-          if @import_error.present?
-            if product_params["product_name"].present?
-              product_name = product_params["product_name"]
-              failer_data << ["#{row_count}", "#{product_name}", "#{@import_error}", "Failed"]
-              product_import_status.record_failed = failer_data.count
-            end
-            report_data = (success_data + failer_data).unshift(csv_headers)
-
-            product_import_status.file_status = CSV.generate do |csv|
-              report_data.each do |r_data|
-                csv << r_data
-              end
-              csv
-            end
+          if e.message.present? && product_params["product_name"].present?
+            product_name = product_params["product_name"]
+            failer_data << ["#{row_count}", "#{product_name}", "#{e.message}", "Failed"]
+            product_import_status.record_failed = failer_data.count
           end
         end
+        
+        report_data = (success_data + failer_data).unshift(csv_headers)
+        
+        product_import_status.file_status = CSV.generate do |csv|
+          report_data.each do |r_data|
+            csv << r_data
+          end
+          csv
+        end
       end
-
       product_import_status.status = "Failed" unless failer_data.empty?
       product_import_status.status = "Success" if failer_data.empty?
       product_import_status.save

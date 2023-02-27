@@ -72,7 +72,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
   filter :ingredient_list
   filter :food_drink_filter, as: :select, collection: BxBlockCatalogue::Product.food_drink_filters
   filter :filter_category_id, as: :select, collection: BxBlockCategories::FilterCategory.pluck(:name, :id)
-  filter :filter_sub_category_id, as: :select, collection: BxBlockCategories::FilterSubCategory.all.pluck(:name, :id)
+  filter :filter_sub_category_id, as: :select, collection: BxBlockCategories::FilterSubCategory.pluck(:name, :id)
 
   form do |f|
     f.inputs do
@@ -248,7 +248,7 @@ ActiveAdmin.register BxBlockCatalogue::Product, as: 'product' do
       end
       file_csv = CSV.parse(file, headers: true)
       expected_headers = %w[category_id product_type food_drink_filter category_filter
-                            category_type_filter website product_name brand_name description bar_code weight price_mrp price_post_discount user_email image ingredient_list fruit_veg nutritional energy carbohydrate fibre protein total_fat saturate monosaturated_fat polyunsaturated_fat trans_fat fatty_acid vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 calcium iron magnesium zinc iodine cholestrol sodium fat total_sugar mono_unsaturated_fat data_check veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish shellfish tree_nuts peanuts wheat soyabean]
+                            category_type_filter website product_name brand_name description bar_code weight price_mrp price_post_discount user_email image ingredient_list fruit_veg nutritional energy carbohydrate fibre protein total_fat saturate monosaturated_fat polyunsaturated_fat trans_fat fatty_acid vit_a vit_c vit_d vit_b6 vit_b12 vit_b9 calcium iron magnesium zinc iodine cholestrol sodium fat total_sugar mono_unsaturated_fat data_check veg_and_nonveg gluteen_free added_sugar artificial_preservative organic vegan_product egg fish shellfish tree_nuts peanuts wheat soyabean product_point]
       unless file_csv.headers == expected_headers
         redirect_to import_admin_products_path,
                     flash: { error: 'File contains invalid headers!' } and return

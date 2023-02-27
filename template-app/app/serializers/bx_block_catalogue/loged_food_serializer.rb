@@ -2,7 +2,7 @@
 
 module BxBlockCatalogue
   class LogedFoodSerializer < BuilderBase::BaseSerializer
-    attributes :id, :food_type, :quantity, :default_time
+    attributes :id, :food_type, :quantity, :default_time, :created_at, :updated_at
 
     attribute :product do |object, _params|
       ProductSerializer.new(object.product)
